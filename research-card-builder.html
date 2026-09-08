@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Research Card Builder · Hackathon Mode</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* site reskin: slate table, dark panel cards, violet identity, amber wild */
+  --table:#0E1116; --table-edge:#1B212B;
+  --cream:#161B23; --cream-shadow:#1E2530;
+  --ink:#E8EDF4; --ink-med:#A9B4C2; --ink-muted:#8B97A7; --ink-soft:#5C6878;
+  --divider:#2E3845; --gold:#B79CFF; --gold-dim:#9C8AD6; --indigo:#F0B95A;
+  --serif:'Bricolage Grotesque', system-ui, sans-serif;
+  --sans:'IBM Plex Sans', system-ui, sans-serif;
+  --mono:'IBM Plex Mono', ui-monospace, monospace;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%;}
+body{
+  font-family:var(--sans); color:var(--ink);
+  background-color:var(--table);
+  background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,.028) 1px, transparent 0),
+    radial-gradient(ellipse at 50% 20%, var(--table-edge) 0%, var(--table) 70%);
+  background-size:26px 26px, auto;
+  min-height:100vh;
+}
+.wrap{max-width:1140px; margin:0 auto; padding:28px 18px 80px;}
+header{text-align:center; margin-bottom:10px;}
+.eyebrow{font-size:12px; letter-spacing:3px; text-transform:uppercase; color:var(--gold-dim); font-weight:600;}
+h1{font-family:var(--serif); font-style:italic; font-weight:600; font-size:clamp(30px,5vw,44px); color:var(--gold); line-height:1.1; margin:6px 0 2px;}
+.subtitle{color:var(--gold-dim); font-style:italic; font-family:var(--serif); font-size:19px;}
+.rail{display:flex; justify-content:center; gap:6px; margin:18px 0 26px; flex-wrap:wrap;}
+.rail span{font-size:10.5px; letter-spacing:2px; text-transform:uppercase; font-weight:600; color:#5C6878; padding:4px 10px; border:1px solid #232B36; border-radius:20px;}
+.rail span.on{color:var(--gold); border-color:var(--gold-dim);}
+.stage{min-height:380px;}
+.panel{background:var(--cream); color:var(--ink); border-radius:12px; padding:26px 26px 30px; box-shadow:0 18px 50px rgba(0,0,0,.5);}
+.panel h2{font-family:var(--serif); font-weight:600; font-size:32px; margin-bottom:2px;}
+.panel .tag{font-family:var(--serif); font-style:italic; color:var(--ink-muted); font-size:18px; margin-bottom:16px;}
+.lbl{font-size:11.5px; letter-spacing:2px; text-transform:uppercase; font-weight:600; color:var(--ink-soft); margin:18px 0 8px;}
+.tier-row{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px;}
+.tier-card{border:1.5px solid var(--divider); border-radius:10px; padding:16px; cursor:pointer; background:var(--cream); text-align:left; font-family:var(--sans);color:var(--ink);}
+.tier-card:hover{border-color:var(--ink-soft);}
+.tier-card.sel{border-color:var(--gold); background:var(--cream-shadow); box-shadow:inset 0 0 0 1px var(--gold);}
+.tier-card .tname{font-family:var(--serif); font-weight:600; font-size:24px;}
+.tier-card .ttime{font-size:13px; letter-spacing:1.5px; text-transform:uppercase; font-weight:600; color:var(--ink-soft); margin:2px 0 8px;}
+.tier-card .tdesc{font-size:14px; color:var(--ink-med); line-height:1.45;}
+.tier-card .thand{margin-top:9px; display:flex; gap:4px; flex-wrap:wrap;}
+.tier-card .thand span{font-size:9.5px; letter-spacing:1px; text-transform:uppercase; font-weight:700; color:var(--ink-soft); border:1px solid var(--divider); border-radius:4px; padding:2px 6px;}
+.tier-card .thand span.wildchip{color:var(--cream); background:var(--indigo); border-color:var(--indigo);}
+.chips{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+.chip{border:1.5px solid var(--divider); border-radius:24px; padding:10px 18px; cursor:pointer; background:var(--cream); font-size:15px; font-weight:600; color:var(--ink-med); font-family:var(--sans);}
+.chip.sel{background:var(--gold); color:#0E1116; border-color:var(--gold);}
+.chip:hover{border-color:var(--ink-soft);}
+.note{font-size:14px; color:var(--ink-muted); line-height:1.5; margin-top:6px;}
+.stepper{display:inline-flex; align-items:center; gap:14px; border:1.5px solid var(--divider); border-radius:24px; padding:4px 8px;}
+.stepper button{border:none; background:none; font-size:20px; cursor:pointer; color:var(--ink); width:30px; height:30px; font-family:var(--sans);}
+.stepper b{font-size:18px; min-width:18px; text-align:center;}
+.btn{display:inline-block; border:none; cursor:pointer; font-family:var(--mono); font-weight:600; font-size:13.5px; letter-spacing:1.5px; text-transform:uppercase; padding:14px 30px; border-radius:8px; background:var(--gold); color:#0E1116;}
+.btn:hover{background:#C9B4FF;}
+.btn.ghost{background:none; color:var(--ink-med); border:1.5px solid var(--divider);}
+.btn.ghost:hover{border-color:var(--ink-soft);}
+.btn:disabled{opacity:.35; cursor:default;}
+.btn.gold-btn{background:none; border:1.5px solid var(--gold-dim); color:var(--gold);}
+.actions{margin-top:24px; display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
+.deckname{font-size:12px; letter-spacing:3px; text-transform:uppercase; font-weight:600; color:var(--gold-dim); text-align:center; margin-bottom:14px;}
+.hint{color:#8B97A7; text-align:center; margin-top:16px; font-style:italic; font-family:var(--serif); font-size:18px;}
+.darkpanel{background:rgba(255,255,255,.03); border:1px solid #232B36; border-radius:12px; padding:22px;}
+
+/* ---- Cards ---- */
+.hand{display:flex; justify-content:center; gap:20px; flex-wrap:wrap;}
+.handslot{display:flex; flex-direction:column; align-items:center; gap:9px;}
+.slotword{font-size:10.5px; letter-spacing:2.5px; text-transform:uppercase; font-weight:700; color:var(--gold-dim);}
+.slotword.wildword{color:#F0B95A;}
+.card{width:264px; height:456px; perspective:1400px; cursor:pointer;}
+.card.waiting{cursor:default; opacity:.55;}
+.card-inner{position:relative; width:100%; height:100%; transition:transform .7s cubic-bezier(.4,.1,.2,1); transform-style:preserve-3d;}
+.card.flipped .card-inner{transform:rotateY(180deg);}
+@media (prefers-reduced-motion: reduce){ .card-inner{transition:none;} }
+.face{position:absolute; inset:0; backface-visibility:hidden; border-radius:12px; box-shadow:0 14px 36px rgba(0,0,0,.55); overflow:hidden;}
+.face.back2{transform:rotateY(180deg);}
+.cback{display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; position:relative;}
+.cback .frame{position:absolute; inset:12px; border:1.5px solid var(--gold); border-radius:7px; pointer-events:none;}
+.cback .frame2{position:absolute; inset:17px; border:.5px solid var(--gold-dim); border-radius:5px; pointer-events:none;}
+.cback .small{font-size:12px; letter-spacing:4px; text-transform:uppercase; font-weight:600; color:var(--gold);}
+.cback .bigword{font-family:var(--serif); font-weight:600; font-size:38px; color:var(--cream); letter-spacing:1px; text-align:center; line-height:1.1; padding:0 18px;}
+.cback .orn{color:var(--gold); font-size:14px; margin-top:14px; letter-spacing:6px;}
+.cfront{background:var(--cream); color:var(--ink); height:100%; padding:18px 18px 14px; display:flex; flex-direction:column; text-align:left; overflow:hidden;}
+.topaccent{display:flex; align-items:center; gap:8px; margin-bottom:10px;}
+.topaccent .line{flex:1; height:1px; background:var(--divider);}
+.topaccent .ptag{font-size:10.5px; letter-spacing:2px; text-transform:uppercase; font-weight:700;}
+.topaccent .dia{font-size:9.5px;}
+.cfront h3{font-family:var(--serif); font-weight:600; font-size:26px; line-height:1.1; margin-bottom:3px;}
+.cfront .ctag{font-family:var(--serif); font-style:italic; font-size:15.5px; color:var(--ink-muted); margin-bottom:8px; line-height:1.3;}
+.orndiv{display:flex; align-items:center; gap:6px; margin:2px 0 9px;}
+.orndiv .line{flex:1; height:1px; background:var(--divider);}
+.orndiv .dia{color:var(--divider); font-size:9px;}
+.sec{margin-bottom:9px;}
+.sec .slbl{font-size:10px; letter-spacing:1.6px; text-transform:uppercase; font-weight:700; margin-bottom:2px;}
+.sec p{font-size:13.5px; line-height:1.42; color:var(--ink-med);}
+.sec.prompt{background:var(--cream-shadow); padding:10px 11px; border-radius:4px;}
+.sec.prompt p{font-weight:500; color:var(--ink);}
+.cfoot{margin-top:auto; text-align:center; font-size:9.5px; letter-spacing:2.5px; text-transform:uppercase; font-weight:600; color:var(--ink-soft); padding-top:6px;}
+.redrawbtn{border:1.5px solid var(--gold-dim); background:none; color:var(--gold); border-radius:6px; font-family:var(--sans); font-weight:600; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; padding:7px 13px; cursor:pointer;}
+.redrawbtn:hover{border-color:var(--gold);}
+.redrawbtn:disabled{opacity:0; pointer-events:none;}
+
+/* ---- Plan / clock ---- */
+.plan{display:grid; gap:10px;}
+.plan-item{border-left:3px solid var(--divider); padding:9px 13px; background:var(--cream-shadow); border-radius:0 6px 6px 0;}
+.plan-item .pi-lbl{font-size:10px; letter-spacing:1.8px; text-transform:uppercase; font-weight:700; color:var(--ink-soft);}
+.plan-item .pi-name{font-family:var(--serif); font-weight:600; font-size:20px;}
+.plan-item p{font-size:14px; color:var(--ink-med); line-height:1.45; margin-top:2px;}
+.plan-item.wilditem{border-left-color:var(--indigo);}
+.plan-item.wilditem .pi-lbl{color:var(--indigo);}
+.timerbox{text-align:center; margin-top:8px;}
+.timer{font-family:var(--serif); font-weight:600; font-size:clamp(56px,10vw,88px); color:var(--gold); line-height:1; letter-spacing:2px;}
+.timer-status{font-family:var(--serif); font-style:italic; font-size:19px; color:var(--gold-dim); margin-top:6px; min-height:24px;}
+.timer-status.warn{color:#F0B95A;}
+.timer-status.final{color:#F2716F;}
+button:focus-visible, .card:focus-visible, .tier-card:focus-visible, .chip:focus-visible, .ttile:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+footer{text-align:center; margin-top:34px; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#5C6878;}
+
+/* ---- Tray ---- */
+.tray{position:fixed; left:0; right:0; bottom:0; z-index:40; background:rgba(11,14,18,.97);
+  border-top:1px solid #232B36; padding:10px 16px; display:flex; gap:9px; align-items:stretch; overflow-x:auto;}
+.tray[hidden]{display:none;}
+.tray .tlabel{flex:0 0 auto; align-self:center; font-size:10px; letter-spacing:2.5px; text-transform:uppercase; font-weight:600; color:var(--gold-dim); margin-right:4px;}
+.ttile{flex:0 0 auto; background:var(--cream); border:none; border-top:4px solid var(--divider); border-radius:7px; padding:8px 13px 9px; text-align:left; cursor:pointer; font-family:var(--sans);}
+.ttile:hover{background:var(--cream-shadow);}
+.ttile .tk{display:block; font-size:9.5px; letter-spacing:1.6px; text-transform:uppercase; font-weight:700; color:var(--ink-soft);}
+.ttile.wildtile{border-top-color:var(--indigo);}
+.ttile.wildtile .tk{color:var(--indigo);}
+.ttile .tn{display:block; font-family:var(--serif); font-weight:600; font-size:16px; color:var(--ink); line-height:1.15; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:175px;}
+body.has-tray .wrap{padding-bottom:160px;}
+
+/* ---- Peek ---- */
+.peek{position:fixed; inset:0; z-index:60; background:rgba(8,10,14,.85); display:flex; align-items:center; justify-content:center; padding:24px;}
+.peek[hidden]{display:none;}
+.peekcard{position:relative; width:min(330px,88vw,50vh); aspect-ratio:70/121; border-radius:12px; overflow:hidden; box-shadow:0 26px 70px rgba(0,0,0,.7); background:var(--cream);}
+.peekcard .cfront{height:100%;}
+.peekclose{position:absolute; top:8px; right:8px; width:30px; height:30px; border-radius:50%; border:1px solid var(--divider); background:var(--cream); color:var(--ink-med); cursor:pointer; font-size:14px; line-height:1;}
+.peekclose:hover{background:var(--cream-shadow);}
+@media (max-width:620px){ .card{width:228px; height:394px;} .ttile .tn{font-size:14px; max-width:140px;} }
+
+/* ---- site reskin additions ---- */
+.eyebrow,.lbl,.rail span,.slotword,.deckname,.tier-card .ttime,.thand span,.sec .slbl,.topaccent .ptag,.cfoot,.ttile .tk,.tray .tlabel,footer,.plan-item .pi-lbl,.redrawbtn{font-family:var(--mono);}
+h1,.subtitle,.panel .tag,.cfront .ctag,.hint,.timer-status{font-style:normal;}
+.cback .bigword{color:var(--ink); font-size:26px; letter-spacing:.5px; padding:0 20px; overflow-wrap:anywhere;}
+@media (max-width:620px){ .cback .bigword{font-size:21px;} }
+.cback.wildback .bigword,.cback.wildback .small,.cback.wildback .orn{color:#0E1116;}
+.cback.wildback .frame{border-color:rgba(14,17,22,.8);}
+.cback.wildback .frame2{border-color:rgba(14,17,22,.45);}
+.rb-sitebar{position:sticky; top:0; z-index:55; display:flex; align-items:center; justify-content:space-between; gap:14px; height:50px; padding:0 20px; background:rgba(14,17,22,.92); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid #232B36; font-family:var(--mono);}
+.rb-home{display:inline-flex; align-items:center; gap:9px; font-size:13.5px; font-weight:600; color:var(--ink); text-decoration:none; letter-spacing:-.01em;}
+.rb-home:hover .rb-name{color:var(--gold);}
+.rb-mark{width:24px; height:24px; display:grid; place-items:center; border:1.5px solid #2E3845; border-radius:7px; background:#161B23; flex:none;}
+.rb-mark svg{width:13px; height:13px;}
+.rb-all{font-size:12.5px; color:var(--ink-muted); text-decoration:none; white-space:nowrap;}
+.rb-all:hover{color:var(--ink);}
+@media (max-width:480px){ .rb-name{display:none;} }
+</style>
+</head>
+<body>
+<div class="rb-sitebar">
+  <a class="rb-home" href="index.html" aria-label="Robert Butts, main site"><span class="rb-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/><path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/><path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="rb-name">Robert Butts</span></a>
+  <a class="rb-all" href="practice.html">all practice tools &rarr;</a>
+</div>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">The Research Card Builder</div>
+    <h1>Hackathon Mode</h1>
+    <div class="subtitle">The reveal first. Then the clock.</div>
+  </header>
+  <div class="rail" id="rail"></div>
+  <div class="stage" id="stage"></div>
+  <footer>A brainstorming game for research methodology · Prototype</footer>
+</div>
+<div class="tray" id="tray" hidden></div>
+<div class="peek" id="peek" hidden onclick="if(event.target===this)closePeek()"></div>
+
+<script>
+/* ================= DATA ================= */
+const DATASETS = {
+  pp:{name:"Palmer Penguins", src:"palmerpenguins project (GitHub)", size:"344 rows, 8 columns", types:"Numeric, categorical", vars:"species, flipper length, body mass", starter:"Do the three penguin species differ in average body mass?"},
+  gap:{name:"Gapminder", src:"gapminder.org/data", size:"About 1,700 rows, 6 columns", types:"Numeric, categorical, years", vars:"country, life expectancy, GDP per person", starter:"Is national income related to life expectancy, and has that changed over time?"},
+  nba:{name:"FiveThirtyEight NBA Elo", src:"github.com/fivethirtyeight/data", size:"About 126,000 rows, every game since 1946", types:"Dates, categorical, numeric", vars:"game date, team Elo rating, point differential", starter:"How much home court advantage exists, and has it shrunk over the decades?"},
+  owid:{name:"Our World in Data, CO2", src:"github.com/owid/co2-data", size:"About 50,000 rows, 80 columns", types:"Numeric, categorical, years", vars:"CO2 emissions, CO2 per capita, energy use", starter:"Which countries have grown their economies while reducing emissions?"}
+};
+const SPRINT_DATA_PILE = ["pp","gap","nba","owid"];
+
+const TOPICS = [
+  {name:"Student Success", tag:"Who finishes, who struggles, and what makes the difference.", pantry:"IPEDS, College Scorecard"},
+  {name:"The Price and Payoff of College", tag:"What college costs and what it gives back.", pantry:"College Scorecard, IPEDS"},
+  {name:"Work and Wages", tag:"Jobs, pay, and the price of everything.", pantry:"Bureau of Labor Statistics, GSS, American Community Survey"},
+  {name:"Health and Daily Habits", tag:"What our routines do to our bodies.", pantry:"NHANES, GSS"},
+  {name:"Sports and Competition", tag:"Winning, losing, and what the record really shows.", pantry:"FiveThirtyEight NBA Elo"},
+  {name:"Entertainment and Taste", tag:"What people watch and how they judge it.", pantry:"MovieLens, GSS"},
+  {name:"Climate and Energy", tag:"Growth, footprint, and the trade-offs between them.", pantry:"Our World in Data CO2, Gapminder"},
+  {name:"Global Development", tag:"How nations change across decades.", pantry:"Gapminder, Our World in Data CO2"},
+  {name:"Cities and Public Services", tag:"What residents ask for and how the city answers.", pantry:"NYC 311, American Community Survey"},
+  {name:"People and Places", tag:"The shape of communities in numbers.", pantry:"American Community Survey, GSS"},
+  {name:"Happiness and Opinion", tag:"What people believe and how they feel about it.", pantry:"GSS, NHANES"},
+  {name:"Animals and the Natural World", tag:"Variation is the oldest research question there is.", pantry:"Palmer Penguins"}
+];
+
+const QUESTIONS = [
+  ["Descriptive Question","Asks what is happening, or how much."],
+  ["Comparative Question","Asks how two or more groups differ."],
+  ["Relational Question","Asks whether two things move together."],
+  ["Causal Question","Asks whether one thing causes another."],
+  ["Predictive Question","Asks whether an outcome can be forecast."],
+  ["Mechanism Question","Asks how or why an effect happens."]
+];
+
+const ANALYSES = [
+  ["T-Test","Compares the averages of two groups."],
+  ["Chi-Square Test","Tests whether two categories are related."],
+  ["ANOVA","Compares averages across three or more groups."],
+  ["Correlation Analysis","Measures how strongly two numbers move together."],
+  ["Linear Regression","Predicts a number from one other variable."],
+  ["Logistic Regression","Predicts a yes-or-no outcome."],
+  ["Multiple Regression","Predicts a number from several variables at once."],
+  ["Decision Trees","Splits data into branches to predict an outcome."],
+  ["K-Means Clustering","Groups similar cases without labels."],
+  ["Thematic Analysis","Finds repeated themes in words rather than numbers."]
+];
+
+const CRAFT = [
+  ["Join Two Datasets","Merge your data with a second dataset on a shared key.","Find a second dataset, join it to your first on a key such as an ID, county, year, or team, and use at least one variable from each side in your finding."],
+  ["Create a New Variable","Build a measure that does not exist in the raw data.","Create a ratio, rate, category, or index from the raw columns, and make it central to your finding."],
+  ["Change the Unit of Analysis","Aggregate up or drill down to a different level.","Shift the level of your data, such as students to institutions or games to seasons, and run your analysis at the new level."],
+  ["Compare Subgroups","Split the data on a meaningful line.","Run your analysis separately for at least two subgroups and report how they differ."],
+  ["Track Change Over Time","A snapshot is not enough.","Your finding must include a trend across time, not just a single moment."],
+  ["Build a Benchmark","Context turns a number into a finding.","Compare your cases against an external standard, such as a national average or a sector median."],
+  ["Replicate Your Finding","One result is a hint. Two is a finding.","Run the same analysis on a second dataset or a held-out slice of your data, and report whether the result holds."],
+  ["Handle the Missing","Real data has gaps.","Deal with missing values deliberately, and state in your deliverable what you did and why."],
+  ["Rank and Profile","Every ranking is an argument.","Build a defensible ranking, then profile what the top and the bottom have in common."],
+  ["Define a Threshold","Where you draw the line is a claim.","Turn a continuous number into a meaningful category, and defend the cut point you chose."]
+];
+
+const WILDS = [
+  ["Confirmation Bias","You will favor evidence that agrees with you. Plan from the start to seek evidence that could prove you wrong."],
+  ["Scope Creep","Your project will try to grow past the clock. Commit now to one answerable question and defend it."],
+  ["HARKing","Hypothesizing after results are known. Lock your expectation in writing before you look at outcomes."],
+  ["Ethical Constraint","An ethical limit blocks part of what you want to do. Build the plan without crossing the line."],
+  ["Publication Bias","Published work overrepresents positive results. Account for the findings that may never have been printed."],
+  ["Survivorship Bias","Your data only includes those who remained. Name who is missing and what that does to your conclusion."],
+  ["Hawthorne Effect","Being observed changes behavior. Explain how observation could bend your evidence and plan around it."],
+  ["Sample Attrition","Cases drop out over time. Plan for the loss before it surprises you."],
+  ["Maturation","People change naturally over time. Separate that change from the effect you are studying."],
+  ["Selection Bias","Your sample was not chosen fairly. Address how that skews what you can claim."],
+  ["Measurement Error","Your instrument is imperfect. Account for the noise it adds."],
+  ["Low Response Rate","Few people responded. Consider who answered, who did not, and why it matters."],
+  ["P-Hacking","Testing until something looks significant. Commit to your analysis before running it."],
+  ["Social Desirability Bias","People answer to look good. Adjust your measures to get past the performance."],
+  ["Recall Bias","Memory is unreliable. Reduce how much your plan depends on it."],
+  ["Unmeasurable Question","Part of what you want to ask cannot be measured. Reframe it into something the data can answer."]
+];
+
+const DELIVERABLES = [
+  {name:"The Annotated Chart", tag:"One picture, one point, no fluff.", aud:"Anyone walking past it", done:{sprint:"One chart, a headline stating the finding, a short caption, a source line."}, tiers:["sprint"]},
+  {name:"The Lightning Talk", tag:"Three minutes to make one finding stick.", aud:"The room", done:{sprint:"3 minutes, up to 3 slides, one finding.", dash:"5 minutes, up to 5 slides, one finding plus one stated limitation."}, tiers:["sprint","dash"]},
+  {name:"The One-Page Memo", tag:"Everything a busy decision maker needs, nothing they do not.", aud:"A named decision maker", done:{sprint:"Half a page: the finding and one chart.", dash:"A full page adding a recommendation and one limitation."}, tiers:["sprint","dash"]},
+  {name:"The Social Media Thread", tag:"A finding told one post at a time.", aud:"The general public", done:{sprint:"Five drafted posts and one chart image.", dash:"Up to eight posts, 2-3 charts, and a source post at the end."}, tiers:["sprint","dash"]},
+  {name:"The FAQ Sheet", tag:"The questions people will ask, answered before they ask them.", aud:"People affected by the finding", done:{sprint:"Five questions and plain-language answers.", dash:"Eight Q&As, one chart, and a closing line on where to learn more."}, tiers:["sprint","dash"]},
+  {name:"The Infographic", tag:"The whole story on one sheet.", aud:"A hallway viewer with thirty seconds", done:{dash:"One sheet, 2-4 visuals, a headline finding, a source line."}, tiers:["dash"]},
+  {name:"The Blog Post", tag:"A data story with a beginning, a middle, and an end.", aud:"Interested general readers", done:{dash:"600-1,000 words, two charts, an honest limitations paragraph.", marathon:"1,200-1,500 words adding a short methods note."}, tiers:["dash","marathon"]},
+  {name:"The Press Release", tag:"News judgment meets data judgment.", aud:"A journalist or communications office", done:{dash:"One page: headline, lead paragraph with the finding, fact box of 3-5 numbers, one labeled placeholder quote."}, tiers:["dash"]},
+  {name:"The Executive Summary", tag:"The whole study in the time it takes to finish a coffee.", aud:"Senior leadership", done:{dash:"1-2 pages, bottom line in the first paragraph, one chart, one recommendation."}, tiers:["dash"]},
+  {name:"The Conference Poster", tag:"Research that can defend itself while you stand next to it.", aud:"Conference attendees", done:{dash:"A complete digital poster layout.", marathon:"A print-ready poster plus a practiced two-minute walkthrough."}, tiers:["dash","marathon"]},
+  {name:"The Dashboard", tag:"A view that answers questions nobody has asked yet.", aud:"A user who will return to it", done:{dash:"3-4 charts on one screen; static is acceptable.", marathon:"Interactive, at least one working filter, a short instructions note."}, tiers:["dash","marathon"]},
+  {name:"The Video Explainer", tag:"Ninety seconds, one finding, no jargon.", aud:"Viewers who will never read the report", done:{dash:"60-90 seconds showing at least one chart.", marathon:"Up to 3 minutes with simple on-screen titles."}, tiers:["dash","marathon"]},
+  {name:"The Policy or Practice Brief", tag:"Evidence pointed at a decision.", aud:"Someone who can change a rule or budget", done:{marathon:"2-4 pages: the finding, 2-3 options with trade-offs, one recommendation, limitations."}, tiers:["marathon"]},
+  {name:"The Interactive Web Page", tag:"A finding the audience can explore for themselves.", aud:"Online readers who want to poke at the numbers", done:{marathon:"One page with a scrolling narrative, one interactive chart or toggle, a source and methods note."}, tiers:["marathon"]},
+  {name:"The Technical Report", tag:"The full account, written so it could be checked.", aud:"A reader who wants to verify the work", done:{marathon:"5-10 pages: introduction, methods, results, discussion, plus a reproducibility note."}, tiers:["marathon"]}
+];
+
+const ROLES = [
+  {name:"The Analyst", tag:"Every number has one person who can defend it.", job:"Run the analysis, check it, and keep the team honest about what the numbers show.", action:"Before submission, explain every figure in plain language to the team. If you cannot explain it, it comes out."},
+  {name:"The Skeptic", tag:"The friendly opponent the team is lucky to have.", job:"Question the assumptions, the fit between question and data, and the strength of the conclusion.", action:"Identify at least one specific weakness before submission. The team must fix it or state it openly."},
+  {name:"The Storyteller", tag:"A finding nobody understands is a finding nobody uses.", job:"Write the title, set the order of the story, and translate the analysis for the audience.", action:"State the finding in one sentence an outsider would understand. That sentence goes in the deliverable."},
+  {name:"The Librarian", tag:"The team that knows its data cannot be embarrassed by it.", job:"Read the documentation, confirm variable definitions, and catch misuse before it ships.", action:"Confirm the definition of every variable used, and add a source line stating where the data came from."},
+  {name:"The Timekeeper", tag:"Done and clear beats ambitious and unfinished.", job:"Track the time, call checkpoints, and force scope decisions when the clock demands them.", action:"Call the halfway point and the final stretch. At the final stretch, nothing new gets added."}
+];
+
+const TIERS = {
+  sprint:{label:"Sprint", time:"1 hour", secs:3600, finalStretch:900,
+    hand:["dataset","deliverable","wild"],
+    desc:"The data is handed to you. You choose your own question and analysis. Build one clear thing."},
+  dash:{label:"Dash", time:"1 day", secs:86400, finalStretch:3600,
+    hand:["topic","question","analysis","deliverable","wild"],
+    desc:"You get a topic, not a dataset. Finding the evidence is part of the game."},
+  marathon:{label:"Marathon", time:"1 week", secs:604800, finalStretch:86400,
+    hand:["topic","question","craft","craft","analysis","deliverable","wild"],
+    desc:"The full gauntlet. Two craft moves give the week its teeth."}
+};
+const DECKWORDS = {dataset:"Dataset", topic:"Topic", question:"Question", craft:"Craft", analysis:"Analysis", deliverable:"Deliverable", wild:"Wild Card"};
+
+/* ================= STATE ================= */
+let S = {};
+function freshState(){
+  S = { screen:"setup", tier:"sprint", useRoles:false, teamSize:1,
+    hand:[], flipIdx:0, redrawUsed:false,
+    roles:[], rolesRedrawUsed:false,
+    timer:{remaining:0, running:false, handle:null, started:false} };
+}
+freshState();
+const rand = a => a[Math.floor(Math.random()*a.length)];
+
+/* ================= DEALING ================= */
+function drawFor(deck, excludeNames){
+  const not = c => !excludeNames.includes(cardName({deck, card:c}));
+  let pool;
+  if(deck==="dataset") pool = SPRINT_DATA_PILE.map(k=>DATASETS[k]);
+  else if(deck==="topic") pool = TOPICS;
+  else if(deck==="question") pool = QUESTIONS;
+  else if(deck==="craft") pool = CRAFT;
+  else if(deck==="analysis") pool = ANALYSES;
+  else if(deck==="deliverable") pool = DELIVERABLES.filter(d=>d.tiers.includes(S.tier));
+  else pool = WILDS;
+  const filtered = pool.filter(not);
+  return rand(filtered.length ? filtered : pool);
+}
+function cardName(slot){
+  const c = slot.card;
+  if(slot.deck==="dataset"||slot.deck==="topic"||slot.deck==="deliverable") return c.name;
+  return c[0];
+}
+function dealHand(){
+  S.hand = [];
+  for(const deck of TIERS[S.tier].hand){
+    const used = S.hand.filter(s=>s.deck===deck).map(cardName);
+    S.hand.push({deck, card:drawFor(deck, used)});
+  }
+  S.flipIdx = 0; S.redrawUsed = false;
+}
+
+/* ================= CARD MARKUP ================= */
+function deckBack(deck){
+  const wild = deck==="wild";
+  return `<div class="cback ${wild?'wildback':''}" style="background:${wild?'var(--indigo)':'#12161D'}">
+    <div class="frame"></div><div class="frame2"></div>
+    <div class="small">Hackathon Mode</div>
+    <div class="bigword">${DECKWORDS[deck].toUpperCase()}</div>
+    <div class="orn">${wild?'⚡ ⚡ ⚡':'◆ ◆ ◆'}</div>
+  </div>`;
+}
+function frontShell(accent, tag, name, tagline, sections, footer){
+  return `<div class="cfront">
+    <div class="topaccent"><span class="dia" style="color:${accent}">◆</span><span class="line"></span>
+      <span class="ptag" style="color:${accent}">${tag}</span>
+      <span class="line"></span><span class="dia" style="color:${accent}">◆</span></div>
+    <h3>${name}</h3>
+    <div class="ctag">${tagline}</div>
+    <div class="orndiv"><span class="line"></span><span class="dia">◆</span><span class="line"></span></div>
+    ${sections}
+    <div class="cfoot">${footer}</div>
+  </div>`;
+}
+function sec(lbl, body, accent, cls=""){
+  return `<div class="sec ${cls}"><div class="slbl" style="color:${accent}">${lbl}</div><p>${body}</p></div>`;
+}
+function frontFor(slot){
+  const d = slot.deck, c = slot.card, ink="var(--ink-soft)";
+  if(d==="dataset") return frontShell(ink,"DATASET",c.name,c.src,
+    sec("Size", c.size+" · "+c.types, ink) + sec("Example variables", c.vars, ink) +
+    sec("Starter question", c.starter, ink, "prompt"), "Pre-loaded at this station");
+  if(d==="topic") return frontShell(ink,"TOPIC",c.name,c.tag,
+    sec("Suggested pantry", c.pantry, ink) +
+    sec("Your move","Finding the evidence is part of the game. Start from the pantry or hunt beyond it.", ink, "prompt"), "Topic Deck");
+  if(d==="question") return frontShell(ink,"QUESTION TYPE",c[0],"",
+    sec("What it asks", c[1], ink) +
+    sec("Your move","Write one research question of this type about your topic.", ink, "prompt"), "Question Deck");
+  if(d==="craft") return frontShell(ink,"CRAFT",c[0],c[1],
+    sec("Your move", c[2], ink, "prompt"), "Craft Deck");
+  if(d==="analysis") return frontShell(ink,"ANALYSIS",c[0],"",
+    sec("What it does", c[1], ink) +
+    sec("Your move","Use this analysis in your build, or sketch it at the paper station.", ink, "prompt"), "Analysis Deck");
+  if(d==="deliverable") return frontShell(ink,"DELIVERABLE",c.name,c.tag,
+    sec("Audience", c.aud, ink) +
+    sec("What done looks like", c.done[S.tier]||Object.values(c.done)[0], ink, "prompt"), "The finish line");
+  if(d==="wild") return frontShell("var(--indigo)","⚡ WILD CARD ⚡",c[0],"",
+    sec("Known condition", c[1], "var(--indigo)") +
+    sec("Your move","You know this from the start. Build so your work survives it.", "var(--indigo)", "prompt"), "Wild Card · Revealed up front");
+  return "";
+}
+function roleFront(r){
+  const ink="var(--ink-soft)";
+  return frontShell(ink,"ROLE",r.name,r.tag,
+    sec("Your job", r.job, ink) + sec("Required action", r.action, ink, "prompt"), "Role Deck · Teams only");
+}
+function cardEl(backHTML, frontHTML, id, clickFn, waiting){
+  return `<div class="card${waiting?' waiting':''}" id="${id}" tabindex="0" role="button" aria-label="Face-down card. Activate to flip."
+    onclick="${clickFn}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();${clickFn}}">
+    <div class="card-inner">
+      <div class="face">${backHTML}</div>
+      <div class="face back2">${frontHTML}</div>
+    </div></div>`;
+}
+
+/* ================= RAIL ================= */
+function renderRail(){
+  const steps = ["Setup","The Reveal"]; if(S.useRoles && S.teamSize>=2) steps.push("Roles"); steps.push("The Clock");
+  const map = {setup:0, reveal:1, roles:2, clock:steps.length-1};
+  const cur = (S.screen==="clock") ? steps.length-1 : map[S.screen];
+  document.getElementById("rail").innerHTML = steps.map((s,i)=>`<span class="${i===cur?'on':''}">${s}</span>`).join("");
+}
+
+/* ================= SETUP ================= */
+const HANDCHIP = {dataset:"Dataset", topic:"Topic", question:"Question", craft:"Craft", analysis:"Analysis", deliverable:"Deliverable", wild:"Wild"};
+function renderSetup(){
+  document.getElementById("stage").innerHTML = `
+  <div class="panel">
+    <h2>Set the table</h2>
+    <div class="tag">Pick your clock. The hand is dealt face-down, you reveal it all, then you build.</div>
+    <div class="lbl">Time tier</div>
+    <div class="tier-row">
+      ${Object.entries(TIERS).map(([k,v])=>`
+        <button class="tier-card ${S.tier===k?'sel':''}" onclick="setTier('${k}')">
+          <div class="tname">${v.label}</div>
+          <div class="ttime">${v.time} · ${v.hand.length} cards</div>
+          <div class="tdesc">${v.desc}</div>
+          <div class="thand">${v.hand.map(h=>`<span class="${h==='wild'?'wildchip':''}">${HANDCHIP[h]}</span>`).join("")}</div>
+        </button>`).join("")}
+    </div>
+    <div class="lbl">Team roles (optional)</div>
+    <div class="chips">
+      <button class="chip ${S.useRoles?'sel':''}" onclick="toggleRoles()">${S.useRoles?'✓ ':''}Use role cards</button>
+      <span class="stepper"><button onclick="bumpTeam(-1)" aria-label="Fewer players">−</button><b>${S.teamSize}</b><button onclick="bumpTeam(1)" aria-label="More players">+</button></span>
+    </div>
+    <p class="note">${S.useRoles ? (S.teamSize>=2 ? "Each player will draw a role after the reveal." : "Roles need at least two players. Solo players skip the role draw.") : "Playing without roles."}</p>
+    <p class="note">After the full reveal you may send exactly one card back for a redraw. Then the clock starts.</p>
+    <div class="actions">
+      <button class="btn" onclick="beginGame()">Deal the hand</button>
+    </div>
+  </div>`;
+}
+function setTier(k){ S.tier=k; renderSetup(); }
+function toggleRoles(){ S.useRoles=!S.useRoles; renderSetup(); }
+function bumpTeam(d){ S.teamSize=Math.min(4,Math.max(1,S.teamSize+d)); renderSetup(); }
+function beginGame(){ dealHand(); S.screen="reveal"; render(); }
+
+/* ================= THE REVEAL ================= */
+function renderReveal(){
+  const n = S.hand.length;
+  const cards = S.hand.map((slot,i)=>`
+    <div class="handslot">
+      ${cardEl(deckBack(slot.deck), frontFor(slot), "hand"+i, "flipHand("+i+")", i!==S.flipIdx && i>=S.flipIdx)}
+      <span class="slotword ${slot.deck==='wild'?'wildword':''}">${DECKWORDS[slot.deck]}</span>
+      <button class="redrawbtn" id="rd${i}" onclick="redrawSlot(${i})" disabled>Send back</button>
+    </div>`).join("");
+  document.getElementById("stage").innerHTML = `
+  <div class="darkpanel">
+    <div class="deckname">The Reveal · ${TIERS[S.tier].label} · ${n} cards · ${TIERS[S.tier].time} on the clock</div>
+    <div class="hand">${cards}</div>
+    <p class="hint" id="revealhint">Flip the cards left to right. Know your whole hand before the clock starts.</p>
+    <div class="actions" style="justify-content:center; visibility:hidden" id="postreveal">
+      <button class="btn" style="background:var(--gold); color:var(--ink)" onclick="continueFromReveal()">Keep this hand</button>
+    </div>
+  </div>`;
+  syncReveal();
+}
+function syncReveal(){
+  for(let i=0;i<S.hand.length;i++){
+    const el = document.getElementById("hand"+i);
+    if(!el) return;
+    el.classList.toggle("waiting", i>S.flipIdx || (i===S.flipIdx && false));
+    if(i<S.flipIdx) el.classList.add("flipped");
+    if(i===S.flipIdx) el.classList.remove("waiting");
+  }
+  const allUp = S.flipIdx>=S.hand.length;
+  if(allUp){
+    document.getElementById("postreveal").style.visibility="visible";
+    document.getElementById("revealhint").textContent = S.redrawUsed
+      ? "Your redraw is spent. This is the hand."
+      : "You may send exactly one card back for a redraw, or keep the hand as dealt.";
+    for(let i=0;i<S.hand.length;i++) document.getElementById("rd"+i).disabled = S.redrawUsed;
+  }
+}
+function flipHand(i){
+  if(i!==S.flipIdx) return;
+  const el = document.getElementById("hand"+i);
+  el.classList.add("flipped");
+  S.flipIdx++;
+  syncReveal();
+}
+function redrawSlot(i){
+  if(S.redrawUsed || S.flipIdx<S.hand.length) return;
+  S.redrawUsed = true;
+  const slot = S.hand[i];
+  const exclude = S.hand.filter(s=>s.deck===slot.deck).map(cardName);
+  slot.card = drawFor(slot.deck, exclude);
+  const el = document.getElementById("hand"+i);
+  el.classList.remove("flipped");
+  el.querySelector(".back2").innerHTML = frontFor(slot);
+  setTimeout(()=>{ el.classList.add("flipped"); syncReveal(); }, 420);
+  for(let k=0;k<S.hand.length;k++) document.getElementById("rd"+k).disabled = true;
+}
+function continueFromReveal(){
+  if(S.useRoles && S.teamSize>=2){ S.screen="roles"; }
+  else { S.screen="clock"; S.timer.remaining = TIERS[S.tier].secs; }
+  render();
+}
+
+/* ================= ROLES ================= */
+function renderRoles(){
+  if(!S.roles.length){
+    const pool=[...ROLES];
+    for(let i=0;i<S.teamSize;i++){ const r=rand(pool); pool.splice(pool.indexOf(r),1); S.roles.push(r); }
+  }
+  const cards = S.roles.map((r,i)=>cardEl(deckBack("wild").replace("WILD CARD","ROLE").replace("var(--indigo)","var(--ink)").replace("⚡ ⚡ ⚡","◆ ◆ ◆"), roleFront(r), "rolecard"+i, "flipRole("+i+")", false)).join("");
+  document.getElementById("stage").innerHTML = `
+  <div class="darkpanel">
+    <div class="deckname">Role Deck · One per player</div>
+    <div class="hand">${cards}</div>
+    <p class="hint">Each player flips one card. The hand below tells you what jobs the work needs.</p>
+    <div class="actions" style="justify-content:center; visibility:hidden" id="postroles">
+      <button class="btn gold-btn" onclick="redrawRoles()" ${S.rolesRedrawUsed?'disabled':''}>Redraw all (once)</button>
+      <button class="btn" style="background:var(--gold); color:var(--ink)" onclick="toClock()">Keep these roles</button>
+    </div>
+  </div>`;
+}
+function flipRole(i){
+  const el = document.getElementById("rolecard"+i);
+  if(el.classList.contains("flipped")) return;
+  el.classList.add("flipped");
+  const total = S.roles.length;
+  let up=0; for(let k=0;k<total;k++) if(document.getElementById("rolecard"+k).classList.contains("flipped")) up++;
+  if(up===total) document.getElementById("postroles").style.visibility="visible";
+}
+function redrawRoles(){ S.rolesRedrawUsed=true; S.roles=[]; renderRoles(); }
+function toClock(){ S.screen="clock"; S.timer.remaining = TIERS[S.tier].secs; render(); }
+
+/* ================= THE CLOCK ================= */
+function fmtTime(s){
+  if(s<0)s=0;
+  const d=Math.floor(s/86400), h=Math.floor(s%86400/3600), m=Math.floor(s%3600/60), sec=Math.floor(s%60);
+  const pad=n=>String(n).padStart(2,"0");
+  if(S.tier==="sprint") return pad(m+h*60)+":"+pad(sec);
+  if(S.tier==="dash") return pad(h)+":"+pad(m)+":"+pad(sec);
+  return d+"d "+pad(h)+":"+pad(m)+":"+pad(sec);
+}
+function timerStatus(){
+  const t=S.timer.remaining, total=TIERS[S.tier].secs, fin=TIERS[S.tier].finalStretch;
+  if(t<=0) return ["Time. Pencils down. Done and clear wins.","final"];
+  if(t<=fin) return ["Final stretch. Nothing new gets added. Finish what exists.","final"];
+  if(t<=total/2) return ["Past halfway. If you had to submit right now, what would you submit?","warn"];
+  return ["",""];
+}
+function slotDetail(slot){
+  const c=slot.card, d=slot.deck;
+  if(d==="dataset") return c.starter+" ("+c.src+")";
+  if(d==="topic") return c.tag+" Pantry: "+c.pantry;
+  if(d==="question") return c[1];
+  if(d==="craft") return c[2];
+  if(d==="analysis") return c[1];
+  if(d==="deliverable") return "Done means: "+(c.done[S.tier]||Object.values(c.done)[0])+" Audience: "+c.aud;
+  return c[1];
+}
+function renderClock(){
+  const [statusMsg,statusCls]=timerStatus();
+  let items = S.hand.map((slot,i)=>`
+    <div class="plan-item ${slot.deck==='wild'?'wilditem':''}">
+      <div class="pi-lbl">${DECKWORDS[slot.deck]}</div>
+      <div class="pi-name">${cardName(slot)}</div>
+      <p>${slotDetail(slot)}</p>
+    </div>`).join("");
+  items += S.roles.map(r=>`
+    <div class="plan-item"><div class="pi-lbl">Role</div><div class="pi-name">${r.name}</div><p>${r.action}</p></div>`).join("");
+  document.getElementById("stage").innerHTML = `
+  <div class="darkpanel timerbox">
+    <div class="deckname">${TIERS[S.tier].label} · ${TIERS[S.tier].time} on the clock</div>
+    <div class="timer" id="timerDisplay">${fmtTime(S.timer.remaining)}</div>
+    <div class="timer-status ${statusCls}" id="timerStatus">${statusMsg}</div>
+    <div class="actions" style="justify-content:center">
+      <button class="btn" style="background:var(--gold); color:var(--ink)" onclick="toggleTimer()" id="timerBtn">${S.timer.running?'Pause':(S.timer.started?'Resume':'Start the clock')}</button>
+      <button class="btn gold-btn" onclick="copyPlan()" id="copyBtn">Copy hand</button>
+      <button class="btn gold-btn" onclick="restart()">New game</button>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:18px">
+    <h2>Your hand</h2>
+    <div class="tag">Everything was revealed before the clock. No surprises left, only the work.</div>
+    <div class="plan">${items}</div>
+  </div>`;
+}
+function toggleTimer(){
+  if(S.timer.running){
+    clearInterval(S.timer.handle); S.timer.running=false;
+  } else {
+    S.timer.running=true; S.timer.started=true;
+    S.timer.handle=setInterval(()=>{
+      S.timer.remaining--;
+      const disp=document.getElementById("timerDisplay");
+      if(!disp){clearInterval(S.timer.handle);return;}
+      disp.textContent=fmtTime(S.timer.remaining);
+      const [m,c]=timerStatus(); const st=document.getElementById("timerStatus");
+      st.textContent=m; st.className="timer-status "+c;
+      if(S.timer.remaining<=0){clearInterval(S.timer.handle);S.timer.running=false;
+        document.getElementById("timerBtn").textContent="Start the clock";}
+    },1000);
+  }
+  const b=document.getElementById("timerBtn");
+  if(b) b.textContent=S.timer.running?'Pause':(S.timer.started?'Resume':'Start the clock');
+}
+function copyPlan(){
+  let lines=["THE RESEARCH CARD BUILDER · HACKATHON MODE","Tier: "+TIERS[S.tier].label+" ("+TIERS[S.tier].time+")",""];
+  for(const slot of S.hand) lines.push(DECKWORDS[slot.deck]+": "+cardName(slot)+" : "+slotDetail(slot));
+  S.roles.forEach(r=>lines.push("Role: "+r.name+" : "+r.action));
+  const text=lines.join("\n");
+  const done=()=>{const b=document.getElementById("copyBtn"); if(b){b.textContent="Copied";setTimeout(()=>b.textContent="Copy hand",1600);}};
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text,done));
+  } else fallbackCopy(text,done);
+}
+function fallbackCopy(text,done){
+  const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta);
+  ta.select(); try{document.execCommand("copy");}catch(e){} document.body.removeChild(ta); done();
+}
+function restart(){ if(S.timer.handle)clearInterval(S.timer.handle); freshState(); render(); }
+
+/* ================= TRAY + PEEK ================= */
+function renderTray(){
+  const tray=document.getElementById("tray");
+  if(S.screen==="setup"||S.screen==="reveal"){tray.hidden=true;document.body.classList.remove("has-tray");return;}
+  let t="";
+  S.hand.forEach((slot,i)=>{
+    t+=`<button class="ttile${slot.deck==='wild'?' wildtile':''}" onclick="openPeek(${i})" title="Show this card">
+      <span class="tk">${DECKWORDS[slot.deck]}</span><span class="tn">${cardName(slot)}</span></button>`;
+  });
+  S.roles.forEach((r,i)=>{
+    t+=`<button class="ttile" onclick="openPeekRole(${i})" title="Show this card">
+      <span class="tk">Role</span><span class="tn">${r.name}</span></button>`;
+  });
+  if(!t){tray.hidden=true;document.body.classList.remove("has-tray");return;}
+  tray.innerHTML='<span class="tlabel">Your hand</span>'+t;
+  tray.hidden=false; document.body.classList.add("has-tray");
+}
+function openPeek(i){ showPeek(frontFor(S.hand[i])); }
+function openPeekRole(i){ showPeek(roleFront(S.roles[i])); }
+function showPeek(front){
+  const peek=document.getElementById("peek");
+  peek.innerHTML=`<div class="peekcard">${front}<button class="peekclose" onclick="closePeek()" aria-label="Close card view">\u2715</button></div>`;
+  peek.hidden=false;
+}
+function closePeek(){const p=document.getElementById("peek"); if(p){p.hidden=true; p.innerHTML="";}}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closePeek();});
+
+/* ================= ROUTER ================= */
+function render(){
+  renderRail();
+  if(S.screen==="setup") renderSetup();
+  else if(S.screen==="reveal") renderReveal();
+  else if(S.screen==="roles") renderRoles();
+  else renderClock();
+  renderTray();
+  window.scrollTo({top:0});
+}
+render();
+</script>
+</body>
+</html>

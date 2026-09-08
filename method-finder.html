@@ -1,0 +1,1860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Method Finder: Choose the Right Statistical Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* site reskin: slate page, blue structure, green identity */
+    --cream: #0E1116;
+    --cream-shadow: #1B212B;
+    --ink: #E8EDF4;
+    --ink-medium: #A9B4C2;
+    --ink-muted: #8B97A7;
+    --brown: #75AADB;
+    --brown-light: #8FB3D9;
+    --green: #97DEA2;
+    --green-dark: #7FD18C;
+    --green-pale: rgba(127,209,140,.12);
+    --red: #F2716F;
+    --red-pale: rgba(242,113,111,.12);
+    --divider: #232B36;
+    --gold: #2E3845;
+    --card-radius: 14px;
+    --display: 'Bricolage Grotesque', system-ui, sans-serif;
+    --body: 'IBM Plex Sans', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--body);
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.5;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.028) 1px, transparent 0);
+    background-size: 26px 26px;
+    min-height: 100vh;
+  }
+
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 18px 60px; }
+
+  /* Header */
+  header { text-align: center; padding: 18px 0 10px; }
+  .kicker {
+    font-family: var(--body); font-weight: 600; font-size: 11px;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--brown-light);
+  }
+  .kicker::before, .kicker::after { content: " \2666 "; color: var(--green); font-size: 9px; }
+  h1 {
+    font-family: var(--display); font-weight: 600; font-size: 44px;
+    color: var(--ink); margin: 4px 0 2px;
+  }
+  .tagline {
+    font-family: var(--display); font-style: italic; font-size: 18px;
+    color: var(--ink-muted);
+  }
+  .rule {
+    width: 220px; height: 1px; background: var(--divider);
+    margin: 16px auto; position: relative;
+  }
+  .rule::after {
+    content: "\2666"; position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -54%); color: var(--divider);
+    font-size: 10px; background: var(--cream); padding: 0 8px;
+  }
+
+  /* Tabs */
+  .tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 22px; flex-wrap: wrap; }
+  .tab {
+    font-family: var(--body); font-weight: 600; font-size: 13px;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    background: transparent; color: var(--brown);
+    border: 1.5px solid var(--brown); border-radius: 999px;
+    padding: 8px 20px; cursor: pointer; transition: background 0.15s, color 0.15s;
+  }
+  .tab:hover { background: var(--cream-shadow); }
+  .tab.active { background: var(--brown); color: var(--cream); }
+  .tab:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 3px solid var(--green); outline-offset: 2px;
+  }
+
+  /* Layout */
+  .game-grid { display: grid; grid-template-columns: 1fr 340px; gap: 22px; align-items: start; }
+  @media (max-width: 880px) { .game-grid { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: #161B23; border: 1px solid var(--divider);
+    border-radius: var(--card-radius); padding: 22px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.35);
+  }
+
+  /* Scoreboard */
+  .scoreboard {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px;
+  }
+  .score-chip {
+    flex: 1; min-width: 90px; text-align: center;
+    background: var(--cream-shadow); border-radius: 10px; padding: 8px 6px;
+  }
+  .score-chip .num { font-family: var(--display); font-weight: 600; font-size: 26px; line-height: 1.1; color: var(--green-dark); }
+  .score-chip .lbl { font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); }
+
+  /* Ingredients */
+  .section-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--green-dark); margin-bottom: 8px;
+  }
+  .basket {
+    background: var(--cream-shadow); border-left: 3px solid var(--green);
+    border-radius: 0 10px 10px 0; padding: 14px 16px; margin-bottom: 18px;
+  }
+  .basket ul { list-style: none; }
+  .basket li {
+    font-size: 15px; color: var(--ink-medium); padding: 3px 0 3px 22px; position: relative;
+  }
+  .basket li::before {
+    content: ""; position: absolute; left: 2px; top: 11px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green); opacity: 0.7;
+  }
+
+  /* Choices */
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  @media (max-width: 520px) { .choices { grid-template-columns: 1fr; } }
+  .choice {
+    font-family: var(--body); font-weight: 600; font-size: 15px;
+    background: #161B23; color: var(--ink);
+    border: 1.5px solid var(--divider); border-radius: 10px;
+    padding: 14px 12px; cursor: pointer; text-align: center;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  }
+  .choice:hover:not(:disabled) { border-color: var(--brown); background: var(--cream-shadow); transform: translateY(-1px); }
+  .choice:disabled { cursor: default; opacity: 0.85; }
+  .choice.correct { border-color: var(--green-dark); background: var(--green-pale); color: var(--green-dark); }
+  .choice.wrong { border-color: var(--red); background: var(--red-pale); color: var(--red); }
+  .choice.selected { border-color: var(--green-dark); background: var(--green-pale); }
+  .choice.missed { border-style: dashed; border-color: var(--green-dark); color: var(--green-dark); background: transparent; }
+
+  /* Mode toggle */
+  .mode-toggle { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .mode-btn {
+    font-family: var(--body); font-weight: 600; font-size: 12.5px;
+    letter-spacing: 0.04em; background: transparent; color: var(--green-dark);
+    border: 1.5px solid var(--green-dark); border-radius: 999px;
+    padding: 7px 16px; cursor: pointer; transition: background 0.15s, color 0.15s;
+  }
+  .mode-btn:hover { background: var(--green-pale); }
+  .mode-btn.active { background: var(--green-dark); color: var(--cream); }
+
+  /* Dish prompt for Build the Recipe mode */
+  .dish-prompt { display: flex; align-items: center; gap: 14px; }
+  .dish-prompt .dish-icon { width: 76px; height: 54px; flex-shrink: 0; }
+  .dish-prompt .dish-name { font-family: var(--display); font-weight: 600; font-size: 26px; line-height: 1.1; }
+  .dish-prompt .dish-meta { font-family: var(--display); font-style: italic; font-size: 14px; color: var(--ink-muted); }
+
+  /* Data preview for Prep the Kitchen mode */
+  .goal-line { font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 10px; }
+  .data-table {
+    width: 100%; border-collapse: collapse; font-size: 12.5px;
+    background: #161B23; border: 1px solid var(--divider);
+  }
+  .data-table th {
+    text-align: left; font-weight: 700; color: var(--brown);
+    padding: 6px 9px; border: 1px solid var(--divider);
+    background: #1E2530; font-size: 11.5px; letter-spacing: 0.03em;
+  }
+  .data-table td {
+    padding: 5px 9px; border: 1px solid var(--divider); color: var(--ink-medium);
+    font-variant-numeric: tabular-nums;
+  }
+  .table-note {
+    font-family: var(--display); font-style: italic; font-size: 13.5px;
+    color: var(--ink-muted); margin-top: 7px;
+  }
+
+  /* Pantry */
+  .pantry-intro { font-size: 14.5px; color: var(--ink-medium); margin-bottom: 16px; max-width: 720px; }
+  .basket p { font-size: 15px; color: var(--ink-medium); }
+
+  /* Feedback */
+  .feedback {
+    border-radius: 10px; padding: 14px 16px; font-size: 14.5px;
+    margin-bottom: 14px; display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.good { background: var(--green-pale); border: 1px solid var(--green); color: var(--green-dark); }
+  .feedback.bad { background: var(--red-pale); border: 1px solid var(--red); color: #F2716F; }
+  .feedback strong { display: block; font-size: 15.5px; margin-bottom: 2px; }
+
+  .hint-box {
+    display: none; background: var(--cream-shadow); border: 1px dashed var(--brown-light);
+    border-radius: 10px; padding: 12px 14px; font-size: 14px;
+    color: var(--ink-medium); margin-bottom: 14px; font-style: italic;
+    font-family: var(--display); font-size: 16px;
+  }
+  .hint-box.show { display: block; }
+
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    font-family: var(--body); font-weight: 600; font-size: 14px;
+    border-radius: 999px; padding: 10px 22px; cursor: pointer;
+    border: 1.5px solid var(--green-dark); transition: opacity 0.15s, background 0.15s;
+  }
+  .btn-primary { background: var(--green-dark); color: var(--cream); }
+  .btn-primary:hover { background: var(--green); }
+  .btn-ghost { background: transparent; color: var(--green-dark); }
+  .btn-ghost:hover { background: var(--green-pale); }
+  .btn:disabled { opacity: 0.45; cursor: default; }
+
+  .round-label {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-muted); margin-bottom: 10px;
+  }
+
+  /* Recipe card sidebar */
+  .recipe-card {
+    background: var(--cream); border: 1.5px solid var(--brown-light);
+    border-radius: var(--card-radius); padding: 0; overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,.4);
+  }
+  .recipe-head {
+    background: var(--cream-shadow); border-bottom: 1px solid var(--divider);
+    padding: 16px 18px 14px; text-align: center;
+  }
+  .recipe-tag {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--brown-light);
+  }
+  .recipe-tag::before, .recipe-tag::after { content: " \2666 "; font-size: 8px; color: var(--green); }
+  .recipe-name {
+    font-family: var(--display); font-weight: 600; font-size: 28px;
+    color: var(--ink); line-height: 1.15; margin-top: 2px;
+  }
+  .recipe-meta { font-family: var(--display); font-style: italic; font-size: 15px; color: var(--ink-muted); }
+  .recipe-icon { margin: 10px auto 2px; width: 86px; height: 64px; }
+  .recipe-body { padding: 16px 18px 20px; }
+  .recipe-section { margin-bottom: 14px; }
+  .recipe-section:last-child { margin-bottom: 0; }
+  .recipe-section .section-label { color: var(--brown); margin-bottom: 4px; font-size: 10px; }
+  .recipe-section p, .recipe-section li { font-size: 13.5px; color: var(--ink-medium); }
+  .recipe-section ol { padding-left: 20px; }
+  .recipe-section ul { list-style: none; }
+  .recipe-section ul li { padding-left: 16px; position: relative; }
+  .recipe-section ul li::before {
+    content: ""; position: absolute; left: 0; top: 8px;
+    width: 6px; height: 6px; border-radius: 50%; background: var(--green); opacity: 0.7;
+  }
+  .recipe-section.burn { background: var(--red-pale); border-radius: 8px; padding: 10px 12px; }
+  .recipe-section.burn .section-label { color: var(--red); }
+  .recipe-section .example {
+    font-family: var(--display); font-style: italic; font-size: 15px; color: var(--ink-medium);
+  }
+  .mystery {
+    text-align: center; padding: 40px 18px 48px; color: var(--ink-muted);
+  }
+  .mystery .qmark {
+    font-family: var(--display); font-weight: 600; font-size: 90px;
+    color: var(--divider); line-height: 1;
+  }
+  .mystery p { font-family: var(--display); font-style: italic; font-size: 17px; margin-top: 8px; }
+
+  /* Study deck */
+  .study-controls { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+  .study-controls input, .study-controls select {
+    font-family: var(--body); font-size: 14px; color: var(--ink);
+    background: #161B23; border: 1.5px solid var(--divider);
+    border-radius: 10px; padding: 10px 14px;
+  }
+  .study-controls input { flex: 1; min-width: 200px; }
+  .deck-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .deck-card {
+    background: var(--cream); border: 1px solid var(--divider);
+    border-radius: var(--card-radius); padding: 16px 18px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.3);
+  }
+  .deck-card h3 { font-family: var(--display); font-weight: 600; font-size: 23px; }
+  .deck-card .meta { font-family: var(--display); font-style: italic; font-size: 14px; color: var(--ink-muted); margin-bottom: 8px; }
+  .deck-card .mini-label { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--green-dark); margin: 8px 0 2px; }
+  .deck-card p { font-size: 13px; color: var(--ink-medium); }
+  .deck-card .icon-row { float: right; width: 64px; height: 48px; margin-left: 8px; }
+  .empty-deck { font-family: var(--display); font-style: italic; font-size: 17px; color: var(--ink-muted); text-align: center; padding: 30px; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 8px; }
+  .stat-card { background: var(--green-pale); border: 1px solid var(--gold); border-radius: var(--card-radius); padding: 16px 18px; text-align: center; }
+  .stat-card .big { font-family: var(--display); font-weight: 600; font-size: 38px; line-height: 1; color: var(--green-dark); }
+  .stat-card .lbl { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin-top: 8px; }
+  .progress-section { margin-top: 26px; }
+  .progress-section h3 { font-family: var(--display); font-weight: 600; font-size: 22px; margin-bottom: 4px; }
+  .progress-section .sub { font-size: 13px; color: var(--ink-muted); margin-bottom: 12px; }
+  .stat-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--cream-shadow); font-size: 14px; }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-row .name { color: var(--ink); font-weight: 600; }
+  .stat-row .detail { color: var(--ink-muted); font-size: 13px; white-space: nowrap; }
+  .stat-row .pct { font-family: var(--display); font-weight: 600; font-size: 18px; color: var(--green-dark); min-width: 52px; text-align: right; }
+  .stat-row .pct.low { color: var(--red); }
+  .hist-mode { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--brown); }
+  .btn-danger { background: var(--red-pale); color: var(--red); border: 1px solid var(--red); }
+  .reset-row { margin-top: 26px; }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  footer { text-align: center; margin-top: 36px; font-size: 12px; color: var(--ink-muted); letter-spacing: 0.04em; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+
+  @media print {
+    .tabs, .controls, .scoreboard, .feedback, .hint-box, footer { display: none !important; }
+    body { background: #fff; }
+    .view { display: block !important; }
+    .panel, .deck-card, .recipe-card { box-shadow: none; break-inside: avoid; }
+  }
+
+  /* ---- site reskin additions ---- */
+  .recipe-card { background: #161B23; border-color: var(--green-dark); }
+  .deck-card { background: #161B23; }
+  .mystery .qmark { color: #2E3845; }
+  .kicker, .section-label, .round-label, .recipe-tag, .score-chip .lbl, .deck-card .mini-label,
+  .stat-card .lbl, .hist-mode, .tab, .mode-btn, .btn, footer, .data-table th { font-family: var(--mono); }
+  .tagline, .table-note, .hint-box, .recipe-meta, .recipe-section .example, .mystery p,
+  .deck-card .meta, .empty-deck { font-style: normal; }
+  .rb-sitebar{position:sticky; top:0; z-index:55; display:flex; align-items:center; justify-content:space-between; gap:14px; height:50px; padding:0 20px; background:rgba(14,17,22,.92); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid #232B36; font-family:var(--mono);}
+  .rb-home{display:inline-flex; align-items:center; gap:9px; font-size:13.5px; font-weight:600; color:var(--ink); text-decoration:none; letter-spacing:-.01em;}
+  .rb-home:hover .rb-name{color:var(--green-dark);}
+  .rb-mark{width:24px; height:24px; display:grid; place-items:center; border:1.5px solid #2E3845; border-radius:7px; background:#161B23; flex:none;}
+  .rb-mark svg{width:13px; height:13px;}
+  .rb-all{font-size:12.5px; color:var(--ink-muted); text-decoration:none; white-space:nowrap;}
+  .rb-all:hover{color:var(--ink);}
+  @media (max-width:480px){ .rb-name{display:none;} }
+</style>
+</head>
+<body>
+<div class="rb-sitebar">
+  <a class="rb-home" href="index.html" aria-label="Robert Butts, main site"><span class="rb-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/><path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/><path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="rb-name">Robert Butts</span></a>
+  <a class="rb-all" href="practice.html">all practice tools &rarr;</a>
+</div>
+<div class="wrap">
+
+  <header>
+    <div class="kicker">A Field Guide to Statistical Tests</div>
+    <h1>The Method Finder</h1>
+    <p class="tagline">Read the data. Pick the test.</p>
+    <div class="rule"></div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" id="tab-play" onclick="switchTab('play')">Play</button>
+    <button class="tab" id="tab-study" onclick="switchTab('study')">Browse the Guide</button>
+    <button class="tab" id="tab-pantry" onclick="switchTab('pantry')">Glossary</button>
+    <button class="tab" id="tab-progress" onclick="switchTab('progress')">Progress</button>
+  </nav>
+
+  <!-- PLAY VIEW -->
+  <section class="view active" id="view-play">
+    <div class="game-grid">
+      <div class="panel">
+        <div class="scoreboard">
+          <div class="score-chip"><div class="num" id="score">0</div><div class="lbl">Score</div></div>
+          <div class="score-chip"><div class="num" id="streak">0</div><div class="lbl">Streak</div></div>
+          <div class="score-chip"><div class="num" id="round">1</div><div class="lbl">Round</div></div>
+          <div class="score-chip"><div class="num" id="best">0</div><div class="lbl">Best</div></div>
+        </div>
+
+        <div class="mode-toggle" role="group" aria-label="Game mode">
+          <button class="mode-btn active" id="mode-name" onclick="setMode('name')">Name the Test</button>
+          <button class="mode-btn" id="mode-build" onclick="setMode('build')">Match the Traits</button>
+          <button class="mode-btn" id="mode-prep" onclick="setMode('prep')">Ready the Data</button>
+          <button class="mode-btn" id="mode-sort" onclick="setMode('sort')">Sort the Families</button>
+        </div>
+
+        <div class="study-controls play-filters" aria-label="Narrow the deck">
+          <select id="play-family" onchange="resetGame()">
+            <option value="all">All families</option>
+            <option>Compare Groups</option>
+            <option>Measure Relationships</option>
+            <option>Predict an Outcome</option>
+            <option>Find Structure</option>
+            <option>Describe the Data</option>
+          
+</select>
+          <select id="play-rarity" onchange="resetGame()">
+            <option value="all">All rarities</option>
+            <option>Common</option>
+            <option>Uncommon</option>
+            <option>Rare</option>
+          </select>
+          <select id="play-difficulty" onchange="resetGame()">
+            <option value="all">All difficulties</option>
+            <option>Beginner</option>
+            <option>Intermediate</option>
+            <option>Advanced</option>
+          </select>
+        </div>
+
+        <div class="round-label" id="round-label">Round 1 of 12</div>
+
+        <div class="section-label" id="basket-label">Traits observed</div>
+        <div class="basket" id="basket"><ul id="ingredients"></ul></div>
+
+        <div class="section-label" id="choices-label">Which test matches these traits?</div>
+        <div class="choices" id="choices"></div>
+
+        <div class="section-label" id="choices2-label" style="display:none"></div>
+        <div class="choices" id="choices2" style="display:none"></div>
+
+        <div class="hint-box" id="hint-box"></div>
+        <div class="feedback" id="feedback"></div>
+
+        <div class="controls">
+          <button class="btn btn-ghost" id="hint-btn" onclick="showHint()">Show a hint</button>
+          <button class="btn btn-primary" id="check-btn" onclick="checkBasket()" style="display:none" disabled>Check my picks</button>
+          <button class="btn btn-primary" id="next-btn" onclick="nextRound()" disabled>Next round</button>
+          <button class="btn btn-ghost" onclick="resetGame()">Restart</button>
+        </div>
+      </div>
+
+      <aside class="recipe-card" id="recipe-card" aria-live="polite">
+        <div class="mystery">
+          <div class="qmark">?</div>
+          <p>The guide entry stays hidden until you answer.</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- STUDY VIEW -->
+  <section class="view" id="view-study">
+    <div class="panel">
+      <div class="study-controls">
+        <input type="search" id="search" placeholder="Search tests, traits, or uses" oninput="renderDeck()">
+        <select id="family-filter" onchange="renderDeck()">
+          <option value="all">All families</option>
+          <option>Compare Groups</option>
+          <option>Measure Relationships</option>
+          <option>Predict an Outcome</option>
+          <option>Find Structure</option>
+          <option>Describe the Data</option>
+        
+</select>
+        <select id="rarity-filter" onchange="renderDeck()">
+          <option value="all">All rarities</option>
+          <option>Common</option>
+          <option>Uncommon</option>
+          <option>Rare</option>
+        </select>
+        <select id="difficulty-filter" onchange="renderDeck()">
+          <option value="all">All difficulties</option>
+          <option>Beginner</option>
+          <option>Intermediate</option>
+          <option>Advanced</option>
+        </select>
+      </div>
+      <div class="deck-grid" id="deck-grid"></div>
+    </div>
+  </section>
+
+  <!-- PANTRY VIEW -->
+  <section class="view" id="view-pantry">
+    <div class="panel">
+      <div id="pantry-browse">
+        <p class="pantry-intro">
+Every term in this glossary sits in one of six sections. The Five Families section names the five families this guide uses, each grouped by the question its tests answer. Browse the sections below, or take a Field Quiz to test yourself. Ten definitions, four terms each, with the wrong answers pulled from the same section to keep you honest.
+</p>
+        <div class="study-controls">
+          <input type="search" id="pantry-search" placeholder="Search terms, definitions, or examples" oninput="renderPantry()">
+          <select id="shelf-filter" onchange="renderPantry()">
+            <option value="all">All sections</option>
+            <option>Data Types</option>
+            <option>Variables and Roles</option>
+            <option>Setup Work</option>
+            <option>Reading the Numbers</option>
+            <option>Test Ideas</option>
+            <option>The Five Families</option>
+          
+</select>
+          <button class="btn btn-primary" onclick="startPantryQuiz()">Field Quiz</button>
+        </div>
+        <div class="deck-grid" id="pantry-grid"></div>
+      </div>
+
+      <div id="pantry-quiz" style="display:none">
+        <div class="round-label" id="pq-label"></div>
+        <div class="section-label">Which term matches this definition?</div>
+        <div class="basket"><p id="pq-def"></p></div>
+        <div class="choices" id="pq-choices"></div>
+        <div class="feedback" id="pq-feedback"></div>
+        <div class="controls">
+          <button class="btn btn-primary" id="pq-next" onclick="pantryNext()" disabled>Next term</button>
+          <button class="btn btn-ghost" onclick="endPantryQuiz()">Back to the glossary</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-progress">
+    <div class="panel">
+      <h2 style="font-family: var(--display); font-weight: 600; font-size: 26px; margin-bottom: 4px;">Your progress</h2>
+      <p style="font-size: 13px; color: var(--ink-muted); margin-bottom: 18px;">Saved in this browser on this device. It is not shared between people or synced between devices. A private browsing window will not keep it.</p>
+      <div id="progress-body"></div>
+    </div>
+  </section>
+
+  <footer>The Method Finder &middot; A Field Guide to Statistical Tests &middot; Best score is saved in this browser</footer>
+</div>
+
+<script>
+/* ---------- Recipe data ---------- */
+const CATEGORIES = ["Compare Groups", "Measure Relationships", "Predict an Outcome", "Find Structure", "Describe the Data"];
+
+const CATEGORY_INFO = {
+  "Compare Groups": "These tests ask whether an outcome differs between two or more groups.",
+  "Measure Relationships": "These tests ask whether two variables tend to move together.",
+  "Predict an Outcome": "These methods estimate one variable from one or more others.",
+  "Find Structure": "These methods uncover natural groups or hidden dimensions in the data.",
+  "Describe the Data": "These methods summarize variables without testing a claim."
+};
+
+const recipes = [
+  {
+    key: "ttest_ind", name: "Independent t-Test", family: "Compare Groups", difficulty: "Beginner", rarity: "Common",
+    ingredients: ["One numeric outcome", "Two independent groups", "Different people in each group", "Roughly normal data"],
+    serves: "Comparing the average of one number between two separate groups.",
+    method: ["Confirm the outcome is numeric and the two groups are independent.", "Check that the data is roughly normal in each group.", "Compare the two group averages.", "Read the p-value to judge whether the gap is more than chance."],
+    burn: "Using it when the same people are measured twice. That is a paired t-test.",
+    pairs: "Box plots and group comparisons.",
+    example: "Do online and in-person students differ in average final grade?",
+    hint: "Two separate groups, one number each, and you are comparing their averages."
+  },
+  {
+    key: "ttest_paired", name: "Paired t-Test", family: "Compare Groups", difficulty: "Beginner", rarity: "Common",
+    ingredients: ["One numeric outcome", "Two measures on the same people", "Paired or matched rows", "Roughly normal differences"],
+    serves: "Comparing two measurements taken from the same people.",
+    method: ["Confirm each person has two measurements.", "Find the difference for each person.", "Check that the differences are roughly normal.", "Test whether the average difference is far from zero."],
+    burn: "Treating before and after scores as if they came from two unrelated groups.",
+    pairs: "Before-and-after studies and matched designs.",
+    example: "Did students score higher after a tutoring program than before it?",
+    hint: "The same people, measured twice. You care about the change within each person."
+  },
+  {
+    key: "anova", name: "One-Way ANOVA", family: "Compare Groups", difficulty: "Intermediate", rarity: "Common",
+    ingredients: ["One numeric outcome", "Three or more independent groups", "Different people in each group", "Roughly normal data"],
+    serves: "Comparing the averages of three or more groups at once.",
+    method: ["Confirm the outcome is numeric and the groups are independent.", "Check that each group is roughly normal.", "Compare the spread between groups to the spread within groups.", "If the result is significant, run follow-up tests to see which groups differ."],
+    burn: "Running many separate t-tests instead, which inflates the chance of a false positive.",
+    pairs: "Box plots across several groups.",
+    example: "Do average GPAs differ across three colleges?",
+    hint: "More than two groups, one number each. One test in place of many t-tests."
+  },
+  {
+    key: "mannwhitney", name: "Mann-Whitney U", family: "Compare Groups", difficulty: "Intermediate", rarity: "Uncommon",
+    ingredients: ["One numeric or ordinal outcome", "Two independent groups", "Data not normal or has outliers", "Compares ranks, not averages"],
+    serves: "Comparing two independent groups when the data is skewed or ordinal.",
+    method: ["Combine both groups and rank every value.", "Add up the ranks in each group.", "Compare the rank totals.", "Judge whether one group tends to score higher."],
+    burn: "Reaching for it by default. With normal data a t-test has more power.",
+    pairs: "The rank-based backup for the independent t-test.",
+    example: "Do two departments differ in satisfaction on a 1 to 5 scale?",
+    hint: "Two groups, but the data is skewed or ordered. It compares ranks, not averages."
+  },
+  {
+    key: "kruskal", name: "Kruskal-Wallis", family: "Compare Groups", difficulty: "Advanced", rarity: "Uncommon",
+    ingredients: ["One numeric or ordinal outcome", "Three or more independent groups", "Data not normal or has outliers", "Compares ranks, not averages"],
+    serves: "Comparing three or more groups when the data is skewed or ordinal.",
+    method: ["Rank every value across all the groups.", "Add up the ranks within each group.", "Compare the rank sums between groups.", "If significant, run follow-up rank tests."],
+    burn: "Stopping at the overall result without checking which groups differ.",
+    pairs: "The rank-based backup for one-way ANOVA.",
+    example: "Do median ratings differ across four programs when ratings are skewed?",
+    hint: "Like ANOVA, but for skewed or ordered data across many groups. It uses ranks."
+  },
+  {
+    key: "chisq", name: "Chi-Square Test", family: "Compare Groups", alt: ["Measure Relationships"], difficulty: "Beginner", rarity: "Common",
+    ingredients: ["Two categorical variables", "Counts in a table of categories", "Independent observations", "No tiny expected counts"],
+    serves: "Testing whether two categories are related, using counts.",
+    method: ["Build a table of counts for the two categories.", "Work out the counts you would expect if there were no link.", "Compare the observed counts to the expected counts.", "Judge whether the gap is larger than chance."],
+    burn: "Using it on averages. Chi-square works on counts, not numbers you average.",
+    pairs: "Stacked bars and tests of independence.",
+    example: "Is living on campus related to enrollment status?",
+    hint: "Two categories and a table of counts. There is no number to average."
+  },
+  {
+    key: "pearson", name: "Pearson Correlation", family: "Measure Relationships", difficulty: "Beginner", rarity: "Common",
+    ingredients: ["Two numeric variables", "A straight-line relationship", "One value pair per row", "Roughly normal data"],
+    serves: "Measuring how strongly two numbers move together in a straight line.",
+    method: ["Plot the two numbers on a scatter plot first.", "Confirm the pattern looks like a straight line.", "Compute the correlation from minus one to plus one.", "Read the sign for direction and the size for strength."],
+    burn: "Reading correlation as proof of cause and effect.",
+    pairs: "Scatter plots and regression.",
+    example: "Do study hours and exam scores move together?",
+    hint: "Two numbers per row, and you want one figure for how tightly they track."
+  },
+  {
+    key: "spearman", name: "Spearman Correlation", family: "Measure Relationships", difficulty: "Intermediate", rarity: "Uncommon",
+    ingredients: ["Two numeric or ordinal variables", "A relationship that need not be straight", "Data not normal or has outliers", "Compares ranks, not raw values"],
+    serves: "Measuring the strength of a relationship using ranks.",
+    method: ["Rank each variable from low to high.", "Compare the two sets of ranks.", "Compute the rank correlation.", "Read the sign and the size as you would for Pearson."],
+    burn: "Using Pearson when one variable is ordinal or strongly skewed.",
+    pairs: "The rank-based backup for Pearson correlation.",
+    example: "Does class rank move with satisfaction rank?",
+    hint: "Two variables that are ordered or skewed. It works on ranks, not raw values."
+  },
+  {
+    key: "corr_matrix", name: "Correlation Matrix", family: "Measure Relationships", difficulty: "Intermediate", rarity: "Uncommon",
+    ingredients: ["Several numeric variables", "Every pair compared at once", "One value per variable per row", "Goal is to scan many relationships"],
+    serves: "Checking how every pair among several numeric variables relates.",
+    method: ["Select the numeric variables of interest.", "Compute a correlation for every pair.", "Lay the values out in a square grid.", "Scan for the strongest pairs."],
+    burn: "Chasing the one strong pair that turned up by chance among many.",
+    pairs: "Heat maps and regression planning.",
+    example: "Among five engagement measures, which pairs move together most?",
+    hint: "Many numeric columns, and you want every pairwise relationship at a glance."
+  },
+  {
+    key: "linreg", name: "Simple Linear Regression", family: "Predict an Outcome", alt: ["Measure Relationships"], difficulty: "Intermediate", rarity: "Common",
+    ingredients: ["One numeric outcome", "One numeric predictor", "A straight-line pattern", "Goal is to estimate or predict"],
+    serves: "Estimating a numeric outcome from one numeric predictor.",
+    method: ["Confirm the outcome is numeric.", "Plot the predictor against the outcome.", "Fit the best straight line through the points.", "Use the line to estimate the outcome from the predictor."],
+    burn: "Stretching the line far past the range of the data you actually have.",
+    pairs: "Scatter plots with a trend line.",
+    example: "Can study hours estimate a student exam score?",
+    hint: "One number predicts another, and you want a line you can read off."
+  },
+  {
+    key: "multreg", name: "Multiple Regression", family: "Predict an Outcome", alt: ["Measure Relationships"], difficulty: "Advanced", rarity: "Common",
+    ingredients: ["One numeric outcome", "Two or more predictors", "Predictors can be numbers or categories", "Goal is to estimate or predict"],
+    serves: "Estimating a numeric outcome from several predictors at once.",
+    method: ["List the outcome and all the candidate predictors.", "Turn any categories into dummy variables.", "Fit a line using every predictor together.", "Read each predictor effect while the others are held steady."],
+    burn: "Adding so many predictors that the model fits noise instead of signal.",
+    pairs: "Dashboards and what-if estimates.",
+    example: "Can GPA, study hours, and class year together estimate exam score?",
+    hint: "One number to predict, but several inputs at once, some of them categories."
+  },
+  {
+    key: "logreg", name: "Logistic Regression", family: "Predict an Outcome", difficulty: "Advanced", rarity: "Common",
+    ingredients: ["One yes-or-no outcome", "One or more predictors", "Predicts a probability", "Goal is to classify or predict"],
+    serves: "Estimating the chance of a yes-or-no outcome from predictors.",
+    method: ["Confirm the outcome has two values, such as stayed or left.", "List the predictors.", "Fit a model that returns a probability between zero and one.", "Set a cutoff to turn the probability into a yes or no."],
+    burn: "Using plain linear regression on a yes-or-no outcome.",
+    pairs: "Retention models and risk flags.",
+    example: "What raises the chance a first-year student returns for a second year?",
+    hint: "The outcome is yes or no, and you want the odds, not an average."
+  },
+  {
+    key: "kmeans", name: "K-Means Clustering", family: "Find Structure", difficulty: "Advanced", rarity: "Uncommon",
+    ingredients: ["Several numeric variables", "No labeled outcome", "Goal is to find natural groups", "Variables put on the same scale"],
+    serves: "Sorting rows into a chosen number of natural groups.",
+    method: ["Put every variable on the same scale.", "Pick how many groups to look for.", "Let the method assign each row to its nearest group center.", "Describe what makes each group distinct."],
+    burn: "Skipping the scaling step, so one large-numbered variable dominates.",
+    pairs: "Student segmentation and benchmarking.",
+    example: "Can students be sorted into a few profiles from their engagement measures?",
+    hint: "No answer column. You are looking for natural clusters in several numbers."
+  },
+  {
+    key: "factor", name: "Factor Analysis", family: "Find Structure", difficulty: "Advanced", rarity: "Rare",
+    ingredients: ["Many related survey items", "No labeled outcome", "Goal is to find hidden themes", "Items expected to share factors"],
+    serves: "Finding a few hidden themes behind many survey items.",
+    method: ["Gather many items that may measure the same idea.", "Look for items that rise and fall together.", "Group those items into a small number of factors.", "Name each factor by what its items share."],
+    burn: "Naming a factor before checking which items truly belong to it.",
+    pairs: "Survey design and scale building.",
+    example: "Do twenty survey questions really measure just three underlying attitudes?",
+    hint: "Many survey items, and you suspect a few hidden themes tie them together."
+  },
+  {
+    key: "pca", name: "Principal Component Analysis", family: "Find Structure", difficulty: "Advanced", rarity: "Rare",
+    ingredients: ["Many numeric variables", "No labeled outcome", "Goal is to reduce the number of columns", "Variables put on the same scale"],
+    serves: "Shrinking many numeric columns into a few combined ones.",
+    method: ["Put every variable on the same scale.", "Find the combinations that capture the most variation.", "Keep the first few of these components.", "Use them in place of the original columns."],
+    burn: "Treating the components as real-world traits rather than math combinations.",
+    pairs: "Clustering and crowded dashboards.",
+    example: "Can a dozen overlapping measures be boiled down to two or three scores?",
+    hint: "Too many numeric columns. You want a few combined ones that keep most of the signal."
+  },
+  {
+    key: "descriptive", name: "Descriptive Summary", family: "Describe the Data", difficulty: "Beginner", rarity: "Common",
+    ingredients: ["One or more variables", "No claim being tested", "Goal is to summarize", "Uses averages, counts, or spread"],
+    serves: "Summarizing variables with averages, counts, and spread.",
+    method: ["List the variables you want to describe.", "For numbers, report the average and the spread.", "For categories, report counts and percents.", "Note anything unusual, such as outliers."],
+    burn: "Reporting only the average and hiding the spread behind it.",
+    pairs: "The first step before almost any test.",
+    example: "What is the average age of this year incoming class?",
+    hint: "You are not testing a claim, just summarizing what the data looks like."
+  },
+  {
+    key: "freqtable", name: "Frequency Table", family: "Describe the Data", difficulty: "Beginner", rarity: "Common",
+    ingredients: ["One or two categorical variables", "Counts per category", "No claim being tested", "Goal is to summarize categories"],
+    serves: "Counting how many rows fall in each category.",
+    method: ["Pick the category to summarize.", "Count the rows in each group.", "Add a percent column for context.", "Sort from most to least common if it helps."],
+    burn: "Showing raw counts when the groups differ in size, instead of percents.",
+    pairs: "Bar charts and the chi-square test.",
+    example: "How many students fall into each class year?",
+    hint: "Categories, and you just want the count in each one."
+  },
+  {
+    key: "confint", name: "Confidence Interval", family: "Describe the Data", difficulty: "Intermediate", rarity: "Uncommon",
+    ingredients: ["One estimate, such as an average or percent", "A measure of uncertainty", "A chosen confidence level", "Goal is a plausible range"],
+    serves: "Reporting a plausible range around an estimate.",
+    method: ["Compute the estimate, such as a mean or a percent.", "Find how much it might vary from sample to sample.", "Choose a confidence level, often 95 percent.", "Report the estimate as a range, not a single point."],
+    burn: "Reading a 95 percent interval as a 95 percent chance the truth sits inside it.",
+    pairs: "Survey results and poll margins.",
+    example: "What is the plausible range for this program average satisfaction?",
+    hint: "You have one estimate and want to show how much it might wobble."
+  }
+];
+/* ---------- Icons ---------- */
+function chartIcon(key) {
+  const s = 'stroke="#75AADB" stroke-width="2" fill="none" stroke-linecap="round"';
+  const g = 'fill="#97DEA2"';
+  const gl = 'fill="#5FA36C"';
+  const gd = 'fill="#7FD18C"';
+  const gs = 'stroke="#97DEA2" stroke-width="2.5" fill="none" stroke-linecap="round"';
+  const icons = {
+    ttest_ind: `<path d="M6 46 C14 46 14 22 22 22 C30 22 30 46 38 46 Z" ${gl}/><path d="M40 46 C48 46 48 16 56 16 C64 16 64 46 72 46 Z" ${g}/><line x1="4" y1="46" x2="74" y2="46" ${s}/>`,
+    ttest_paired: `<line x1="4" y1="48" x2="72" y2="48" ${s}/><line x1="18" y1="40" x2="18" y2="20" stroke="#75AADB" stroke-width="2"/><line x1="38" y1="42" x2="38" y2="16" stroke="#75AADB" stroke-width="2"/><line x1="58" y1="36" x2="58" y2="14" stroke="#75AADB" stroke-width="2"/><circle cx="18" cy="40" r="4" ${gl}/><circle cx="18" cy="20" r="4" ${g}/><circle cx="38" cy="42" r="4" ${gl}/><circle cx="38" cy="16" r="4" ${g}/><circle cx="58" cy="36" r="4" ${gl}/><circle cx="58" cy="14" r="4" ${g}/>`,
+    anova: `<path d="M4 46 C10 46 10 26 16 26 C22 26 22 46 28 46 Z" ${gl}/><path d="M26 46 C32 46 32 16 38 16 C44 16 44 46 50 46 Z" ${g}/><path d="M48 46 C54 46 54 30 60 30 C66 30 66 46 72 46 Z" ${gl}/><line x1="4" y1="46" x2="74" y2="46" ${s}/>`,
+    mannwhitney: `<circle cx="12" cy="20" r="3" ${g}/><circle cx="24" cy="20" r="3" ${g}/><circle cx="36" cy="20" r="3" ${g}/><circle cx="48" cy="20" r="3" ${g}/><circle cx="60" cy="20" r="3" ${g}/><circle cx="14" cy="36" r="3" ${gl}/><circle cx="28" cy="36" r="3" ${gl}/><circle cx="42" cy="36" r="3" ${gl}/><circle cx="56" cy="36" r="3" ${gl}/><line x1="6" y1="46" x2="70" y2="46" ${s}/>`,
+    kruskal: `<circle cx="12" cy="14" r="3" ${g}/><circle cx="26" cy="14" r="3" ${g}/><circle cx="40" cy="14" r="3" ${g}/><circle cx="54" cy="14" r="3" ${g}/><circle cx="14" cy="28" r="3" ${gd}/><circle cx="30" cy="28" r="3" ${gd}/><circle cx="46" cy="28" r="3" ${gd}/><circle cx="16" cy="42" r="3" ${gl}/><circle cx="34" cy="42" r="3" ${gl}/><circle cx="52" cy="42" r="3" ${gl}/>`,
+    chisq: `<rect x="14" y="10" width="48" height="34" fill="none" stroke="#75AADB" stroke-width="2"/><line x1="38" y1="10" x2="38" y2="44" ${s}/><line x1="14" y1="27" x2="62" y2="27" ${s}/><circle cx="26" cy="18.5" r="3" ${g}/><circle cx="50" cy="18.5" r="3" ${gl}/><circle cx="26" cy="35.5" r="3" ${gl}/><circle cx="50" cy="35.5" r="3" ${g}/>`,
+    pearson: `<line x1="6" y1="48" x2="72" y2="48" ${s}/><line x1="8" y1="6" x2="8" y2="48" ${s}/><line x1="12" y1="42" x2="68" y2="14" ${gs}/><circle cx="16" cy="40" r="3" ${g}/><circle cx="26" cy="36" r="3" ${g}/><circle cx="34" cy="30" r="3" ${g}/><circle cx="44" cy="26" r="3" ${g}/><circle cx="54" cy="20" r="3" ${g}/><circle cx="62" cy="16" r="3" ${g}/>`,
+    spearman: `<line x1="6" y1="48" x2="72" y2="48" ${s}/><line x1="8" y1="6" x2="8" y2="48" ${s}/><polyline points="14,42 26,40 30,30 44,28 50,18 64,14" stroke="#5FA36C" stroke-width="2" fill="none"/><circle cx="14" cy="42" r="3" ${g}/><circle cx="26" cy="40" r="3" ${g}/><circle cx="30" cy="30" r="3" ${g}/><circle cx="44" cy="28" r="3" ${g}/><circle cx="50" cy="18" r="3" ${g}/><circle cx="64" cy="14" r="3" ${g}/>`,
+    corr_matrix: `<rect x="14" y="8" width="9" height="9" fill="#22352A"/><rect x="24" y="8" width="9" height="9" fill="#5FA36C"/><rect x="34" y="8" width="9" height="9" fill="#97DEA2"/><rect x="44" y="8" width="9" height="9" fill="#7FD18C"/><rect x="14" y="18" width="9" height="9" fill="#97DEA2"/><rect x="24" y="18" width="9" height="9" fill="#7FD18C"/><rect x="34" y="18" width="9" height="9" fill="#22352A"/><rect x="44" y="18" width="9" height="9" fill="#5FA36C"/><rect x="14" y="28" width="9" height="9" fill="#22352A"/><rect x="24" y="28" width="9" height="9" fill="#5FA36C"/><rect x="34" y="28" width="9" height="9" fill="#97DEA2"/><rect x="44" y="28" width="9" height="9" fill="#7FD18C"/><rect x="14" y="38" width="9" height="9" fill="#97DEA2"/><rect x="24" y="38" width="9" height="9" fill="#7FD18C"/><rect x="34" y="38" width="9" height="9" fill="#22352A"/><rect x="44" y="38" width="9" height="9" fill="#5FA36C"/>`,
+    linreg: `<line x1="6" y1="48" x2="72" y2="48" ${s}/><line x1="8" y1="6" x2="8" y2="48" ${s}/><line x1="10" y1="44" x2="70" y2="12" stroke="#7FD18C" stroke-width="3" fill="none"/><circle cx="18" cy="40" r="3" ${gl}/><circle cx="30" cy="34" r="3" ${gl}/><circle cx="42" cy="26" r="3" ${gl}/><circle cx="54" cy="20" r="3" ${gl}/><circle cx="64" cy="14" r="3" ${gl}/>`,
+    multreg: `<circle cx="58" cy="27" r="9" ${g}/><circle cx="14" cy="12" r="5" ${gl}/><circle cx="14" cy="27" r="5" ${gl}/><circle cx="14" cy="42" r="5" ${gl}/><line x1="19" y1="13" x2="49" y2="24" stroke="#75AADB" stroke-width="2"/><line x1="19" y1="27" x2="49" y2="27" stroke="#75AADB" stroke-width="2"/><line x1="19" y1="41" x2="49" y2="30" stroke="#75AADB" stroke-width="2"/>`,
+    logreg: `<line x1="6" y1="48" x2="72" y2="48" ${s}/><line x1="8" y1="6" x2="8" y2="48" ${s}/><path d="M10 44 C30 44 30 12 60 12" ${gs} stroke-width="3"/><line x1="8" y1="28" x2="70" y2="28" stroke="#2E3845" stroke-width="1.2" stroke-dasharray="3 3"/>`,
+    kmeans: `<circle cx="18" cy="18" r="4" ${g}/><circle cx="24" cy="14" r="4" ${g}/><circle cx="14" cy="24" r="4" ${g}/><circle cx="56" cy="16" r="4" ${gd}/><circle cx="62" cy="22" r="4" ${gd}/><circle cx="54" cy="24" r="4" ${gd}/><circle cx="34" cy="42" r="4" ${gl}/><circle cx="42" cy="40" r="4" ${gl}/><circle cx="38" cy="46" r="4" ${gl}/>`,
+    factor: `<circle cx="60" cy="18" r="8" ${g}/><circle cx="60" cy="40" r="8" ${gd}/><circle cx="12" cy="10" r="3" ${gl}/><circle cx="12" cy="22" r="3" ${gl}/><circle cx="12" cy="34" r="3" ${gl}/><circle cx="12" cy="46" r="3" ${gl}/><line x1="15" y1="10" x2="53" y2="17" stroke="#75AADB" stroke-width="1.5"/><line x1="15" y1="22" x2="53" y2="18" stroke="#75AADB" stroke-width="1.5"/><line x1="15" y1="34" x2="53" y2="39" stroke="#75AADB" stroke-width="1.5"/><line x1="15" y1="46" x2="53" y2="41" stroke="#75AADB" stroke-width="1.5"/>`,
+    pca: `<ellipse cx="38" cy="28" rx="26" ry="11" fill="#22352A" stroke="#5FA36C" stroke-width="1.5" transform="rotate(-22 38 28)"/><line x1="16" y1="38" x2="60" y2="18" stroke="#7FD18C" stroke-width="2.5"/><line x1="33" y1="17" x2="43" y2="39" stroke="#75AADB" stroke-width="2"/><path d="M60 18 L53 18 L57 24 Z" ${gd}/>`,
+    descriptive: `<rect x="12" y="28" width="10" height="20" ${g}/><rect x="26" y="20" width="10" height="28" ${g}/><rect x="40" y="32" width="10" height="16" ${gl}/><rect x="54" y="24" width="10" height="24" ${gl}/><line x1="8" y1="48" x2="70" y2="48" ${s}/><line x1="8" y1="26" x2="70" y2="26" stroke="#F2716F" stroke-width="2" stroke-dasharray="5 3"/>`,
+    freqtable: `<rect x="12" y="10" width="50" height="34" fill="none" stroke="#75AADB" stroke-width="2"/><line x1="12" y1="21" x2="62" y2="21" ${s}/><line x1="12" y1="33" x2="62" y2="33" ${s}/><line x1="36" y1="10" x2="36" y2="44" ${s}/><rect x="40" y="13" width="16" height="5" ${g}/><rect x="40" y="25" width="9" height="5" ${gl}/><rect x="40" y="37" width="13" height="5" ${g}/>`,
+    confint: `<line x1="8" y1="27" x2="70" y2="27" stroke="#2E3845" stroke-width="1.5"/><line x1="22" y1="27" x2="54" y2="27" stroke="#7FD18C" stroke-width="3"/><line x1="22" y1="19" x2="22" y2="35" stroke="#7FD18C" stroke-width="3"/><line x1="54" y1="19" x2="54" y2="35" stroke="#7FD18C" stroke-width="3"/><circle cx="38" cy="27" r="5" ${gd}/>`
+  };
+  return `<svg viewBox="0 0 76 54" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${icons[key] || ''}</svg>`;
+}
+/* ---------- Prep the Kitchen scenarios ---------- */
+const scenarios = [
+  {
+    key: "logreg",
+    goal: "What predicts whether a first-year student returns for a second year?",
+    cols: ["student_id", "gpa", "status"],
+    rows: [["20381", "3.4", "Returned"], ["20382", "2.1", "Left"], ["20383", "3.8", "Returned"], ["20384", "2.5", "Left"], ["20385", "3.0", "Returned"], ["20386", "1.9", "Left"]],
+    note: "Preview of 2,400 rows. One row per first-year student.",
+    distractors: ["linreg", "anova", "pearson"],
+    prep: "Recode the outcome into yes or no",
+    prepOptions: ["Recode the outcome into yes or no", "Check normality, then choose parametric or nonparametric", "Standardize the variables", "Use it as is"],
+    prepWhy: "The outcome is text with two levels, returned or left. Logistic regression needs it as a number, one for returned and zero for left, before it can estimate the chance of returning.",
+    prepHint: "The model needs the yes-or-no outcome written as a one or a zero."
+  },
+  {
+    key: "multreg",
+    goal: "Can class year, study hours, and college together estimate exam score?",
+    cols: ["student_id", "study_hours", "college", "exam_score"],
+    rows: [["20381", "12", "Business", "82"], ["20382", "5", "Health", "68"], ["20383", "18", "Business", "91"], ["20384", "8", "Arts and Sciences", "74"], ["20385", "15", "Health", "85"], ["20386", "3", "Arts and Sciences", "61"]],
+    note: "Preview of 1,800 rows. One row per student.",
+    distractors: ["logreg", "ttest_ind", "descriptive"],
+    prep: "Create dummy variables for categories",
+    prepOptions: ["Create dummy variables for categories", "Recode the outcome into yes or no", "Use it as is", "Check normality, then choose parametric or nonparametric"],
+    prepWhy: "Exam score is numeric, so the outcome is fine. College is text, and a regression cannot read text. Turn it into yes-or-no dummy columns, one per college, before fitting the model.",
+    prepHint: "One predictor is text. A regression cannot read words."
+  },
+  {
+    key: "kmeans",
+    goal: "Can students be grouped into a few profiles from their engagement measures?",
+    cols: ["student_id", "logins", "minutes_online", "posts"],
+    rows: [["20381", "42", "3,200", "5"], ["20382", "18", "1,150", "1"], ["20383", "67", "5,400", "9"], ["20384", "23", "1,800", "2"], ["20385", "51", "4,050", "7"], ["20386", "15", "900", "0"]],
+    note: "Preview of 5,600 rows. One row per student.",
+    distractors: ["logreg", "anova", "pearson"],
+    prep: "Standardize the variables",
+    prepOptions: ["Standardize the variables", "Recode the outcome into yes or no", "Build a counts table", "Use it as is"],
+    prepWhy: "Minutes online runs in the thousands while logins and posts stay small. Without putting them on the same scale first, minutes would swamp the grouping and decide every cluster on its own.",
+    prepHint: "One column is in the thousands and the others are tiny. That gap will dominate."
+  },
+  {
+    key: "chisq",
+    goal: "Is living on campus related to enrollment status?",
+    cols: ["student_id", "housing", "status"],
+    rows: [["20381", "On campus", "Full-time"], ["20382", "Off campus", "Part-time"], ["20383", "On campus", "Full-time"], ["20384", "Off campus", "Full-time"], ["20385", "On campus", "Part-time"], ["20386", "Off campus", "Part-time"]],
+    note: "Preview of 3,100 rows. One row per student.",
+    distractors: ["ttest_ind", "pearson", "linreg"],
+    prep: "Build a counts table",
+    prepOptions: ["Build a counts table", "Standardize the variables", "Recode the outcome into yes or no", "Use it as is"],
+    prepWhy: "Both columns are categories, so there is nothing to average. Count how many students fall into each housing and status pairing first; the test compares those counts to what chance alone would produce.",
+    prepHint: "Two text columns and no number to average. The test works on counts."
+  },
+  {
+    key: "anova",
+    goal: "Do average GPAs differ across three colleges?",
+    cols: ["student_id", "college", "gpa"],
+    rows: [["20381", "Business", "3.2"], ["20382", "Health", "3.6"], ["20383", "Arts and Sciences", "3.0"], ["20384", "Business", "2.8"], ["20385", "Health", "3.4"], ["20386", "Arts and Sciences", "3.1"]],
+    note: "Preview of 4,200 rows. One row per student. GPA is roughly normal in each college.",
+    distractors: ["ttest_paired", "chisq", "kmeans"],
+    prep: "Use it as is",
+    prepOptions: ["Use it as is", "Create dummy variables for categories", "Standardize the variables", "Recode the outcome into yes or no"],
+    prepWhy: "The data already has one numeric outcome and one grouping column with three independent groups, and the note says each group is roughly normal. That is exactly what one-way ANOVA needs, so no reshaping is required.",
+    prepHint: "One number, one grouping column, three groups, already roughly normal. What is missing?"
+  },
+  {
+    key: "ttest_paired",
+    goal: "Did students improve from the pre-test to the post-test?",
+    cols: ["student_id", "timing", "score"],
+    rows: [["20381", "Pre", "70"], ["20381", "Post", "78"], ["20382", "Pre", "65"], ["20382", "Post", "69"], ["20383", "Pre", "80"], ["20383", "Post", "88"]],
+    note: "Preview of 900 rows. Two rows per student, one pre and one post.",
+    distractors: ["ttest_ind", "anova", "descriptive"],
+    prep: "Reshape to one row per subject",
+    prepOptions: ["Reshape to one row per subject", "Build a counts table", "Create dummy variables for categories", "Standardize the variables"],
+    prepWhy: "Each student has two rows, a pre and a post. A paired t-test works on the change within each student, so first put each student on one row with both scores, then test the differences.",
+    prepHint: "Each student is split across two rows. The test needs both scores side by side."
+  },
+  {
+    key: "mannwhitney",
+    goal: "Do two departments differ in satisfaction, rated 1 to 5?",
+    cols: ["response_id", "department", "rating"],
+    rows: [["S-201", "Biology", "5"], ["S-202", "History", "2"], ["S-203", "Biology", "4"], ["S-204", "History", "1"], ["S-205", "Biology", "5"], ["S-206", "History", "3"]],
+    note: "Preview of 600 rows. One row per response. Ratings run 1 to 5 and are skewed.",
+    distractors: ["pearson", "linreg", "kmeans"],
+    prep: "Check normality, then choose parametric or nonparametric",
+    prepOptions: ["Check normality, then choose parametric or nonparametric", "Create dummy variables for categories", "Standardize the variables", "Build a counts table"],
+    prepWhy: "The outcome is a 1 to 5 rating and the note says it is skewed, not normal. Checking the shape first tells you to compare ranks with Mann-Whitney rather than averages with a t-test.",
+    prepHint: "The outcome is an ordered rating and the note flags its shape. Shape decides the test."
+  },
+  {
+    key: "pearson",
+    goal: "Do study hours and exam scores move together?",
+    cols: ["student_id", "study_hours", "exam_score"],
+    rows: [["20381", "4", "62"], ["20382", "9", "74"], ["20383", "12", "80"], ["20384", "6", "67"], ["20385", "16", "88"], ["20386", "2", "55"]],
+    note: "Preview of 1,500 rows. One row per student. Both columns look roughly normal.",
+    distractors: ["chisq", "logreg", "freqtable"],
+    prep: "Use it as is",
+    prepOptions: ["Use it as is", "Build a counts table", "Recode the outcome into yes or no", "Create dummy variables for categories"],
+    prepWhy: "There are already two numeric columns with one pair per student, and the note says both look roughly normal. Pearson correlation can run on this directly, so no reshaping is needed.",
+    prepHint: "Two numbers per student, already roughly normal. What setup is left?"
+  },
+  {
+    key: "freqtable",
+    goal: "How many students fall into each class year?",
+    cols: ["student_id", "class_year", "major"],
+    rows: [["20381", "First-year", "Biology"], ["20382", "Sophomore", "Finance"], ["20383", "Senior", "Nursing"], ["20384", "First-year", "History"], ["20385", "Junior", "Biology"], ["20386", "Sophomore", "Marketing"]],
+    note: "Preview of 8,800 rows. One row per student.",
+    distractors: ["ttest_ind", "pearson", "linreg"],
+    prep: "Build a counts table",
+    prepOptions: ["Build a counts table", "Standardize the variables", "Recode the outcome into yes or no", "Check normality, then choose parametric or nonparametric"],
+    prepWhy: "The question only asks how many students sit in each class year. Count the rows per class year; no test or model is involved.",
+    prepHint: "You only need a count for each category."
+  },
+  {
+    key: "descriptive",
+    goal: "What is the average age of this year incoming class?",
+    cols: ["student_id", "age", "program"],
+    rows: [["20381", "18", "Biology"], ["20382", "22", "Finance"], ["20383", "19", "Nursing"], ["20384", "25", "History"], ["20385", "20", "Biology"], ["20386", "31", "Marketing"]],
+    note: "Preview of 2,000 rows. One row per incoming student.",
+    distractors: ["anova", "chisq", "kmeans"],
+    prep: "Use it as is",
+    prepOptions: ["Use it as is", "Create dummy variables for categories", "Build a counts table", "Standardize the variables"],
+    prepWhy: "The goal is a simple summary of one numeric column. Report the average and the spread directly; there is no group to compare and no model to fit.",
+    prepHint: "One number to summarize, and nothing to test."
+  },
+  {
+    key: "pca",
+    goal: "Can a dozen overlapping survey measures be reduced to a few combined scores?",
+    cols: ["response_id", "item_1", "item_2", "item_3"],
+    rows: [["S-201", "4", "82", "3"], ["S-202", "2", "40", "5"], ["S-203", "5", "91", "2"], ["S-204", "3", "55", "4"], ["S-205", "4", "78", "3"], ["S-206", "1", "30", "5"]],
+    note: "Preview of 1,000 rows. One row per response. Twelve items in all, three shown. Items use different scales.",
+    distractors: ["logreg", "ttest_ind", "chisq"],
+    prep: "Standardize the variables",
+    prepOptions: ["Standardize the variables", "Recode the outcome into yes or no", "Build a counts table", "Reshape to one row per subject"],
+    prepWhy: "The items use different scales, some 1 to 5 and some 0 to 100. Put them on the same scale first, or the larger-numbered items would dominate the components and distort the result.",
+    prepHint: "The items are measured on different scales. That imbalance must go first."
+  },
+  {
+    key: "corr_matrix",
+    goal: "Among five engagement measures, which pairs move together most?",
+    cols: ["student_id", "logins", "posts", "minutes"],
+    rows: [["20381", "42", "5", "3,200"], ["20382", "18", "1", "1,150"], ["20383", "67", "9", "5,400"], ["20384", "23", "2", "1,800"], ["20385", "51", "7", "4,050"], ["20386", "15", "0", "900"]],
+    note: "Preview of 5,600 rows. One row per student. Five numeric measures, three shown.",
+    distractors: ["logreg", "chisq", "anova"],
+    prep: "Use it as is",
+    prepOptions: ["Use it as is", "Standardize the variables", "Build a counts table", "Create dummy variables for categories"],
+    prepWhy: "Correlation already adjusts for scale, so unlike clustering you do not need to standardize first. Compute a correlation for every pair and lay the values out in a grid.",
+    prepHint: "Correlation is not affected by the size of the units. What does that mean for setup?"
+  }
+];
+/* ---------- State ---------- */
+const state = {
+  score: 0, streak: 0, round: 0,
+  order: [], current: null, answered: false,
+  maxRounds: recipes.length, best: 0,
+  mode: 'name', selected: new Set(), pool: [],
+  scenario: null, stage: 'chart', chartRight: false,
+  gameDecisions: 0, gameCorrect: 0
+};
+
+/* ---------- Cross-session progress ---------- */
+const STATS_KEY = 'methodFinderStats';
+const MODE_LABELS = { name: 'Name the Test', build: 'Match the Traits', prep: 'Ready the Data', sort: 'Sort the Families' };
+
+function blankStats() {
+  return { v: 1, gamesPlayed: 0, totalDecisions: 0, totalCorrect: 0, longestStreak: 0, perChart: {}, history: [] };
+}
+
+function loadStats() {
+  try {
+    const raw = localStorage.getItem(STATS_KEY);
+    if (!raw) return blankStats();
+    return Object.assign(blankStats(), JSON.parse(raw));
+  } catch (e) { return blankStats(); }
+}
+
+function saveStats(s) {
+  try { localStorage.setItem(STATS_KEY, JSON.stringify(s)); } catch (e) {}
+}
+
+function recordDecision(decisionCorrect, chart) {
+  const s = loadStats();
+  s.totalDecisions += 1;
+  state.gameDecisions += 1;
+  if (decisionCorrect) { s.totalCorrect += 1; state.gameCorrect += 1; }
+  if (chart) {
+    const c = s.perChart[chart.key] || { seen: 0, correct: 0 };
+    c.seen += 1;
+    if (chart.correct) c.correct += 1;
+    s.perChart[chart.key] = c;
+  }
+  if (state.streak > s.longestStreak) s.longestStreak = state.streak;
+  saveStats(s);
+}
+
+function recordGameEnd() {
+  if (state.gameDecisions === 0) return;
+  const s = loadStats();
+  s.gamesPlayed += 1;
+  s.history.unshift({
+    date: new Date().toISOString(),
+    mode: state.mode,
+    score: state.score,
+    decisions: state.gameDecisions,
+    correct: state.gameCorrect
+  });
+  s.history = s.history.slice(0, 20);
+  saveStats(s);
+}
+
+function bestKey() {
+  if (state.mode === 'build') return 'methodFinderBuildBestScore';
+  if (state.mode === 'prep') return 'methodFinderPrepBestScore';
+  if (state.mode === 'sort') return 'methodFinderSortBestScore';
+  return 'methodFinderBestScore';
+}
+function loadBest() {
+  try { state.best = parseInt(localStorage.getItem(bestKey()) || '0', 10) || 0; }
+  catch (e) { state.best = 0; }
+}
+function saveBest() {
+  try { localStorage.setItem(bestKey(), String(state.best)); } catch (e) {}
+}
+
+function setMode(mode) {
+  if (state.mode === mode) return;
+  state.mode = mode;
+  ['name', 'build', 'prep', 'sort'].forEach(m => {
+    document.getElementById('mode-' + m).classList.toggle('active', m === mode);
+  });
+  loadBest();
+  resetGame();
+}
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/* ---------- Game flow ---------- */
+function playFilterMatch(r) {
+  const fam = document.getElementById('play-family').value;
+  const rar = document.getElementById('play-rarity').value;
+  const dif = document.getElementById('play-difficulty').value;
+  return (fam === 'all' || r.family === fam) &&
+         (rar === 'all' || r.rarity === rar) &&
+         (dif === 'all' || r.difficulty === dif);
+}
+
+function resetGame() {
+  state.score = 0; state.streak = 0; state.round = 0;
+  state.gameDecisions = 0; state.gameCorrect = 0;
+  let idxs;
+  if (state.mode === 'prep') {
+    idxs = scenarios.map((s, i) => i)
+      .filter(i => playFilterMatch(recipes.find(r => r.key === scenarios[i].key)));
+  } else if (state.mode === 'sort') {
+    idxs = recipes.map((r, i) => i).filter(i => !recipes[i].noSort && playFilterMatch(recipes[i]));
+  } else {
+    idxs = recipes.map((r, i) => i).filter(i => playFilterMatch(recipes[i]));
+  }
+  if (idxs.length === 0) { renderNoMatches(); return; }
+  state.maxRounds = Math.min(12, idxs.length);
+  state.order = shuffle(idxs).slice(0, state.maxRounds);
+  nextRound(true);
+}
+
+function renderNoMatches() {
+  state.maxRounds = 0; state.order = []; state.answered = true;
+  document.getElementById('round-label').textContent = 'No tests match';
+  document.getElementById('basket-label').textContent = 'Adjust the filters';
+  document.getElementById('basket').innerHTML =
+    '<p>No tests match this combination of filters' +
+    (state.mode === 'prep' ? ' among the twelve Ready the Data scenarios' : '') +
+    '. Loosen one of the dropdowns above to deal a new round.</p>';
+  document.getElementById('choices-label').textContent = '';
+  document.getElementById('choices').innerHTML = '';
+  const l2 = document.getElementById('choices2-label');
+  if (l2) l2.style.display = 'none';
+  const c2 = document.getElementById('choices2');
+  if (c2) { c2.style.display = 'none'; c2.innerHTML = ''; }
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback'; fb.innerHTML = '';
+  document.getElementById('hint-btn').disabled = true;
+  document.getElementById('next-btn').disabled = true;
+  document.getElementById('check-btn').style.display = 'none';
+  renderScore();
+  renderMystery();
+}
+
+function nextRound(first) {
+  if (!first && state.round >= state.maxRounds) { renderGameOver(); return; }
+  if (state.mode === 'prep') {
+    state.scenario = scenarios[state.order[state.round]];
+    state.current = recipes.find(r => r.key === state.scenario.key);
+  } else {
+    state.current = recipes[state.order[state.round]];
+  }
+  state.round += 1;
+  state.answered = false;
+  state.selected = new Set();
+  state.stage = 'chart';
+  state.chartRight = false;
+  renderScore();
+  document.getElementById('round-label').textContent =
+    'Round ' + state.round + ' of ' + state.maxRounds;
+  document.getElementById('choices2-label').style.display = 'none';
+  const c2 = document.getElementById('choices2');
+  c2.style.display = 'none'; c2.innerHTML = '';
+  if (state.mode === 'build') {
+    document.getElementById('basket-label').textContent = 'Your target test';
+    document.getElementById('choices-label').textContent = 'Pick the four traits this test needs';
+    renderDishPrompt();
+    renderIngredientPool();
+    document.getElementById('check-btn').style.display = '';
+    document.getElementById('check-btn').disabled = true;
+  } else if (state.mode === 'prep') {
+    document.getElementById('basket-label').textContent = 'The data in hand';
+    document.getElementById('choices-label').textContent = 'Step 1 of 2: Which test fits this goal?';
+    renderScenario();
+    renderPrepChartChoices();
+    document.getElementById('check-btn').style.display = 'none';
+  } else if (state.mode === 'sort') {
+    document.getElementById('basket-label').textContent = 'The specimen';
+    document.getElementById('choices-label').textContent = 'Which family does this test belong to?';
+    renderSortPrompt();
+    renderSortChoices();
+    document.getElementById('check-btn').style.display = 'none';
+  } else {
+    document.getElementById('basket-label').textContent = 'Traits observed';
+    document.getElementById('choices-label').textContent = 'Which test matches these traits?';
+    document.getElementById('basket').innerHTML = '<ul id="ingredients"></ul>';
+    renderIngredients();
+    renderChoices();
+    document.getElementById('check-btn').style.display = 'none';
+  }
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback'; fb.innerHTML = '';
+  const hb = document.getElementById('hint-box');
+  hb.className = 'hint-box'; hb.textContent = '';
+  document.getElementById('hint-btn').disabled = false;
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.disabled = true;
+  nextBtn.textContent = 'Next round';
+  renderMystery();
+}
+
+function renderScore() {
+  document.getElementById('score').textContent = state.score;
+  document.getElementById('streak').textContent = state.streak;
+  document.getElementById('round').textContent = Math.min(state.round, state.maxRounds);
+  document.getElementById('best').textContent = state.best;
+}
+
+function renderIngredients() {
+  document.getElementById('ingredients').innerHTML =
+    state.current.ingredients.map(i => '<li>' + i + '</li>').join('');
+}
+
+function renderChoices() {
+  const sameCat = recipes.filter(r => r.family === state.current.family && r.key !== state.current.key);
+  const otherCat = recipes.filter(r => r.family !== state.current.family);
+  const picks = shuffle(sameCat).slice(0, 2).concat(shuffle(otherCat)).slice(0, 3);
+  const options = shuffle([state.current, ...picks]);
+  document.getElementById('choices').innerHTML = options.map(o =>
+    '<button class="choice" data-key="' + o.key + '" onclick="checkAnswer(\'' + o.key + '\')">' + o.name + '</button>'
+  ).join('');
+}
+
+/* ---------- Build the Recipe mode ---------- */
+function renderDishPrompt() {
+  const r = state.current;
+  document.getElementById('basket').innerHTML =
+    '<div class="dish-prompt">' +
+      '<div class="dish-icon">' + chartIcon(r.key) + '</div>' +
+      '<div><div class="dish-name">' + r.name + '</div>' +
+      '<div class="dish-meta">' + r.family + ' &middot; ' + r.difficulty + ' &middot; ' + r.rarity + '</div></div>' +
+    '</div>';
+}
+
+function renderIngredientPool() {
+  const correct = state.current.ingredients;
+  const seen = new Set(correct.map(i => i.toLowerCase()));
+  const distractors = [];
+  const otherFamilies = recipes.filter(x => x.family !== state.current.family);
+  for (const r of shuffle(otherFamilies)) {
+    for (const ing of shuffle(r.ingredients)) {
+      if (!seen.has(ing.toLowerCase())) {
+        seen.add(ing.toLowerCase());
+        distractors.push(ing);
+        break;
+      }
+    }
+    if (distractors.length === 4) break;
+  }
+  state.pool = shuffle([...correct, ...distractors]);
+  document.getElementById('choices').innerHTML = state.pool.map((ing, i) =>
+    '<button class="choice" data-i="' + i + '" onclick="toggleIngredient(' + i + ')">' + ing + '</button>'
+  ).join('');
+}
+
+function toggleIngredient(i) {
+  if (state.answered) return;
+  if (state.selected.has(i)) state.selected.delete(i);
+  else if (state.selected.size < 4) state.selected.add(i);
+  document.querySelectorAll('#choices .choice').forEach(btn => {
+    btn.classList.toggle('selected', state.selected.has(Number(btn.dataset.i)));
+  });
+  document.getElementById('check-btn').disabled = state.selected.size !== 4;
+}
+
+function checkBasket() {
+  if (state.answered || state.selected.size !== 4) return;
+  state.answered = true;
+  const correctSet = new Set(state.current.ingredients.map(i => i.toLowerCase()));
+  let allRight = true;
+  const wrongPicks = [];
+  const missed = [];
+  document.querySelectorAll('#choices .choice').forEach(btn => {
+    btn.disabled = true;
+    const i = Number(btn.dataset.i);
+    const ing = state.pool[i];
+    const isCorrect = correctSet.has(ing.toLowerCase());
+    const isPicked = state.selected.has(i);
+    if (isPicked && isCorrect) { btn.classList.add('correct'); }
+    else if (isPicked && !isCorrect) { btn.classList.add('wrong'); allRight = false; wrongPicks.push(ing); }
+    else if (!isPicked && isCorrect) { btn.classList.add('missed'); allRight = false; missed.push(ing); }
+    btn.classList.remove('selected');
+  });
+  if (allRight) {
+    state.score += 1; state.streak += 1;
+    if (state.score > state.best) { state.best = state.score; saveBest(); }
+  } else {
+    state.streak = 0;
+  }
+  recordDecision(allRight, { key: state.current.key, correct: allRight });
+  renderScore();
+  renderBuildFeedback(allRight, wrongPicks, missed);
+  renderRecipeCard(state.current);
+  document.getElementById('hint-btn').disabled = true;
+  document.getElementById('check-btn').disabled = true;
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.disabled = false;
+  nextBtn.textContent = state.round >= state.maxRounds ? 'See final score' : 'Next round';
+}
+
+function homeRecipe(ing) {
+  const owner = recipes.find(r =>
+    r.key !== state.current.key &&
+    r.ingredients.some(x => x.toLowerCase() === ing.toLowerCase())
+  );
+  return owner ? owner.name.toLowerCase() : null;
+}
+
+function renderBuildFeedback(allRight, wrongPicks, missed) {
+  const fb = document.getElementById('feedback');
+  if (allRight) {
+    fb.className = 'feedback show good';
+    fb.innerHTML = '<strong>Well spotted.</strong> Those are exactly the traits a ' +
+      state.current.name.toLowerCase() + ' needs. ' + state.current.serves;
+    return;
+  }
+  fb.className = 'feedback show bad';
+  let msg = '<strong>Check the guide entry.</strong> ';
+  if (missed.length) {
+    msg += 'You missed: ' + missed.map(m => m.toLowerCase()).join('; ') + '. ';
+  }
+  if (wrongPicks.length) {
+    const w = wrongPicks[0];
+    const owner = homeRecipe(w);
+    msg += '"' + w + '" does not belong here' +
+      (owner ? '. It belongs to the ' + owner + ' instead.' : '.');
+  }
+  fb.innerHTML = msg;
+}
+
+/* ---------- Prep the Kitchen mode ---------- */
+function renderScenario() {
+  const s = state.scenario;
+  document.getElementById('basket').innerHTML =
+    '<div class="goal-line">' + s.goal + '</div>' +
+    '<table class="data-table"><thead><tr>' +
+    s.cols.map(c => '<th>' + c + '</th>').join('') +
+    '</tr></thead><tbody>' +
+    s.rows.map(r => '<tr>' + r.map(v => '<td>' + v + '</td>').join('') + '</tr>').join('') +
+    '</tbody></table>' +
+    '<div class="table-note">' + s.note + '</div>';
+}
+
+function renderPrepChartChoices() {
+  const opts = shuffle([state.scenario.key, ...state.scenario.distractors]);
+  document.getElementById('choices').innerHTML = opts.map(k => {
+    const r = recipes.find(x => x.key === k);
+    return '<button class="choice" data-key="' + k + '" onclick="answerPrepChart(\'' + k + '\')">' + r.name + '</button>';
+  }).join('');
+}
+
+function answerPrepChart(key) {
+  if (state.mode !== 'prep' || state.stage !== 'chart') return;
+  state.stage = 'prep';
+  state.chartRight = key === state.scenario.key;
+  document.querySelectorAll('#choices .choice').forEach(btn => {
+    btn.disabled = true;
+    if (btn.dataset.key === state.scenario.key) btn.classList.add('correct');
+    else if (btn.dataset.key === key) btn.classList.add('wrong');
+  });
+  if (state.chartRight) state.score += 1;
+  recordDecision(state.chartRight, { key: state.current.key, correct: state.chartRight });
+  renderScore();
+  const fb = document.getElementById('feedback');
+  const name = state.current.name.toLowerCase();
+  if (state.chartRight) {
+    fb.className = 'feedback show good';
+    fb.innerHTML = '<strong>Right call.</strong> A ' + name + ' fits this goal. Now plan the setup.';
+  } else {
+    fb.className = 'feedback show bad';
+    fb.innerHTML = '<strong>The better fit is the ' + name + '.</strong> ' +
+      state.current.serves + ' Now plan the setup for it.';
+  }
+  renderPrepOptions();
+}
+
+function renderPrepOptions() {
+  const lbl = document.getElementById('choices2-label');
+  lbl.style.display = '';
+  lbl.textContent = 'Step 2 of 2: What setup does the data need?';
+  const el = document.getElementById('choices2');
+  el.style.display = '';
+  el.innerHTML = shuffle(state.scenario.prepOptions).map(o =>
+    '<button class="choice" onclick="answerPrepStep(this)">' + o + '</button>'
+  ).join('');
+}
+
+function answerPrepStep(btn) {
+  if (state.mode !== 'prep' || state.stage !== 'prep' || state.answered) return;
+  state.answered = true;
+  const right = btn.textContent === state.scenario.prep;
+  document.querySelectorAll('#choices2 .choice').forEach(b => {
+    b.disabled = true;
+    if (b.textContent === state.scenario.prep) b.classList.add('correct');
+    else if (b === btn) b.classList.add('wrong');
+  });
+  if (right) state.score += 1;
+  if (right && state.chartRight) state.streak += 1; else state.streak = 0;
+  if (state.score > state.best) { state.best = state.score; saveBest(); }
+  recordDecision(right, null);
+  renderScore();
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback show ' + (right ? 'good' : 'bad');
+  const intro = right
+    ? '<strong>Good setup.</strong> '
+    : '<strong>The setup this test needs: ' + state.scenario.prep.toLowerCase() + '.</strong> ';
+  fb.innerHTML = intro + state.scenario.prepWhy;
+  renderRecipeCard(state.current);
+  document.getElementById('hint-btn').disabled = true;
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.disabled = false;
+  nextBtn.textContent = state.round >= state.maxRounds ? 'See final score' : 'Next round';
+}
+
+/* ---------- Sort the Menu mode ---------- */
+function renderSortPrompt() {
+  const r = state.current;
+  document.getElementById('basket').innerHTML =
+    '<div class="dish-prompt">' +
+      '<div class="dish-icon">' + chartIcon(r.key) + '</div>' +
+      '<div><div class="dish-name">' + r.name + '</div>' +
+      '<div class="dish-meta">' + r.difficulty + ' &middot; ' + r.rarity + '</div></div>' +
+    '</div>';
+}
+
+function renderSortChoices() {
+  const r = state.current;
+  const excluded = [r.family].concat(r.alt || []);
+  const wrong = shuffle(CATEGORIES.filter(c => !excluded.includes(c))).slice(0, 3);
+  const opts = shuffle([r.family, ...wrong]);
+  document.getElementById('choices').innerHTML = opts.map(c =>
+    '<button class="choice" onclick="answerSortCat(this)">' + c + '</button>'
+  ).join('');
+}
+
+function answerSortCat(btn) {
+  if (state.mode !== 'sort' || state.answered) return;
+  state.answered = true;
+  const right = btn.textContent === state.current.family;
+  document.querySelectorAll('#choices .choice').forEach(b => {
+    b.disabled = true;
+    if (b.textContent === state.current.family) b.classList.add('correct');
+    else if (b === btn) b.classList.add('wrong');
+  });
+  if (right) {
+    state.score += 1; state.streak += 1;
+    if (state.score > state.best) { state.best = state.score; saveBest(); }
+  } else {
+    state.streak = 0;
+  }
+  recordDecision(right, { key: state.current.key, correct: right });
+  renderScore();
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback show ' + (right ? 'good' : 'bad');
+  const altNote = (state.current.alt && state.current.alt.length)
+    ? ' It also makes appearances under ' + state.current.alt.join(' and ') + '.'
+    : '';
+  const intro = right ? '<strong>Well sorted.</strong> ' : '<strong>Check the guide.</strong> ';
+  fb.innerHTML = intro + 'The ' + state.current.name.toLowerCase() + ' lives under ' +
+    state.current.family + '. ' + CATEGORY_INFO[state.current.family] + altNote;
+  renderRecipeCard(state.current);
+  document.getElementById('hint-btn').disabled = true;
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.disabled = false;
+  nextBtn.textContent = state.round >= state.maxRounds ? 'See final score' : 'Next round';
+}
+
+function checkAnswer(key) {
+  if (state.answered) return;
+  state.answered = true;
+  const correct = key === state.current.key;
+  document.querySelectorAll('.choice').forEach(btn => {
+    btn.disabled = true;
+    if (btn.dataset.key === state.current.key) btn.classList.add('correct');
+    else if (btn.dataset.key === key) btn.classList.add('wrong');
+  });
+  if (correct) {
+    state.score += 1; state.streak += 1;
+    if (state.score > state.best) { state.best = state.score; saveBest(); }
+  } else {
+    state.streak = 0;
+  }
+  recordDecision(correct, { key: state.current.key, correct: correct });
+  renderScore();
+  renderFeedback(correct, key);
+  renderRecipeCard(state.current);
+  document.getElementById('hint-btn').disabled = true;
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.disabled = false;
+  nextBtn.textContent = state.round >= state.maxRounds ? 'See final score' : 'Next round';
+}
+
+function renderFeedback(correct, chosenKey) {
+  const fb = document.getElementById('feedback');
+  if (correct) {
+    fb.className = 'feedback show good';
+    fb.innerHTML = '<strong>Nice spotting.</strong> The ' + state.current.name.toLowerCase() +
+      ' is the right match for these traits. ' + state.current.serves;
+  } else {
+    const chosen = recipes.find(r => r.key === chosenKey);
+    fb.className = 'feedback show bad';
+    fb.innerHTML = '<strong>Not quite.</strong> The right test is the ' + state.current.name.toLowerCase() +
+      '. A ' + chosen.name.toLowerCase() + ' needs different traits: ' +
+      chosen.ingredients.slice(0, 2).map(i => i.toLowerCase()).join(' and ') +
+      '. That does not match these traits.';
+  }
+}
+
+function renderGameOver() {
+  recordGameEnd();
+  const maxPts = state.mode === 'prep' ? state.maxRounds * 2 : state.maxRounds;
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback show good';
+  fb.innerHTML = '<strong>Session complete.</strong> You scored ' + state.score + ' out of ' +
+    maxPts + ' points. Your best in this browser is ' + state.best +
+    '. Press Restart to play again, or open Browse the Guide to review the tests.';
+  document.getElementById('next-btn').disabled = true;
+  document.getElementById('check-btn').disabled = true;
+}
+
+function showHint() {
+  const hb = document.getElementById('hint-box');
+  if (state.mode === 'sort') {
+    hb.textContent = 'Best used for: ' + state.current.serves.toLowerCase();
+  } else if (state.mode === 'prep') {
+    hb.textContent = state.stage === 'chart' ? state.current.hint : state.scenario.prepHint;
+  } else if (state.mode === 'build') {
+    const unpicked = state.current.ingredients.filter(ing =>
+      !state.selected.has(state.pool.indexOf(ing)));
+    const give = unpicked.length ? unpicked[0] : state.current.ingredients[0];
+    hb.textContent = 'One trait this test needs: ' + give.toLowerCase() + '.';
+  } else {
+    hb.textContent = state.current.hint;
+  }
+  hb.className = 'hint-box show';
+}
+
+/* ---------- Recipe card sidebar ---------- */
+function renderMystery() {
+  const msg = state.mode === 'build'
+    ? 'The guide entry stays hidden until you check your picks.'
+    : state.mode === 'prep'
+      ? 'The guide entry stays hidden until you finish both steps.'
+      : state.mode === 'sort'
+        ? 'The guide entry stays hidden until you sort the test.'
+        : 'The guide entry stays hidden until you answer.';
+  document.getElementById('recipe-card').innerHTML =
+    '<div class="mystery"><div class="qmark">?</div>' +
+    '<p>' + msg + '</p></div>';
+}
+
+function renderRecipeCard(r) {
+  document.getElementById('recipe-card').innerHTML =
+    '<div class="recipe-head">' +
+      '<div class="recipe-tag">Guide Entry</div>' +
+      '<div class="recipe-name">' + r.name + '</div>' +
+      '<div class="recipe-meta">' + r.family + ' &middot; ' + r.difficulty + ' &middot; ' + r.rarity + '</div>' +
+      '<div class="recipe-icon">' + chartIcon(r.key) + '</div>' +
+    '</div>' +
+    '<div class="recipe-body">' +
+      section('Best for', '<p>' + r.serves + '</p>') +
+      section('Method', '<ol>' + r.method.map(m => '<li>' + m + '</li>').join('') + '</ol>') +
+      '<div class="recipe-section burn"><div class="section-label">Common mistake</div><p>' + r.burn + '</p></div>' +
+      section('Often seen with', '<p>' + r.pairs + '</p>') +
+      section('Example question', '<p class="example">' + r.example + '</p>') +
+    '</div>';
+}
+
+function section(label, inner) {
+  return '<div class="recipe-section"><div class="section-label">' + label + '</div>' + inner + '</div>';
+}
+
+/* ---------- Study the Deck ---------- */
+function renderDeck() {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  const fam = document.getElementById('family-filter').value;
+  const rar = document.getElementById('rarity-filter').value;
+  const dif = document.getElementById('difficulty-filter').value;
+  const matches = recipes.filter(r => {
+    const inFam = fam === 'all' || r.family === fam;
+    const inRar = rar === 'all' || r.rarity === rar;
+    const inDif = dif === 'all' || r.difficulty === dif;
+    const text = (r.name + ' ' + r.family + ' ' + r.rarity + ' ' + r.serves + ' ' + r.pairs + ' ' +
+      r.ingredients.join(' ') + ' ' + r.burn).toLowerCase();
+    return inFam && inRar && inDif && (q === '' || text.includes(q));
+  });
+  const grid = document.getElementById('deck-grid');
+  if (matches.length === 0) {
+    grid.innerHTML = '<div class="empty-deck">No tests match that search. Try a broader word, such as the family or a trait.</div>';
+    return;
+  }
+  grid.innerHTML = matches.map(r =>
+    '<div class="deck-card">' +
+      '<div class="icon-row">' + chartIcon(r.key) + '</div>' +
+      '<h3>' + r.name + '</h3>' +
+      '<div class="meta">' + r.family + ' &middot; ' + r.difficulty + ' &middot; ' + r.rarity + '</div>' +
+      '<div class="mini-label">Traits</div><p>' + r.ingredients.join('; ') + '</p>' +
+      '<div class="mini-label">Best for</div><p>' + r.serves + '</p>' +
+      '<div class="mini-label">Common mistake</div><p>' + r.burn + '</p>' +
+      '<div class="mini-label">Often seen with</div><p>' + r.pairs + '</p>' +
+      '<div class="mini-label">Example question</div><p>' + r.example + '</p>' +
+    '</div>'
+  ).join('');
+}
+
+/* ---------- Pantry vocabulary ---------- */
+const pantry = [
+  /* Shelf: Data Types */
+  { term: "Numeric data", shelf: "Data Types",
+    def: "Data made of numbers you can do math on, such as averaging or comparing sizes.",
+    ex: "Exam scores, salaries, ages, and headcounts are all numeric.",
+    kitchen: "Most tests that compare averages need a numeric outcome." },
+  { term: "Categorical data", shelf: "Data Types",
+    def: "Data that sorts things into named groups instead of measuring them with numbers.",
+    ex: "Department, college, and class year are categorical. Even a number can be categorical if it works as a label, like a zip code." },
+  { term: "Ordinal data", shelf: "Data Types",
+    def: "Categorical data whose groups have a natural order, though the gaps between them are not measured.",
+    ex: "A 1 to 5 satisfaction rating. The order means something, but the distance between steps does not.",
+    kitchen: "Rank-based tests like Mann-Whitney and Spearman are built for ordinal outcomes." },
+  { term: "Nominal data", shelf: "Data Types",
+    def: "Categorical data with no natural order at all.",
+    ex: "Department names like Biology and History. Sorting them alphabetically is for convenience, not meaning." },
+  { term: "Continuous data", shelf: "Data Types",
+    def: "Numeric data that can take any value within a range, including decimals.",
+    ex: "GPA can be 3.0, 3.25, or 3.317. There is always another possible value between two values." },
+  { term: "Discrete data", shelf: "Data Types",
+    def: "Numeric data that comes in separate, countable steps with nothing in between.",
+    ex: "Number of courses enrolled. A student can take 4 or 5 courses, never 4.6." },
+  { term: "Binary data", shelf: "Data Types",
+    def: "Data with exactly two possible values.",
+    ex: "Enrolled or not enrolled, pass or fail, returned or left.",
+    kitchen: "A binary outcome points you toward logistic regression rather than plain regression." },
+
+  /* Shelf: Variables and Roles */
+  { term: "Variable", shelf: "Variables and Roles",
+    def: "One column in a dataset. It holds one characteristic measured for every row.",
+    ex: "In a student dataset, age, college, and GPA are each variables." },
+  { term: "Outcome variable", shelf: "Variables and Roles",
+    def: "The thing you are trying to explain, predict, or compare. Also called the dependent variable or the response.",
+    ex: "In a study of what raises exam scores, the exam score is the outcome.",
+    kitchen: "The type of the outcome, number or category, is the first thing that narrows the choice of test." },
+  { term: "Predictor", shelf: "Variables and Roles",
+    def: "A variable used to explain or estimate the outcome. Also called an independent variable or a feature.",
+    ex: "Study hours and class year used to estimate exam score are predictors." },
+  { term: "Independent groups", shelf: "Variables and Roles",
+    def: "Groups made of different people, where one person belongs to only one group.",
+    ex: "Online students and in-person students, with no one in both.",
+    kitchen: "Independent groups call for an independent t-test or ANOVA, not the paired versions." },
+  { term: "Paired data", shelf: "Variables and Roles",
+    def: "Two measurements taken from the same person, or from matched pairs, so the rows are linked.",
+    ex: "A pre-test and a post-test score for each student.",
+    kitchen: "Paired data calls for a paired t-test, because the two scores belong together." },
+
+  /* Shelf: Setup Work */
+  { term: "Standardize", shelf: "Setup Work",
+    def: "Rescale variables so they share a common scale, often a mean of zero and a spread of one.",
+    ex: "Putting logins and minutes online on the same footing before clustering.",
+    kitchen: "Clustering and principal component analysis depend on this step. Skipping it lets the largest-numbered column take over." },
+  { term: "Dummy variable", shelf: "Setup Work",
+    def: "A yes-or-no column that stands in for one level of a category, so a model can use the category.",
+    ex: "Turning a college column into separate yes-or-no columns, one per college.",
+    kitchen: "Regression cannot read text. Categories become dummy variables first." },
+  { term: "Recode", shelf: "Setup Work",
+    def: "Replace the values of a variable with new ones, such as turning text labels into numbers.",
+    ex: "Mapping returned to 1 and left to 0 for a logistic regression.",
+    kitchen: "A yes-or-no outcome usually needs recoding to a one and a zero." },
+  { term: "Reshape", shelf: "Setup Work",
+    def: "Change the layout of a table, such as moving from two rows per subject to one row with two columns.",
+    ex: "Putting each student pre and post score on a single row.",
+    kitchen: "A paired t-test wants both measurements side by side on one row." },
+  { term: "Counts table", shelf: "Setup Work",
+    def: "A grid that tallies how many rows fall into each combination of categories.",
+    ex: "Housing across the top, status down the side, counts in the cells.",
+    kitchen: "The chi-square test runs on this grid, not on the raw rows." },
+
+  /* Shelf: Reading the Numbers */
+  { term: "Mean", shelf: "Reading the Numbers",
+    def: "The average: add up all the values and divide by how many there are. A few extreme values can pull it strongly.",
+    ex: "The mean satisfaction score across all survey responses." },
+  { term: "Median", shelf: "Reading the Numbers",
+    def: "The middle value when everything is lined up in order. Half the values sit above it and half below.",
+    ex: "Median salary often describes typical pay better than the mean, because a few very large salaries pull the mean up but barely move the median." },
+  { term: "Spread", shelf: "Reading the Numbers",
+    def: "How much the values vary. The simplest measure is the range: the highest value minus the lowest.",
+    ex: "Salaries in one job family run from 44,000 to 71,000, a spread of 27,000." },
+  { term: "Distribution", shelf: "Reading the Numbers",
+    def: "The overall shape of a variable values: where they cluster, how far they spread, and whether they lean to one side.",
+    ex: "Most student ages cluster between 18 and 22, with a long tail of older students." },
+  { term: "Normal distribution", shelf: "Reading the Numbers",
+    def: "A symmetric, bell-shaped spread where most values sit near the middle and fewer sit at the edges.",
+    ex: "Heights and many test scores follow roughly this shape.",
+    kitchen: "Many common tests, like the t-test and ANOVA, assume the data is roughly normal." },
+  { term: "Skew", shelf: "Reading the Numbers",
+    def: "A lopsided distribution with a longer tail on one side.",
+    ex: "Income is right-skewed: most people cluster low, with a few very high earners stretching the tail.",
+    kitchen: "Strong skew is a signal to switch from a mean-based test to a rank-based one." },
+  { term: "Outlier", shelf: "Reading the Numbers",
+    def: "A value that sits far away from the rest of the data.",
+    ex: "One 400,000 dollar salary where most sit near 50,000. Outliers are worth investigating, not automatically deleting." },
+  { term: "Correlation", shelf: "Reading the Numbers",
+    def: "A relationship where two numeric variables tend to move together, in the same or opposite directions.",
+    ex: "Students who study more hours tend to earn higher exam scores.",
+    kitchen: "Correlation alone does not prove that one thing causes the other." },
+
+  /* Shelf: Test Ideas */
+  { term: "Null hypothesis", shelf: "Test Ideas",
+    def: "The starting claim that there is no difference or no relationship. A test looks for evidence against it.",
+    ex: "There is no difference in average grade between online and in-person students." },
+  { term: "Alternative hypothesis", shelf: "Test Ideas",
+    def: "The claim that there is a real difference or relationship, the thing you suspect might be true.",
+    ex: "Online and in-person students do differ in average grade." },
+  { term: "p-value", shelf: "Test Ideas",
+    def: "The chance of seeing a result at least this extreme if the null hypothesis were true. A small value is evidence against the null.",
+    ex: "A p-value of 0.01 means a result this strong would be rare if there were truly no difference.",
+    kitchen: "A small p-value flags a difference. It does not tell you how large or how important the difference is." },
+  { term: "Statistical significance", shelf: "Test Ideas",
+    def: "A result unlikely to be due to chance alone, usually judged against a cutoff such as 0.05.",
+    ex: "A p-value below 0.05 is often called statistically significant." },
+  { term: "Effect size", shelf: "Test Ideas",
+    def: "How large a difference or relationship is, set apart from whether it is significant.",
+    ex: "Two groups may differ significantly yet by only half a point on a 100-point exam.",
+    kitchen: "Always read the effect size next to the p-value. A tiny effect can still be significant in a large sample." },
+  { term: "Parametric test", shelf: "Test Ideas",
+    def: "A test that assumes the data follows a particular shape, often a normal distribution.",
+    ex: "The t-test and ANOVA are parametric." },
+  { term: "Nonparametric test", shelf: "Test Ideas",
+    def: "A test that makes fewer assumptions about shape, often by working on ranks instead of raw values.",
+    ex: "Mann-Whitney and Kruskal-Wallis are nonparametric.",
+    kitchen: "Reach for these when the data is skewed, ordinal, or full of outliers." },
+  { term: "Degrees of freedom", shelf: "Test Ideas",
+    def: "The number of values free to vary in a calculation. It depends on the sample size and the number of groups.",
+    ex: "They help set the cutoff a test statistic must clear to count as significant." },
+
+  /* Shelf: The Five Families */
+  { term: "Compare Groups", shelf: "The Five Families",
+    def: "Tests in this family ask whether an outcome differs between two or more groups.",
+    ex: "Independent t-test, paired t-test, one-way ANOVA, Mann-Whitney, Kruskal-Wallis, and chi-square live here.",
+    kitchen: "Look for a grouping variable and an outcome. The question is whether the groups differ." },
+  { term: "Measure Relationships", shelf: "The Five Families",
+    def: "Tests in this family ask whether two variables tend to move together.",
+    ex: "Pearson correlation, Spearman correlation, and a correlation matrix live here.",
+    kitchen: "Two variables and no group to compare. The question is whether they track each other." },
+  { term: "Predict an Outcome", shelf: "The Five Families",
+    def: "Methods in this family estimate one variable from one or more others.",
+    ex: "Simple linear regression, multiple regression, and logistic regression live here.",
+    kitchen: "There is an outcome you want to estimate from predictors. The type of outcome picks the method." },
+  { term: "Find Structure", shelf: "The Five Families",
+    def: "Methods in this family uncover natural groups or hidden dimensions without a labeled outcome.",
+    ex: "K-means clustering, factor analysis, and principal component analysis live here.",
+    kitchen: "There is no answer column. You are looking for patterns the data already holds." },
+  { term: "Describe the Data", shelf: "The Five Families",
+    def: "Methods in this family summarize variables without testing a claim.",
+    ex: "Descriptive summaries, frequency tables, and confidence intervals live here.",
+    kitchen: "The families here follow the common practice of grouping methods by the question they answer, as in the choosing a statistical test guide from the UCLA statistical consulting group." }
+];
+/* ---------- Pantry browse ---------- */
+function renderPantry() {
+  const q = document.getElementById('pantry-search').value.trim().toLowerCase();
+  const shelf = document.getElementById('shelf-filter').value;
+  const matches = pantry.filter(t => {
+    const inShelf = shelf === 'all' || t.shelf === shelf;
+    const text = (t.term + ' ' + t.shelf + ' ' + t.def + ' ' + t.ex + ' ' + (t.kitchen || '')).toLowerCase();
+    return inShelf && (q === '' || text.includes(q));
+  });
+  const grid = document.getElementById('pantry-grid');
+  if (matches.length === 0) {
+    grid.innerHTML = '<div class="empty-deck">No terms match that search. Try a broader word, or pick a section from the dropdown.</div>';
+    return;
+  }
+  grid.innerHTML = matches.map(t =>
+    '<div class="deck-card">' +
+      '<h3>' + t.term + '</h3>' +
+      '<div class="meta">' + t.shelf + ' section</div>' +
+      '<div class="mini-label">Definition</div><p>' + t.def + '</p>' +
+      '<div class="mini-label">Example</div><p>' + t.ex + '</p>' +
+      (t.kitchen ? '<div class="mini-label">Field note</div><p>' + t.kitchen + '</p>' : '') +
+    '</div>'
+  ).join('');
+}
+
+/* ---------- Stock Check quiz ---------- */
+const pq = { score: 0, round: 0, total: 10, order: [], current: null, answered: false, best: 0 };
+
+function startPantryQuiz() {
+  try { pq.best = parseInt(localStorage.getItem('methodFinderGlossaryBestScore') || '0', 10) || 0; }
+  catch (e) { pq.best = 0; }
+  pq.score = 0; pq.round = 0;
+  pq.order = shuffle(pantry.map((t, i) => i)).slice(0, pq.total);
+  document.getElementById('pantry-browse').style.display = 'none';
+  document.getElementById('pantry-quiz').style.display = '';
+  pantryNext(true);
+}
+
+function pantryNext(first) {
+  if (!first && pq.round >= pq.total) { endPantryRound(); return; }
+  pq.current = pantry[pq.order[pq.round]];
+  pq.round += 1;
+  pq.answered = false;
+  renderPqLabel();
+  document.getElementById('pq-def').textContent = pq.current.def;
+  let sameShelf = pantry.filter(t => t.shelf === pq.current.shelf && t.term !== pq.current.term);
+  let distractors = shuffle(sameShelf).slice(0, 3);
+  if (distractors.length < 3) {
+    const fill = shuffle(pantry.filter(t =>
+      t.term !== pq.current.term && !distractors.includes(t))).slice(0, 3 - distractors.length);
+    distractors = distractors.concat(fill);
+  }
+  const opts = shuffle([pq.current, ...distractors]);
+  document.getElementById('pq-choices').innerHTML = opts.map(t =>
+    '<button class="choice" onclick="pantryAnswer(this)">' + t.term + '</button>'
+  ).join('');
+  const fb = document.getElementById('pq-feedback');
+  fb.className = 'feedback'; fb.innerHTML = '';
+  const nb = document.getElementById('pq-next');
+  nb.disabled = true; nb.textContent = 'Next term';
+}
+
+function renderPqLabel() {
+  document.getElementById('pq-label').textContent =
+    'Term ' + Math.min(pq.round, pq.total) + ' of ' + pq.total +
+    ' \u00B7 Score ' + pq.score + ' \u00B7 Best ' + pq.best;
+}
+
+function pantryAnswer(btn) {
+  if (pq.answered) return;
+  pq.answered = true;
+  const right = btn.textContent === pq.current.term;
+  document.querySelectorAll('#pq-choices .choice').forEach(b => {
+    b.disabled = true;
+    if (b.textContent === pq.current.term) b.classList.add('correct');
+    else if (b === btn) b.classList.add('wrong');
+  });
+  if (right) pq.score += 1;
+  renderPqLabel();
+  const fb = document.getElementById('pq-feedback');
+  fb.className = 'feedback show ' + (right ? 'good' : 'bad');
+  const intro = right
+    ? '<strong>Spotted.</strong> '
+    : '<strong>That section holds something else.</strong> The term is ' + pq.current.term.toLowerCase() + '. ';
+  fb.innerHTML = intro + 'Example: ' + pq.current.ex;
+  const nb = document.getElementById('pq-next');
+  nb.disabled = false;
+  nb.textContent = pq.round >= pq.total ? 'See results' : 'Next term';
+}
+
+function endPantryRound() {
+  if (pq.score > pq.best) {
+    pq.best = pq.score;
+    try { localStorage.setItem('methodFinderGlossaryBestScore', String(pq.best)); } catch (e) {}
+  }
+  renderPqLabel();
+  const fb = document.getElementById('pq-feedback');
+  fb.className = 'feedback show good';
+  fb.innerHTML = '<strong>Field quiz complete.</strong> You matched ' + pq.score + ' of ' + pq.total +
+    ' terms. Your best in this browser is ' + pq.best +
+    '. Take another quiz for ten different terms, or head back to the glossary to review.';
+  document.getElementById('pq-next').disabled = true;
+}
+
+function endPantryQuiz() {
+  document.getElementById('pantry-quiz').style.display = 'none';
+  document.getElementById('pantry-browse').style.display = '';
+}
+
+/* ---------- Tabs ---------- */
+function fmtDate(iso) {
+  try {
+    return new Date(iso).toLocaleString(undefined,
+      { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+  } catch (e) { return iso; }
+}
+
+function renderProgress() {
+  const s = loadStats();
+  const body = document.getElementById('progress-body');
+  const acc = s.totalDecisions ? Math.round(100 * s.totalCorrect / s.totalDecisions) : 0;
+
+  let html = '<div class="stat-grid">' +
+    '<div class="stat-card"><div class="big">' + s.gamesPlayed + '</div><div class="lbl">Games finished</div></div>' +
+    '<div class="stat-card"><div class="big">' + (s.totalDecisions ? acc + '%' : '--') + '</div><div class="lbl">Lifetime accuracy</div></div>' +
+    '<div class="stat-card"><div class="big">' + s.longestStreak + '</div><div class="lbl">Longest streak</div></div>' +
+    '<div class="stat-card"><div class="big">' + s.totalDecisions + '</div><div class="lbl">Questions answered</div></div>' +
+    '</div>';
+
+  // Best scores per mode (from the existing per-mode keys)
+  const bestBits = ['name', 'build', 'prep', 'sort'].map(m => {
+    let v = 0;
+    try { v = Number(localStorage.getItem('methodFinder' +
+      (m === 'name' ? '' : m.charAt(0).toUpperCase() + m.slice(1)) + 'BestScore')) || 0; } catch (e) {}
+    return '<div class="stat-row"><span class="name">' + MODE_LABELS[m] +
+      '</span><span class="pct">' + v + '</span></div>';
+  }).join('');
+  html += '<div class="progress-section"><h3>Best score in each mode</h3>' +
+    '<div class="sub">The highest single-game score you have reached.</div>' + bestBits + '</div>';
+
+  // Charts to review: charts seen, sorted worst accuracy first, only those missed
+  const reviewed = Object.keys(s.perChart)
+    .map(k => {
+      const c = s.perChart[k];
+      const r = recipes.find(x => x.key === k);
+      return r ? { name: r.name, seen: c.seen, correct: c.correct, pct: c.correct / c.seen } : null;
+    })
+    .filter(x => x && x.pct < 1)
+    .sort((a, b) => a.pct - b.pct || b.seen - a.seen)
+    .slice(0, 12);
+  html += '<div class="progress-section"><h3>Tests to review</h3>';
+  if (!s.totalDecisions) {
+    html += '<div class="sub">Play a few rounds and the tests you miss most will collect here as a study list.</div>';
+  } else if (reviewed.length === 0) {
+    html += '<div class="sub">No misses yet. You have identified every test you have seen. Impressive.</div>';
+  } else {
+    html += '<div class="sub">The tests you miss most, worst first. A good place to start studying.</div>';
+    html += reviewed.map(r =>
+      '<div class="stat-row"><span class="name">' + r.name + '</span>' +
+      '<span class="detail">' + r.correct + ' of ' + r.seen + ' right</span>' +
+      '<span class="pct low">' + Math.round(100 * r.pct) + '%</span></div>'
+    ).join('');
+  }
+  html += '</div>';
+
+  // Recent games log
+  html += '<div class="progress-section"><h3>Recent games</h3>';
+  if (s.history.length === 0) {
+    html += '<div class="sub">Finished games will appear here, newest first.</div>';
+  } else {
+    html += '<div class="sub">Your last ' + Math.min(s.history.length, 20) + ' finished games, newest first.</div>';
+    html += s.history.map(h => {
+      const a = h.decisions ? Math.round(100 * h.correct / h.decisions) : 0;
+      return '<div class="stat-row"><span class="name"><span class="hist-mode">' +
+        (MODE_LABELS[h.mode] || h.mode) + '</span><br>' + fmtDate(h.date) + '</span>' +
+        '<span class="detail">' + h.correct + ' of ' + h.decisions + ' right</span>' +
+        '<span class="pct">' + a + '%</span></div>';
+    }).join('');
+  }
+  html += '</div>';
+
+  // Reset
+  html += '<div class="reset-row"><button class="btn btn-danger" id="reset-btn" onclick="resetProgress()">Reset all progress and best scores</button></div>';
+
+  body.innerHTML = html;
+}
+
+let resetArmed = false;
+function resetProgress() {
+  const btn = document.getElementById('reset-btn');
+  if (!resetArmed) {
+    resetArmed = true;
+    btn.textContent = 'Tap again to erase everything';
+    setTimeout(() => { resetArmed = false; if (btn) btn.textContent = 'Reset all progress and best scores'; }, 4000);
+    return;
+  }
+  try {
+    localStorage.removeItem(STATS_KEY);
+    ['methodFinderBestScore', 'methodFinderBuildBestScore', 'methodFinderPrepBestScore',
+     'methodFinderSortBestScore', 'methodFinderGlossaryBestScore'].forEach(k => localStorage.removeItem(k));
+  } catch (e) {}
+  resetArmed = false;
+  state.best = 0;
+  renderScore();
+  renderProgress();
+}
+
+function switchTab(name) {
+  ['play', 'study', 'pantry', 'progress'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('active', t === name);
+    document.getElementById('view-' + t).classList.toggle('active', t === name);
+  });
+  if (name === 'study') renderDeck();
+  if (name === 'pantry') renderPantry();
+  if (name === 'progress') renderProgress();
+}
+
+/* ---------- Start ---------- */
+loadBest();
+resetGame();
+renderDeck();
+</script>
+</body>
+</html>

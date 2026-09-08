@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact · Robert Butts</title>
+<meta name="description" content="Get in touch with Robert Butts about data visualization and data projects.">
+
+<!--
+  ============================================================
+  CONTACT PAGE (contact_v2.html)
+
+  HOW THE FORM WORKS NOW:
+  The form sends through Formspree using the endpoint
+  https://formspree.io/f/mwvgvvov and the @formspree/ajax
+  library loaded from a CDN at the bottom of this page.
+
+    1. The library takes over the submit event, sends the
+       message in the background, and shows a success or
+       error message without leaving this page.
+    2. If the library ever fails to load, the form still
+       works: the action and method attributes on the form
+       tag submit the plain HTML way as a backup.
+    3. The hidden _gotcha field is a spam trap. Bots fill it
+       in, people never see it, and Formspree discards any
+       submission where it has a value.
+
+  DELIVERY ADDRESS NOTE:
+  The address messages get delivered to is set inside your
+  Formspree account, not in this file. Log in to formspree.io
+  and confirm the form delivers to rbutts42@gmail.com.
+  ============================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
+<!-- Styles for the form status messages, kept here so style.css does not
+     need a new version. Move them into style.css later if you prefer.
+     Colors come from the site palette: green 7FD18C, red F2716F. -->
+<style>
+  .form-status{
+    display:none;
+    font-family:var(--mono); font-size:.82rem; letter-spacing:.02em;
+    padding:14px 18px; border-radius:12px; margin-bottom:18px;
+  }
+  .form-status:not(:empty){display:block}
+  .form-status-success{background:rgba(127,209,140,.1); border:1px solid rgba(127,209,140,.38); color:#7FD18C}
+  .form-status-error{background:rgba(242,113,111,.1); border:1px solid rgba(242,113,111,.38); color:#F2716F}
+  .field-error{
+    display:none;
+    font-family:var(--mono); font-size:.74rem; color:#F2716F; margin-top:6px;
+  }
+  .field-error:not(:empty){display:block}
+  .form input[aria-invalid="true"], .form textarea[aria-invalid="true"]{border-color:rgba(242,113,111,.65)}
+  .form button[disabled]{opacity:.6; cursor:wait; transform:none}
+</style>
+</head>
+
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ===== NAV (keep identical on every page) ===== -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html" aria-label="Home">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      Robert Butts
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a class="section-link" href="work.html">Work</a>
+      <a class="section-link" href="about.html">About</a>
+      <a class="section-link" href="practice.html">Practice</a>
+      <a class="nav-cta" href="contact.html">Get in touch</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu"><span></span></button>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu" aria-label="Menu">
+  <a href="index.html">Home</a>
+  <a href="work.html">Work</a>
+  <a href="about.html">About</a>
+  <a href="practice.html">Practice</a>
+  <a href="contact.html">Get in touch</a>
+</div>
+
+<main id="main">
+
+<!-- ===== PAGE HEADER ===== -->
+<div class="page-head">
+  <div class="wrap">
+    <p class="eyebrow ph-a">Get in touch</p>
+    <h1 class="ph-b">Have data that needs a clearer story?</h1>
+    <p class="ph-lead ph-c">Tell me a little about your project or your dataset. I read every message and try to reply within a couple of days.</p>
+  </div>
+</div>
+
+<!-- ===== CONTACT ===== -->
+<section>
+  <div class="wrap contact-grid">
+
+    <div class="contact-card reveal">
+
+      <!-- ===== FORMSPREE FORM START ===== -->
+
+      <!-- Status messages. The Ajax library fills these in; they stay hidden while empty. -->
+      <div class="form-status form-status-success" data-fs-success role="status"></div>
+      <div class="form-status form-status-error" data-fs-error role="alert"></div>
+
+      <form class="form" id="contactForm" action="https://formspree.io/f/mwvgvvov" method="POST">
+        <div>
+          <label for="name">Your name</label>
+          <input id="name" name="name" type="text" placeholder="Jane Doe" data-fs-field required>
+          <span class="field-error" data-fs-error="name"></span>
+        </div>
+        <div>
+          <label for="email">Your email</label>
+          <input id="email" name="email" type="email" placeholder="jane@example.com" data-fs-field required>
+          <span class="field-error" data-fs-error="email"></span>
+        </div>
+        <div>
+          <label for="message">Message</label>
+          <textarea id="message" name="message" placeholder="A sentence or two about what you need." data-fs-field required></textarea>
+          <span class="field-error" data-fs-error="message"></span>
+        </div>
+
+        <!-- Sets the subject line of the email Formspree sends. -->
+        <input type="hidden" name="_subject" value="New message from the portfolio contact form">
+
+        <!-- Spam trap. Hidden from people, tempting to bots. Do not remove. -->
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px;">
+
+        <button class="btn btn-primary" type="submit" data-fs-submit-btn>Send message <span class="arr">&rarr;</span></button>
+        <p class="form-note">Your message sends right from this page. No email app needed.</p>
+      </form>
+
+      <!-- ===== FORMSPREE FORM END ===== -->
+
+    </div>
+
+    <aside>
+      <div class="side-card reveal d1">
+        <h3>Email me directly</h3>
+        <a class="big" href="mailto:rbutts42@gmail.com">rbutts42@gmail.com</a>
+        <p>The fastest way to reach me. Attachments welcome.</p>
+      </div>
+      <div class="side-card reveal d2">
+        <h3>Elsewhere</h3>
+        <a class="big" href="https://www.linkedin.com/in/robertmbutts/" target="_blank" rel="noopener">LinkedIn &rarr;</a>
+        <p>Work history, and a fine place to say hello.</p>
+      </div>
+      <div class="side-card reveal d3">
+        <h3>While you are here</h3>
+        <a class="big" href="practice.html">Try the practice tools &rarr;</a>
+        <p>Five free ways to sharpen your data skills, right in your browser.</p>
+      </div>
+    </aside>
+
+  </div>
+</section>
+
+</main>
+
+<!-- ===== FOOTER (keep identical on every page) ===== -->
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="fb-name">
+          <span class="mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+              <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          Robert Butts
+        </div>
+        <p>Data visualization and clear thinking, from a technologist in Ohio higher education.</p>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>Site</h4>
+          <a href="index.html">Home</a>
+          <a href="work.html">Work</a>
+          <a href="about.html">About</a>
+          <a href="practice.html">Practice</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="foot-col">
+          <h4>Elsewhere</h4>
+          <a href="https://www.linkedin.com/in/robertmbutts/" target="_blank" rel="noopener">LinkedIn</a>
+          <!-- Uncomment these once the profiles exist, matching the other pages:
+          <a href="#">GitHub</a>
+          <a href="#">YouTube</a>
+          -->
+        </div>
+        <div class="foot-col">
+          <h4>Say hello</h4>
+          <a href="mailto:rbutts42@gmail.com">rbutts42@gmail.com</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 Robert Butts. Built by hand.</span>
+      <span>Charts, questions, and the occasional insight.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="site.js"></script>
+
+<!-- Formspree Ajax setup. The first script queues the command, the second
+     loads the library from the CDN and runs it. Order matters: keep the
+     init script above the library script. -->
+<script>
+  window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+  formspree('initForm', { formElement: '#contactForm', formId: 'mwvgvvov' });
+</script>
+<script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visual Vocabulary Challenge · Robert Butts</title>
+<meta name="description" content="Build one chart in each of the nine Financial Times Visual Vocabulary families. A practice challenge for data fluency.">
+
+<!--
+  ============================================================
+  VISUAL VOCABULARY CHALLENGE (challenge.html)
+  Nine chart families, one checkbox each. Progress is saved in
+  the visitor's browser with localStorage under the key
+  'dvvc_progress_v1'. The small script at the bottom handles it.
+  Search for EDIT to find the parts to change.
+  ============================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ===== NAV (keep identical on every page) ===== -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html" aria-label="Home">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      Robert Butts
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a class="section-link" href="work.html">Work</a>
+      <a class="section-link" href="about.html">About</a>
+      <a class="section-link active" href="practice.html">Practice</a>
+      <a class="nav-cta" href="contact.html">Get in touch</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu"><span></span></button>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu" aria-label="Menu">
+  <a href="index.html">Home</a>
+  <a href="work.html">Work</a>
+  <a href="about.html">About</a>
+  <a href="practice.html">Practice</a>
+  <a href="contact.html">Get in touch</a>
+</div>
+
+<main id="main">
+
+<!-- ===== PAGE HEADER ===== -->
+<div class="page-head">
+  <div class="wrap">
+    <p class="eyebrow ph-a">Practice · Chart fluency</p>
+    <h1 class="ph-b">Data Visual Vocabulary Challenge</h1>
+    <p class="ph-lead ph-c">The Financial Times built a guide called the Visual Vocabulary that sorts charts into nine families, grouped by the kind of relationship you want to show. Here is the challenge: pick a dataset you care about and create one chart in each of the nine families. A tip and a small example sit in every card. Check each one off as you finish.</p>
+    <div class="challenge-progress ph-d" aria-label="Your progress">
+      <div class="cp-bar" aria-hidden="true"><i id="cpFill"></i></div>
+      <span class="cp-text" id="cpText">0 of 9 built</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== THE NINE CATEGORIES ===== -->
+<section>
+  <div class="wrap">
+    <div class="cat-grid">
+
+      <!-- 1. Deviation -->
+      <article class="cat-card reveal" data-color="red">
+        <div class="cat-top">
+          <span class="cat-num">01</span>
+          <span class="cat-chart"><svg viewBox="0 0 120 64" aria-hidden="true">
+            <line x1="6" y1="32" x2="114" y2="32" stroke="rgba(255,255,255,.10)" stroke-width="1"/>
+            <g fill="#F2716F">
+              <rect x="12" y="16" width="9" height="16" rx="1"/><rect x="27" y="23" width="9" height="9" rx="1"/>
+              <rect x="42" y="32" width="9" height="7" rx="1"/><rect x="57" y="12" width="9" height="20" rx="1"/>
+              <rect x="72" y="32" width="9" height="11" rx="1"/><rect x="87" y="27" width="9" height="5" rx="1"/>
+              <rect x="102" y="32" width="9" height="15" rx="1"/>
+            </g>
+          </svg></span>
+        </div>
+        <h3>Deviation</h3>
+        <p class="cat-shows">Show how values rise above or fall below a fixed reference point, usually zero, a target, or an average.</p>
+        <p class="cat-eg">Try: diverging bar, diverging stacked bar, surplus and deficit line.</p>
+        <p class="cat-tip"><b>Tip.</b> Anchor everything to a clear zero line so readers can see at a glance what sits above it and what sits below.</p>
+        <label class="done-toggle"><input type="checkbox" data-cat="deviation"><span class="box"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#0E1116" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Mark as built</span></label>
+      </article>
+
+      <!-- 2. Correlation -->
+      <article class="cat-card reveal" data-color="violet">
+        <div class="cat-top">
+          <span class="cat-num">02</span>
+          <span class="cat-chart"><svg viewBox="0 0 120 64" aria-hidden="true">
+            <line x1="12" y1="52" x2="108" y2="16" stroke="#B79CFF" stroke-width="2" stroke-dasharray="4 4" opacity=".6"/>
+            <g fill="#B79CFF">
+              <circle cx="16" cy="48" r="2.6"/><circle cx="28" cy="42" r="2.6"/><circle cx="36" cy="46" r="2.6"/>
+              <circle cx="48" cy="38" r="2.6"/><circle cx="60" cy="40" r="2.6"/><circle cx="72" cy="30" r="2.6"/>
+              <circle cx="84" cy="32" r="2.6"/><circle cx="96" cy="22" r="2.6"/><circle cx="106" cy="18" r="2.6"/>
+            </g>
+          </svg></span>
+        </div>
+        <h3>Correlation</h3>
+        <p class="cat-shows">Show the relationship between two or more variables, and whether they move together.</p>
+        <p class="cat-eg">Try: scatterplot, bubble chart, connected scatterplot.</p>
+        <p class="cat-tip"><b>Tip.</b> A pattern is not proof of cause. Let the chart suggest the link, and explain the limits in your words.</p>
+        <label class="done-toggle"><input type="checkbox" data-cat="correlation"><span class="box"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#0E1116" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Mark as built</span></label>
+      </article>
+
+      <!-- 3. Ranking -->
+      <article class="cat-card reveal" data-color="blue">
+        <div class="cat-top">
+          <span class="cat-num">03</span>
+          <span class="cat-chart"><svg viewBox="0 0 120 64" aria-hidden="true">
+            <g fill="#75AADB">
+              <rect x="12" y="10" width="96" height="6" rx="2"/><rect x="12" y="22" width="78" height="6" rx="2"/>
+              <rect x="12" y="34" width="60" height="6" rx="2"/><rect x="12" y="46" width="42" height="6" rx="2"/>
+            </g>
+          </svg></span>
+        </div>
+        <h3>Ranking</h3>
+        <p class="cat-shows">Use when an item's place in an ordered list matters more than its exact amount.</p>
+        <p class="cat-eg">Try: ordered bar, ordered column, lollipop, dot plot.</p>
+        <p class="cat-tip"><b>Tip.</b> Sort the bars by value and label them directly, so the order itself does the explaining.</p>
+        <label class="done-toggle"><input type="checkbox" data-cat="ranking"><span class="box"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#0E1116" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Mark as built</span></label>
+      </article>
+
+      <!-- 4. Distribution -->
+      <article class="cat-card reveal" data-color="green">
+        <div class="cat-top">
+          <span class="cat-num">04</span>
+          <span class="cat-chart"><svg viewBox="0 0 120 64" aria-hidden="true">
+            <line x1="8" y1="56" x2="112" y2="56" stroke="rgba(255,255,255,.10)" stroke-width="1"/>
+            <g fill="#7FD18C">
+              <rect x="12" y="48" width="9" height="8" rx="1"/><rect x="23" y="40" width="9" height="16" rx="1"/>
+              <rect x="34" y="28" width="9" height="28" rx="1"/><rect x="45" y="16" width="9" height="40" rx="1"/>
+              <rect x="56" y="10" width="9" height="46" rx="1"/><rect x="67" y="16" width="9" height="40" rx="1"/>
+              <rect x="78" y="28" width="9" height="28" rx="1"/><rect x="89" y="40" width="9" height="16" rx="1"/>
+              <rect x="100" y="48" width="9" height="8" rx="1"/>
+            </g>
+          </svg></span>
+        </div>
+        <h3>Distribution</h3>
+        <p class="cat-shows">Show the values in a dataset and how often each one occurs. The shape reveals spread and outliers.</p>
+        <p class="cat-eg">Try: histogram, box plot, violin plot, population pyramid.</p>
+        <p class="cat-tip"><b>Tip.</b> Choose a sensible bin width. Too many bins looks noisy, too few hides the real shape.</p>
+        <label class="done-toggle"><input type="checkbox" data-cat="distribution"><span class="box"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#0E1116" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Mark as built</span></label>
+      </article>
+
+      <!-- 5. Change over Time -->
+      <article class="cat-card reveal" data-color="amber">
+        <div class="cat-top">
+          <span class="cat-num">05</span>
+          <span class="cat-chart"><svg viewBox="0 0 120 64" aria-hidden="true">
+            <line x1="8" y1="56" x2="112" y2="56" stroke="rgba(255,255,255,.10)" stroke-width="1"/>
+            <polyline points="12,46 28,40 44,44 60,30 76,34 92,20 108,24" fill="none" stroke="#F0B95A" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+            <g fill="#F0B95A"><circle cx="60" cy="30" r="2.6"/><circle cx="108" cy="24" r="2.6"/></g>
+          </svg></span>
+        </div>
+        <h3>Change over Time</h3>
+        <p class="cat-shows">Give a sense of a trend, showing how a value moves across a period.</p>
+        <p class="cat-eg">Try: line chart, area chart, column over time, slope chart.</p>
+        <p class="cat-tip"><b>Tip.</b> Keep the time steps evenly spaced. If you use bars or area, start the value axis at zero.</p>
+        <label class="done-toggle"><input type="checkbox" data-cat="change"><span class="box"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#0E1116" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Mark as built</span></label>
+      </article>
+
+      <!-- 6. Magnitude -->
+      <article class="cat-card reveal" data-color="blue">
+        <div class="cat-top">
+          <span class="cat-num">06</span>
+          <span class="cat-chart"><svg viewBox="0 0 120 64" aria-hidden="true">
+            <line x1="8" y1="56" x2="112" y2="56" stroke="rgba(255,255,255,.10)" stroke-width="1"/>
+            <g fill="#75AADB">
+              <rect x="14" y="34" width="14" height="22" rx="1"/><rect x="34" y="18" width="14" height="38" rx="1"/>
+              <rect x="54" y="26" width="14" height="30" rx="1"/><rect x="74" y="10" width="14" height="46" rx="1"/>
+              <rect x="94" y="38" width="14" height="18" rx="1"/>
+            </g>
+          </svg></span>
+        </div>
+        <h3>Magnitude</h3>
+        <p class="cat-shows">Compare sizes or amounts between things, either in absolute numbers or relative to each other.</p>
+        <p class="cat-eg">Try: column chart, bar chart, paired column, bullet chart.</p>
+        <p class="cat-tip"><b>Tip.</b> Compare lengths, not areas. People judge the length of a bar far more accurately than the size of a circle.</p>
+        <label class="done-toggle"><input type="checkbox" data-cat="magnitude"><span class="box"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#0E1116" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Mark as built</span></label>
+      </article>
+
+      <!-- 7. Part-to-whole -->
+      <article class="cat-card reveal" data-color="green">
+        <div class="cat-top">
+          <span class="cat-num">07</span>
+          <span class="cat-chart"><svg viewBox="0 0 120 64" aria-hidden="true">
+            <circle cx="60" cy="32" r="20" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="10"/>
+            <circle cx="60" cy="32" r="20" fill="none" stroke="#7FD18C" stroke-width="10" stroke-dasharray="82 126" transform="rotate(-90 60 32)"/>
+          </svg></span>
+        </div>
+        <h3>Part-to-whole</h3>
+        <p class="cat-shows">Show how a single total breaks down into the pieces that make it up.</p>
+        <p class="cat-eg">Try: stacked bar, pie, donut, treemap, waterfall.</p>
+        <p class="cat-tip"><b>Tip.</b> Use this only when the parts truly add up to one whole, and keep the number of pieces small.</p>
+        <label class="done-toggle"><input type="checkbox" data-cat="parttowhole"><span class="box"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#0E1116" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Mark as built</span></label>
+      </article>
+
+      <!-- 8. Spatial -->
+      <article class="cat-card reveal" data-color="amber">
+        <div class="cat-top">
+          <span class="cat-num">08</span>
+          <span class="cat-chart"><svg viewBox="0 0 120 64" aria-hidden="true">
+            <g fill="#F0B95A">
+              <rect x="10" y="8"  width="18" height="14" rx="2" opacity=".35"/><rect x="31" y="8"  width="18" height="14" rx="2" opacity=".7"/><rect x="52" y="8"  width="18" height="14" rx="2" opacity=".25"/><rect x="73" y="8"  width="18" height="14" rx="2" opacity=".55"/><rect x="94" y="8"  width="18" height="14" rx="2" opacity=".4"/>
+              <rect x="10" y="25" width="18" height="14" rx="2" opacity=".6"/><rect x="31" y="25" width="18" height="14" rx="2" opacity=".95"/><rect x="52" y="25" width="18" height="14" rx="2" opacity=".4"/><rect x="73" y="25" width="18" height="14" rx="2" opacity=".75"/><rect x="94" y="25" width="18" height="14" rx="2" opacity=".3"/>
+              <rect x="10" y="42" width="18" height="14" rx="2" opacity=".25"/><rect x="31" y="42" width="18" height="14" rx="2" opacity=".5"/><rect x="52" y="42" width="18" height="14" rx="2" opacity=".8"/><rect x="73" y="42" width="18" height="14" rx="2" opacity=".35"/><rect x="94" y="42" width="18" height="14" rx="2" opacity=".6"/>
+            </g>
+          </svg></span>
+        </div>
+        <h3>Spatial</h3>
+        <p class="cat-shows">Use when the location itself is the point, and the pattern lives on a map.</p>
+        <p class="cat-eg">Try: choropleth map, proportional symbol map, dot density, cartogram.</p>
+        <p class="cat-tip"><b>Tip.</b> Reach for a map only when place matters. If it does not, a plain bar chart is often clearer.</p>
+        <label class="done-toggle"><input type="checkbox" data-cat="spatial"><span class="box"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#0E1116" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Mark as built</span></label>
+      </article>
+
+      <!-- 9. Flow -->
+      <article class="cat-card reveal" data-color="violet">
+        <div class="cat-top">
+          <span class="cat-num">09</span>
+          <span class="cat-chart"><svg viewBox="0 0 120 64" aria-hidden="true">
+            <path d="M16,8 C 50,8 70,6 104,6 L104,30 C 70,30 50,28 16,28 Z" fill="#B79CFF" opacity=".28"/>
+            <path d="M16,34 C 50,34 70,36 104,36 L104,52 C 70,52 50,54 16,54 Z" fill="#B79CFF" opacity=".28"/>
+            <g fill="#B79CFF">
+              <rect x="8" y="8" width="8" height="20" rx="1"/><rect x="8" y="34" width="8" height="20" rx="1"/>
+              <rect x="104" y="6" width="8" height="24" rx="1"/><rect x="104" y="36" width="8" height="16" rx="1"/>
+            </g>
+          </svg></span>
+        </div>
+        <h3>Flow</h3>
+        <p class="cat-shows">Show movement or volume passing between two or more states, places, or stages.</p>
+        <p class="cat-eg">Try: Sankey diagram, chord diagram, network, waterfall.</p>
+        <p class="cat-tip"><b>Tip.</b> Show direction and volume together, and limit the number of paths so the picture stays readable.</p>
+        <label class="done-toggle"><input type="checkbox" data-cat="flow"><span class="box"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#0E1116" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Mark as built</span></label>
+      </article>
+
+    </div>
+
+    <p class="challenge-note reveal">
+      The nine categories come from the Financial Times Visual Vocabulary, created by the FT visual journalism team and inspired by the Graphic Continuum. You can see the original guide and example files
+      <a href="https://github.com/Financial-Times/chart-doctor/tree/main/visual-vocabulary" target="_blank" rel="noopener">on the FT chart-doctor page</a>.
+      Your progress on this challenge is saved in your browser on this device.
+    </p>
+  </div>
+</section>
+
+</main>
+
+<!-- ===== FOOTER (keep identical on every page) ===== -->
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="fb-name">
+          <span class="mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+              <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          Robert Butts
+        </div>
+        <p>Data visualization and clear thinking, from a technologist in Ohio higher education.</p>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>Site</h4>
+          <a href="index.html">Home</a>
+          <a href="work.html">Work</a>
+          <a href="about.html">About</a>
+          <a href="practice.html">Practice</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="foot-col">
+          <h4>Elsewhere</h4>
+          <a href="https://www.linkedin.com/in/robertmbutts/" target="_blank" rel="noopener">LinkedIn</a>
+          <!-- EDIT: add your GitHub and YouTube links, or delete these two lines
+          <a href="#">GitHub</a>
+          <a href="#">YouTube</a>
+          -->
+        </div>
+        <div class="foot-col">
+          <h4>Say hello</h4>
+          <a href="mailto:rbutts42@gmail.com">rbutts42@gmail.com</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 Robert Butts. Built by hand.</span>
+      <span>Made in Ohio.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="site.js"></script>
+<script>
+/* Progress for the challenge: save which categories are checked. */
+(function(){
+  var KEY = 'dvvc_progress_v1';
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ saved = {}; }
+  var boxes = document.querySelectorAll('.done-toggle input[type="checkbox"]');
+  var fill = document.getElementById('cpFill');
+  var text = document.getElementById('cpText');
+  var total = boxes.length;
+
+  function update(save){
+    var done = 0;
+    boxes.forEach(function(b){
+      var card = b.closest('.cat-card');
+      if(b.checked){ done++; if(card) card.classList.add('is-done'); }
+      else if(card){ card.classList.remove('is-done'); }
+    });
+    if(fill) fill.style.width = (total ? (done / total * 100) : 0) + '%';
+    if(text) text.textContent = done + ' of ' + total + ' built';
+    if(save){
+      var obj = {};
+      boxes.forEach(function(b){ obj[b.dataset.cat] = b.checked; });
+      try { localStorage.setItem(KEY, JSON.stringify(obj)); } catch(e){}
+    }
+  }
+
+  boxes.forEach(function(b){
+    if(saved[b.dataset.cat]) b.checked = true;
+    b.addEventListener('change', function(){ update(true); });
+  });
+  update(false);
+})();
+</script>
+</body>
+</html>

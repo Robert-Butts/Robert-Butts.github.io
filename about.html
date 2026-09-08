@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About · Robert Butts</title>
+<meta name="description" content="About Robert Butts, a data visualization designer and education technologist in Ohio.">
+
+<!--
+  ============================================================
+  ABOUT PAGE (about.html)
+  Tell your story here. Replace the photo placeholder with a
+  real picture:
+    <img class="portrait" src="your-photo.jpg" alt="Photo of Robert Butts">
+  Search for EDIT to find the parts to change.
+  ============================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ===== NAV (keep identical on every page) ===== -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html" aria-label="Home">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      Robert Butts
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a class="section-link" href="work.html">Work</a>
+      <a class="section-link active" href="about.html" aria-current="page">About</a>
+      <a class="section-link" href="practice.html">Practice</a>
+      <a class="nav-cta" href="contact.html">Get in touch</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu"><span></span></button>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu" aria-label="Menu">
+  <a href="index.html">Home</a>
+  <a href="work.html">Work</a>
+  <a href="about.html">About</a>
+  <a href="practice.html">Practice</a>
+  <a href="contact.html">Get in touch</a>
+</div>
+
+<main id="main">
+
+<!-- ===== PAGE HEADER ===== -->
+<div class="page-head">
+  <div class="wrap">
+    <p class="eyebrow ph-a">About</p>
+    <h1 class="ph-b">Hi, I am Robert Butts.</h1>
+    <p class="ph-lead ph-c">I work at Denison University, where I help faculty, staff, and students use technology to teach more clearly, learn more confidently, and make better decisions.</p>
+  </div>
+</div>
+
+<!-- ===== BIO + PORTRAIT ===== -->
+<section>
+  <div class="wrap about-grid">
+    <div class="about-text reveal">
+      <!-- EDIT: your story -->
+      <p>The thread through all of my work is the same: <strong>taking something complicated and making it clear.</strong> In my day job that means helping faculty choose and use the right tools. On my own time it means turning data into pictures that answer a question at a glance, and building small interactive tools that make learning stick.</p>
+      <p>I am always learning. Right now I am deep in data analytics, looking for new ways to bring numbers into more parts of my work and my life. Away from the screen I enjoy basketball, video games, and watching the show Taskmaster with my wife.</p>
+
+	<div class="goal-line reveal">
+	<b>&gt; focus</b><br>
+	I care about designing learning experiences that feel approachable, useful, and worth coming back to.
+	</div>
+            
+     <div class="chips">
+        <span class="chip">Data Visualization</span>
+        <span class="chip">Learning Design</span>
+        <span class="chip">Dashboards</span>
+        <span class="chip">Interactive Tools</span>
+      </div>
+    </div>
+
+    <!-- My Headshot -->
+    <div class="portrait reveal d1">
+	<img src="./images/profile/robert-headshot.jpg" alt="Headshot of Robert Butts">
+	</div>
+</div>
+  </div>
+</section>
+
+<!-- ===== WHAT I DO ===== -->
+<section class="tools">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">What I do</p>
+      <h2>A few ways I can help.</h2>
+    </div>
+    <div class="dolist">
+      <!-- EDIT these rows -->
+      <div class="row reveal" data-dc="blue"><i aria-hidden="true"></i><span><b>Design clear data visualizations</b> and dashboards that a busy person can read in seconds.</span></div>
+      <div class="row reveal d1" data-dc="green"><i aria-hidden="true"></i><span><b>Help teaching teams</b> pick, set up, and use classroom technology in creative ways.</span></div>
+      <div class="row reveal d2" data-dc="violet"><i aria-hidden="true"></i><span><b>Turn raw spreadsheets into reports</b> that lead to a decision, not just a stack of numbers.</span></div>
+      <div class="row reveal d3" data-dc="amber"><i aria-hidden="true"></i><span><b>Build small interactive tools,</b> like the practice games on this site, that make learning stick.</span></div>
+    </div>
+    <div class="cta-row reveal" style="margin-top:40px">
+      <a class="btn btn-primary" href="contact.html">Work with me <span class="arr">&rarr;</span></a>
+      <a class="btn btn-ghost" href="work.html">See the work</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===== FOOTER (keep identical on every page) ===== -->
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="fb-name">
+          <span class="mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+              <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          Robert Butts
+        </div>
+        <p>Data visualization and clear thinking, from a technologist in Ohio higher education.</p>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>Site</h4>
+          <a href="index.html">Home</a>
+          <a href="work.html">Work</a>
+          <a href="about.html">About</a>
+          <a href="practice.html">Practice</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="foot-col">
+          <h4>Elsewhere</h4>
+          <a href="https://www.linkedin.com/in/robertmbutts/" target="_blank" rel="noopener">LinkedIn</a>
+          <!-- EDIT: add your GitHub and YouTube links, or delete these two lines 
+          <a href="#">GitHub</a>
+          <a href="#">YouTube</a>
+		  -->
+        </div>
+        <div class="foot-col">
+          <h4>Say hello</h4>
+          <a href="mailto:rbutts42@gmail.com">rbutts42@gmail.com</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 Robert Butts.</span>
+      <span>Charts, questions, and the occasional insight.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="site.js"></script>
+</body>
+</html>

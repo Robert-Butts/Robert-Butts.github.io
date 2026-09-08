@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practice · Robert Butts</title>
+<meta name="description" content="Free interactive tools for practicing data analytics: R flashcards, chart fluency, statistical tests, and research design.">
+
+<!--
+  ============================================================
+  PRACTICE HUB (practice.html)
+  The home for every interactive learning tool on the site.
+  To add a future tool, copy one <article class="hub-card"> block
+  and point its launch button at the new file.
+  Search for EDIT to find the parts to change.
+  ============================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ===== NAV (keep identical on every page) ===== -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html" aria-label="Home">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      Robert Butts
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a class="section-link" href="work.html">Work</a>
+      <a class="section-link" href="about.html">About</a>
+      <a class="section-link active" href="practice.html" aria-current="page">Practice</a>
+      <a class="nav-cta" href="contact.html">Get in touch</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu"><span></span></button>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu" aria-label="Menu">
+  <a href="index.html">Home</a>
+  <a href="work.html">Work</a>
+  <a href="about.html">About</a>
+  <a href="practice.html">Practice</a>
+  <a href="contact.html">Get in touch</a>
+</div>
+
+<main id="main">
+
+<!-- ===== PAGE HEADER ===== -->
+<div class="page-head">
+  <div class="wrap">
+    <p class="eyebrow ph-a">Practice</p>
+    <h1 class="ph-b">Learn data analytics by doing.</h1>
+    <p class="ph-lead ph-c">Five small tools I built for students and anyone curious about data. They are free, they need no sign-up, and they run entirely in your browser. Come back any time; your progress will be waiting.</p>
+  </div>
+</div>
+
+<!-- ===== PICK WHERE TO START ===== -->
+<section style="padding-bottom:0">
+  <div class="wrap">
+    <div class="sec-head reveal" style="margin-bottom:30px">
+      <p class="eyebrow">Start here</p>
+      <h2>Pick the question that sounds like you.</h2>
+    </div>
+    <div class="path">
+      <a class="path-item reveal" data-pc="red" href="chart-field-guide.html">
+        <p class="pq">Which chart is this?</p>
+        <p class="pa">Chart Field Guide <span class="arr">&rarr;</span></p>
+      </a>
+      <a class="path-item reveal" data-pc="amber" href="challenge.html">
+        <p class="pq">Which chart should I use?</p>
+        <p class="pa">Visual Vocabulary <span class="arr">&rarr;</span></p>
+      </a>
+      <a class="path-item reveal d1" data-pc="blue" href="recall.html">
+        <p class="pq">How do I learn R?</p>
+        <p class="pa">recall() decks <span class="arr">&rarr;</span></p>
+      </a>
+      <a class="path-item reveal d2" data-pc="green" href="method-finder.html">
+        <p class="pq">Which test do I run?</p>
+        <p class="pa">The Method Finder <span class="arr">&rarr;</span></p>
+      </a>
+      <a class="path-item reveal d3" data-pc="violet" href="research-card-builder.html">
+        <p class="pq">Is my study designed well?</p>
+        <p class="pa">Card Builder <span class="arr">&rarr;</span></p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== THE TOOLS ===== -->
+<section>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">The shelf</p>
+      <h2>Every tool, in one place.</h2>
+    </div>
+
+    <div class="hub-grid">
+
+      <!-- Chart Field Guide (flagship) -->
+      <article class="hub-card featured reveal" data-tc="red" data-tilt>
+        <div class="hub-head">
+          <div>
+            <span class="flag-chip">&#9733; Flagship</span>
+            <p class="hub-kicker">Chart fluency · field guide</p>
+            <h3>The Chart Field Guide</h3>
+          </div>
+          <span class="hub-viz" aria-hidden="true">
+            <svg viewBox="0 0 76 54">
+              <line x1="8" y1="44" x2="68" y2="44" stroke="rgba(255,255,255,.14)" stroke-width="1.5"/>
+              <g fill="#F2716F">
+                <rect x="12" y="28" width="7" height="16" rx="1"/>
+                <rect x="23" y="20" width="7" height="24" rx="1"/>
+                <rect x="34" y="33" width="7" height="11" rx="1"/>
+              </g>
+              <polyline points="46,36 54,24 62,29 68,14" fill="none" stroke="#F2716F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="68" cy="14" r="3" fill="#F2716F"/>
+            </svg>
+          </span>
+        </div>
+        <p>The one I am most proud of. A field guide to 58 chart types across all nine families: learn each chart by its field marks, what it serves, and where it goes wrong, then prove it across four quiz modes. Spot the traits. Name the chart.</p>
+        <div class="hub-stats">
+          <span class="stat-chip"><b>58</b> chart types</span>
+          <span class="stat-chip"><b>9</b> families</span>
+          <span class="stat-chip"><b>4</b> play modes</span>
+          <span class="stat-chip"><b>43</b> glossary terms</span>
+        </div>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="chart-field-guide.html">Open the field guide <span class="arr">&rarr;</span></a>
+        </div>
+      </article>
+
+      <!-- recall() flashcards -->
+      <article class="hub-card reveal" data-tc="blue" data-tilt>
+        <div class="hub-head">
+          <div>
+            <p class="hub-kicker">recall() · R flashcards</p>
+            <h3>Study decks for R</h3>
+          </div>
+          <span class="hub-viz" aria-hidden="true">
+            <svg viewBox="0 0 76 54">
+              <rect x="10" y="8" width="44" height="34" rx="4" fill="none" stroke="#75AADB" stroke-width="2" opacity=".5"/>
+              <rect x="20" y="16" width="44" height="34" rx="4" fill="#0E1116" stroke="#75AADB" stroke-width="2"/>
+              <path d="M28 27 l6 5 -6 5" fill="none" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="42" y1="37" x2="56" y2="37" stroke="#75AADB" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+            </svg>
+          </span>
+        </div>
+        <p>Flashcards I built while learning R, from setup to the full tidyverse. Each session adapts to how well you know a card, and weak cards circle back until they stick.</p>
+        <div class="hub-stats">
+          <span class="stat-chip"><b>1,568</b> cards</span>
+          <span class="stat-chip"><b>28</b> decks</span>
+          <span class="stat-chip"><b>4-key</b> confidence review</span>
+        </div>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="recall.html">Open recall() <span class="arr">&rarr;</span></a>
+        </div>
+      </article>
+
+      <!-- Visual Vocabulary Challenge -->
+      <article class="hub-card reveal d1" data-tc="amber" data-tilt>
+        <div class="hub-head">
+          <div>
+            <p class="hub-kicker">Chart fluency</p>
+            <h3>Visual Vocabulary Challenge</h3>
+          </div>
+          <span class="hub-viz" aria-hidden="true">
+            <svg viewBox="0 0 76 54">
+              <g fill="#F0B95A">
+                <rect x="8" y="30" width="5" height="14" rx="1"/><rect x="15" y="22" width="5" height="22" rx="1"/><rect x="22" y="34" width="5" height="10" rx="1"/>
+              </g>
+              <polyline points="34,40 40,30 46,34 52,22" fill="none" stroke="#F0B95A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="63" cy="18" r="8" fill="none" stroke="#F0B95A" stroke-width="4" opacity=".35"/>
+              <path d="M63 10 a8 8 0 0 1 6.9 12.4" fill="none" stroke="#F0B95A" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+          </span>
+        </div>
+        <p>Pick a dataset you care about and build one chart in each of the nine chart families from the Financial Times Visual Vocabulary. Check each family off as you go.</p>
+        <div class="hub-stats">
+          <span class="stat-chip"><b>9</b> chart families</span>
+          <span class="stat-chip"><b>FT</b> framework</span>
+          <span class="stat-chip"><b>1</b> tip per family</span>
+        </div>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="challenge.html">Take the challenge <span class="arr">&rarr;</span></a>
+        </div>
+      </article>
+
+      <!-- Method Finder -->
+      <article class="hub-card reveal" data-tc="green" data-tilt>
+        <div class="hub-head">
+          <div>
+            <p class="hub-kicker">Statistical tests</p>
+            <h3>The Method Finder</h3>
+          </div>
+          <span class="hub-viz" aria-hidden="true">
+            <svg viewBox="0 0 76 54">
+              <line x1="22" y1="27" x2="40" y2="27" stroke="#7FD18C" stroke-width="2"/>
+              <line x1="40" y1="27" x2="52" y2="15" stroke="#7FD18C" stroke-width="2"/>
+              <line x1="40" y1="27" x2="52" y2="39" stroke="#7FD18C" stroke-width="2"/>
+              <circle cx="18" cy="27" r="5" fill="#7FD18C"/>
+              <circle cx="56" cy="14" r="4" fill="none" stroke="#7FD18C" stroke-width="2"/>
+              <circle cx="56" cy="40" r="4" fill="none" stroke="#7FD18C" stroke-width="2"/>
+            </svg>
+          </span>
+        </div>
+        <p>A field guide game for choosing the right statistical test. Learn each test by its traits, sort the families, and match real research scenarios to the method they need.</p>
+        <div class="hub-stats">
+          <span class="stat-chip"><b>18</b> tests</span>
+          <span class="stat-chip"><b>5</b> families</span>
+          <span class="stat-chip"><b>12</b> scenarios</span>
+          <span class="stat-chip"><b>38</b> glossary terms</span>
+        </div>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="method-finder.html">Find the method <span class="arr">&rarr;</span></a>
+        </div>
+      </article>
+
+      <!-- Research Card Builder -->
+      <article class="hub-card reveal d1" data-tc="violet" data-tilt>
+        <div class="hub-head">
+          <div>
+            <p class="hub-kicker">Research design</p>
+            <h3>The Research Card Builder</h3>
+          </div>
+          <span class="hub-viz" aria-hidden="true">
+            <svg viewBox="0 0 76 54">
+              <g stroke="#B79CFF" stroke-width="2">
+                <rect x="16" y="31" width="44" height="12" rx="3" fill="#0E1116"/>
+                <rect x="16" y="21" width="44" height="12" rx="3" fill="#161B23"/>
+                <rect x="16" y="11" width="44" height="12" rx="3" fill="#1B212B"/>
+              </g>
+            </svg>
+          </span>
+        </div>
+        <p>Assemble a research study piece by piece in a timed hackathon mode. Choose your project tier, build the design, and watch out for the wild cards that trap real studies.</p>
+        <div class="hub-stats">
+          <span class="stat-chip"><b>Timed</b> project tiers</span>
+          <span class="stat-chip"><b>Wild</b> cards</span>
+          <span class="stat-chip"><b>Design</b> traps</span>
+        </div>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="research-card-builder.html">Build a study <span class="arr">&rarr;</span></a>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- EDIT: when a new game is finished, turn this strip into a
+         hub-card above and point it at the new file. -->
+    <div class="soon reveal">
+      <span class="dot" aria-hidden="true"></span>
+      <span>In development: <b>Stat Verdict</b>, an interpretation game about statistical inference. Weigh the evidence. Make the call.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HOW PROGRESS WORKS ===== -->
+<section class="tools" style="padding-top:0">
+  <div class="wrap">
+    <div class="note-band reveal">
+      <b>How your progress is saved.</b> Each tool stores your progress in this browser on this device, so you can leave and pick up where you stopped. Fair warning about the limits: a private window forgets everything when it closes, and a different browser or device starts fresh. Nothing is sent anywhere, and there is no account to make.
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===== FOOTER (keep identical on every page) ===== -->
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="fb-name">
+          <span class="mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+              <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          Robert Butts
+        </div>
+        <p>Data visualization and clear thinking, from a technologist in Ohio higher education.</p>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>Site</h4>
+          <a href="index.html">Home</a>
+          <a href="work.html">Work</a>
+          <a href="about.html">About</a>
+          <a href="practice.html">Practice</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="foot-col">
+          <h4>Elsewhere</h4>
+          <a href="https://www.linkedin.com/in/robertmbutts/" target="_blank" rel="noopener">LinkedIn</a>
+          <!-- EDIT: add your GitHub and YouTube links, or delete these two lines 
+          <a href="#">GitHub</a>
+          <a href="#">YouTube</a>
+		  -->
+        </div>
+        <div class="foot-col">
+          <h4>Say hello</h4>
+          <a href="mailto:rbutts42@gmail.com">rbutts42@gmail.com</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 Robert Butts.</span>
+      <span>Charts, questions, and the occasional insight.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="site.js"></script>
+</body>
+</html>

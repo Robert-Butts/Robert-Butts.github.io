@@ -1,0 +1,2450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Chart Field Guide: Visualization Spotting Game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* site reskin: slate page, blue structure, green identity */
+    --cream: #0E1116;
+    --cream-shadow: #1B212B;
+    --ink: #E8EDF4;
+    --ink-medium: #A9B4C2;
+    --ink-muted: #8B97A7;
+    --brown: #75AADB;
+    --brown-light: #8FB3D9;
+    --green: #97DEA2;
+    --green-dark: #7FD18C;
+    --green-pale: rgba(127,209,140,.12);
+    --red: #F2716F;
+    --red-pale: rgba(242,113,111,.12);
+    --divider: #232B36;
+    --gold: #2E3845;
+    --card-radius: 14px;
+    --display: 'Bricolage Grotesque', system-ui, sans-serif;
+    --body: 'IBM Plex Sans', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--body);
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.5;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.028) 1px, transparent 0);
+    background-size: 26px 26px;
+    min-height: 100vh;
+  }
+
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 18px 60px; }
+
+  /* Header */
+  header { text-align: center; padding: 18px 0 10px; }
+  .kicker {
+    font-family: var(--body); font-weight: 600; font-size: 11px;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--brown-light);
+  }
+  .kicker::before, .kicker::after { content: " \2666 "; color: var(--green); font-size: 9px; }
+  h1 {
+    font-family: var(--display); font-weight: 600; font-size: 44px;
+    color: var(--ink); margin: 4px 0 2px;
+  }
+  .tagline {
+    font-family: var(--display); font-style: italic; font-size: 18px;
+    color: var(--ink-muted);
+  }
+  .rule {
+    width: 220px; height: 1px; background: var(--divider);
+    margin: 16px auto; position: relative;
+  }
+  .rule::after {
+    content: "\2666"; position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -54%); color: var(--divider);
+    font-size: 10px; background: var(--cream); padding: 0 8px;
+  }
+
+  /* Tabs */
+  .tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 22px; flex-wrap: wrap; }
+  .tab {
+    font-family: var(--body); font-weight: 600; font-size: 13px;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    background: transparent; color: var(--brown);
+    border: 1.5px solid var(--brown); border-radius: 999px;
+    padding: 8px 20px; cursor: pointer; transition: background 0.15s, color 0.15s;
+  }
+  .tab:hover { background: var(--cream-shadow); }
+  .tab.active { background: var(--brown); color: var(--cream); }
+  .tab:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 3px solid var(--green); outline-offset: 2px;
+  }
+
+  /* Layout */
+  .game-grid { display: grid; grid-template-columns: 1fr 340px; gap: 22px; align-items: start; }
+  @media (max-width: 880px) { .game-grid { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: #161B23; border: 1px solid var(--divider);
+    border-radius: var(--card-radius); padding: 22px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.35);
+  }
+
+  /* Scoreboard */
+  .scoreboard {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px;
+  }
+  .score-chip {
+    flex: 1; min-width: 90px; text-align: center;
+    background: var(--cream-shadow); border-radius: 10px; padding: 8px 6px;
+  }
+  .score-chip .num { font-family: var(--display); font-weight: 600; font-size: 26px; line-height: 1.1; color: var(--green-dark); }
+  .score-chip .lbl { font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); }
+
+  /* Ingredients */
+  .section-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--green-dark); margin-bottom: 8px;
+  }
+  .basket {
+    background: var(--cream-shadow); border-left: 3px solid var(--green);
+    border-radius: 0 10px 10px 0; padding: 14px 16px; margin-bottom: 18px;
+  }
+  .basket ul { list-style: none; }
+  .basket li {
+    font-size: 15px; color: var(--ink-medium); padding: 3px 0 3px 22px; position: relative;
+  }
+  .basket li::before {
+    content: ""; position: absolute; left: 2px; top: 11px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green); opacity: 0.7;
+  }
+
+  /* Choices */
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  @media (max-width: 520px) { .choices { grid-template-columns: 1fr; } }
+  .choice {
+    font-family: var(--body); font-weight: 600; font-size: 15px;
+    background: #161B23; color: var(--ink);
+    border: 1.5px solid var(--divider); border-radius: 10px;
+    padding: 14px 12px; cursor: pointer; text-align: center;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  }
+  .choice:hover:not(:disabled) { border-color: var(--brown); background: var(--cream-shadow); transform: translateY(-1px); }
+  .choice:disabled { cursor: default; opacity: 0.85; }
+  .choice.correct { border-color: var(--green-dark); background: var(--green-pale); color: var(--green-dark); }
+  .choice.wrong { border-color: var(--red); background: var(--red-pale); color: var(--red); }
+  .choice.selected { border-color: var(--green-dark); background: var(--green-pale); }
+  .choice.missed { border-style: dashed; border-color: var(--green-dark); color: var(--green-dark); background: transparent; }
+
+  /* Mode toggle */
+  .mode-toggle { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .mode-btn {
+    font-family: var(--body); font-weight: 600; font-size: 12.5px;
+    letter-spacing: 0.04em; background: transparent; color: var(--green-dark);
+    border: 1.5px solid var(--green-dark); border-radius: 999px;
+    padding: 7px 16px; cursor: pointer; transition: background 0.15s, color 0.15s;
+  }
+  .mode-btn:hover { background: var(--green-pale); }
+  .mode-btn.active { background: var(--green-dark); color: var(--cream); }
+
+  /* Dish prompt for Build the Recipe mode */
+  .dish-prompt { display: flex; align-items: center; gap: 14px; }
+  .dish-prompt .dish-icon { width: 76px; height: 54px; flex-shrink: 0; }
+  .dish-prompt .dish-name { font-family: var(--display); font-weight: 600; font-size: 26px; line-height: 1.1; }
+  .dish-prompt .dish-meta { font-family: var(--display); font-style: italic; font-size: 14px; color: var(--ink-muted); }
+
+  /* Data preview for Prep the Kitchen mode */
+  .goal-line { font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 10px; }
+  .data-table {
+    width: 100%; border-collapse: collapse; font-size: 12.5px;
+    background: #161B23; border: 1px solid var(--divider);
+  }
+  .data-table th {
+    text-align: left; font-weight: 700; color: var(--brown);
+    padding: 6px 9px; border: 1px solid var(--divider);
+    background: #1E2530; font-size: 11.5px; letter-spacing: 0.03em;
+  }
+  .data-table td {
+    padding: 5px 9px; border: 1px solid var(--divider); color: var(--ink-medium);
+    font-variant-numeric: tabular-nums;
+  }
+  .table-note {
+    font-family: var(--display); font-style: italic; font-size: 13.5px;
+    color: var(--ink-muted); margin-top: 7px;
+  }
+
+  /* Pantry */
+  .pantry-intro { font-size: 14.5px; color: var(--ink-medium); margin-bottom: 16px; max-width: 720px; }
+  .basket p { font-size: 15px; color: var(--ink-medium); }
+
+  /* Feedback */
+  .feedback {
+    border-radius: 10px; padding: 14px 16px; font-size: 14.5px;
+    margin-bottom: 14px; display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.good { background: var(--green-pale); border: 1px solid var(--green); color: var(--green-dark); }
+  .feedback.bad { background: var(--red-pale); border: 1px solid var(--red); color: #F2716F; }
+  .feedback strong { display: block; font-size: 15.5px; margin-bottom: 2px; }
+
+  .hint-box {
+    display: none; background: var(--cream-shadow); border: 1px dashed var(--brown-light);
+    border-radius: 10px; padding: 12px 14px; font-size: 14px;
+    color: var(--ink-medium); margin-bottom: 14px; font-style: italic;
+    font-family: var(--display); font-size: 16px;
+  }
+  .hint-box.show { display: block; }
+
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    font-family: var(--body); font-weight: 600; font-size: 14px;
+    border-radius: 999px; padding: 10px 22px; cursor: pointer;
+    border: 1.5px solid var(--green-dark); transition: opacity 0.15s, background 0.15s;
+  }
+  .btn-primary { background: var(--green-dark); color: var(--cream); }
+  .btn-primary:hover { background: var(--green); }
+  .btn-ghost { background: transparent; color: var(--green-dark); }
+  .btn-ghost:hover { background: var(--green-pale); }
+  .btn:disabled { opacity: 0.45; cursor: default; }
+
+  .round-label {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-muted); margin-bottom: 10px;
+  }
+
+  /* Recipe card sidebar */
+  .recipe-card {
+    background: var(--cream); border: 1.5px solid var(--brown-light);
+    border-radius: var(--card-radius); padding: 0; overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,.4);
+  }
+  .recipe-head {
+    background: var(--cream-shadow); border-bottom: 1px solid var(--divider);
+    padding: 16px 18px 14px; text-align: center;
+  }
+  .recipe-tag {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--brown-light);
+  }
+  .recipe-tag::before, .recipe-tag::after { content: " \2666 "; font-size: 8px; color: var(--green); }
+  .recipe-name {
+    font-family: var(--display); font-weight: 600; font-size: 28px;
+    color: var(--ink); line-height: 1.15; margin-top: 2px;
+  }
+  .recipe-meta { font-family: var(--display); font-style: italic; font-size: 15px; color: var(--ink-muted); }
+  .recipe-icon { margin: 10px auto 2px; width: 86px; height: 64px; }
+  .recipe-body { padding: 16px 18px 20px; }
+  .recipe-section { margin-bottom: 14px; }
+  .recipe-section:last-child { margin-bottom: 0; }
+  .recipe-section .section-label { color: var(--brown); margin-bottom: 4px; font-size: 10px; }
+  .recipe-section p, .recipe-section li { font-size: 13.5px; color: var(--ink-medium); }
+  .recipe-section ol { padding-left: 20px; }
+  .recipe-section ul { list-style: none; }
+  .recipe-section ul li { padding-left: 16px; position: relative; }
+  .recipe-section ul li::before {
+    content: ""; position: absolute; left: 0; top: 8px;
+    width: 6px; height: 6px; border-radius: 50%; background: var(--green); opacity: 0.7;
+  }
+  .recipe-section.burn { background: var(--red-pale); border-radius: 8px; padding: 10px 12px; }
+  .recipe-section.burn .section-label { color: var(--red); }
+  .recipe-section .example {
+    font-family: var(--display); font-style: italic; font-size: 15px; color: var(--ink-medium);
+  }
+  .mystery {
+    text-align: center; padding: 40px 18px 48px; color: var(--ink-muted);
+  }
+  .mystery .qmark {
+    font-family: var(--display); font-weight: 600; font-size: 90px;
+    color: var(--divider); line-height: 1;
+  }
+  .mystery p { font-family: var(--display); font-style: italic; font-size: 17px; margin-top: 8px; }
+
+  /* Study deck */
+  .study-controls { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+  .study-controls input, .study-controls select {
+    font-family: var(--body); font-size: 14px; color: var(--ink);
+    background: #161B23; border: 1.5px solid var(--divider);
+    border-radius: 10px; padding: 10px 14px;
+  }
+  .study-controls input { flex: 1; min-width: 200px; }
+  .deck-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .deck-card {
+    background: var(--cream); border: 1px solid var(--divider);
+    border-radius: var(--card-radius); padding: 16px 18px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.3);
+  }
+  .deck-card h3 { font-family: var(--display); font-weight: 600; font-size: 23px; }
+  .deck-card .meta { font-family: var(--display); font-style: italic; font-size: 14px; color: var(--ink-muted); margin-bottom: 8px; }
+  .deck-card .mini-label { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--green-dark); margin: 8px 0 2px; }
+  .deck-card p { font-size: 13px; color: var(--ink-medium); }
+  .deck-card .icon-row { float: right; width: 64px; height: 48px; margin-left: 8px; }
+  .empty-deck { font-family: var(--display); font-style: italic; font-size: 17px; color: var(--ink-muted); text-align: center; padding: 30px; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 8px; }
+  .stat-card { background: var(--green-pale); border: 1px solid var(--gold); border-radius: var(--card-radius); padding: 16px 18px; text-align: center; }
+  .stat-card .big { font-family: var(--display); font-weight: 600; font-size: 38px; line-height: 1; color: var(--green-dark); }
+  .stat-card .lbl { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin-top: 8px; }
+  .progress-section { margin-top: 26px; }
+  .progress-section h3 { font-family: var(--display); font-weight: 600; font-size: 22px; margin-bottom: 4px; }
+  .progress-section .sub { font-size: 13px; color: var(--ink-muted); margin-bottom: 12px; }
+  .stat-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--cream-shadow); font-size: 14px; }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-row .name { color: var(--ink); font-weight: 600; }
+  .stat-row .detail { color: var(--ink-muted); font-size: 13px; white-space: nowrap; }
+  .stat-row .pct { font-family: var(--display); font-weight: 600; font-size: 18px; color: var(--green-dark); min-width: 52px; text-align: right; }
+  .stat-row .pct.low { color: var(--red); }
+  .hist-mode { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--brown); }
+  .btn-danger { background: var(--red-pale); color: var(--red); border: 1px solid var(--red); }
+  .reset-row { margin-top: 26px; }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  footer { text-align: center; margin-top: 36px; font-size: 12px; color: var(--ink-muted); letter-spacing: 0.04em; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+
+  @media print {
+    .tabs, .controls, .scoreboard, .feedback, .hint-box, footer { display: none !important; }
+    body { background: #fff; }
+    .view { display: block !important; }
+    .panel, .deck-card, .recipe-card { box-shadow: none; break-inside: avoid; }
+  }
+
+  /* ---- site reskin additions ---- */
+  .recipe-card { background: #161B23; border-color: var(--green-dark); }
+  .deck-card { background: #161B23; }
+  .mystery .qmark { color: #2E3845; }
+  .kicker, .section-label, .round-label, .recipe-tag, .score-chip .lbl, .deck-card .mini-label,
+  .stat-card .lbl, .hist-mode, .tab, .mode-btn, .btn, footer, .data-table th { font-family: var(--mono); }
+  .tagline, .table-note, .hint-box, .recipe-meta, .recipe-section .example, .mystery p,
+  .deck-card .meta, .empty-deck { font-style: normal; }
+  .rb-sitebar{position:sticky; top:0; z-index:55; display:flex; align-items:center; justify-content:space-between; gap:14px; height:50px; padding:0 20px; background:rgba(14,17,22,.92); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid #232B36; font-family:var(--mono);}
+  .rb-home{display:inline-flex; align-items:center; gap:9px; font-size:13.5px; font-weight:600; color:var(--ink); text-decoration:none; letter-spacing:-.01em;}
+  .rb-home:hover .rb-name{color:var(--green-dark);}
+  .rb-mark{width:24px; height:24px; display:grid; place-items:center; border:1.5px solid #2E3845; border-radius:7px; background:#161B23; flex:none;}
+  .rb-mark svg{width:13px; height:13px;}
+  .rb-all{font-size:12.5px; color:var(--ink-muted); text-decoration:none; white-space:nowrap;}
+  .rb-all:hover{color:var(--ink);}
+  @media (max-width:480px){ .rb-name{display:none;} }
+
+  /* ---- pilot real-chart art ---- */
+  .art-wrap{display:flex; align-items:center; justify-content:center; width:100%}
+  .art-wrap img{display:block; width:100%}
+  .art-wrap .art-fallback{display:none}
+  .art-wrap.noimg img{display:none}
+  .art-wrap.noimg .art-fallback{display:flex; align-items:center; justify-content:center}
+  .card-art{height:158px; margin:-16px -18px 12px; border-bottom:1px solid var(--divider); border-radius:var(--card-radius) var(--card-radius) 0 0; background:#12161D; overflow:hidden}
+  .card-art .art-wrap{height:100%}
+  .card-art img{height:100%; object-fit:cover}
+  .card-art .art-fallback svg{width:104px; height:74px}
+  .recipe-art{margin:14px 16px 2px}
+  .recipe-art img{border-radius:10px; border:1px solid var(--divider)}
+  .recipe-art .art-fallback svg{width:86px; height:64px}
+</style>
+</head>
+<body>
+<div class="rb-sitebar">
+  <a class="rb-home" href="index.html" aria-label="Robert Butts, main site"><span class="rb-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/><path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/><path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="rb-name">Robert Butts</span></a>
+  <a class="rb-all" href="practice.html">all practice tools &rarr;</a>
+</div>
+<div class="wrap">
+
+  <header>
+    <div class="kicker">Visualization Field Guide</div>
+    <h1>The Chart Field Guide</h1>
+    <p class="tagline">Spot the traits. Name the chart.</p>
+    <div class="rule"></div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" id="tab-play" onclick="switchTab('play')">Play</button>
+    <button class="tab" id="tab-study" onclick="switchTab('study')">Browse the Guide</button>
+    <button class="tab" id="tab-pantry" onclick="switchTab('pantry')">Glossary</button>
+    <button class="tab" id="tab-progress" onclick="switchTab('progress')">Progress</button>
+  </nav>
+
+  <!-- PLAY VIEW -->
+  <section class="view active" id="view-play">
+    <div class="game-grid">
+      <div class="panel">
+        <div class="scoreboard">
+          <div class="score-chip"><div class="num" id="score">0</div><div class="lbl">Score</div></div>
+          <div class="score-chip"><div class="num" id="streak">0</div><div class="lbl">Streak</div></div>
+          <div class="score-chip"><div class="num" id="round">1</div><div class="lbl">Round</div></div>
+          <div class="score-chip"><div class="num" id="best">0</div><div class="lbl">Best</div></div>
+        </div>
+
+        <div class="mode-toggle" role="group" aria-label="Game mode">
+          <button class="mode-btn active" id="mode-name" onclick="setMode('name')">Name the Chart</button>
+          <button class="mode-btn" id="mode-build" onclick="setMode('build')">Match the Traits</button>
+          <button class="mode-btn" id="mode-prep" onclick="setMode('prep')">Ready the Data</button>
+          <button class="mode-btn" id="mode-sort" onclick="setMode('sort')">Sort the Families</button>
+        </div>
+
+        <div class="study-controls play-filters" aria-label="Narrow the deck">
+          <select id="play-family" onchange="resetGame()">
+            <option value="all">All families</option>
+            <option>Change over Time</option>
+            <option>Distribution</option>
+            <option>Spatial</option>
+            <option>Flow</option>
+            <option>Deviation</option>
+            <option>Part-to-whole</option>
+            <option>Magnitude</option>
+            <option>Correlation</option>
+            <option>Ranking</option>
+          </select>
+          <select id="play-rarity" onchange="resetGame()">
+            <option value="all">All rarities</option>
+            <option>Common</option>
+            <option>Uncommon</option>
+            <option>Rare</option>
+          </select>
+          <select id="play-difficulty" onchange="resetGame()">
+            <option value="all">All difficulties</option>
+            <option>Beginner</option>
+            <option>Intermediate</option>
+            <option>Advanced</option>
+          </select>
+        </div>
+
+        <div class="round-label" id="round-label">Round 1 of 12</div>
+
+        <div class="section-label" id="basket-label">Traits observed</div>
+        <div class="basket" id="basket"><ul id="ingredients"></ul></div>
+
+        <div class="section-label" id="choices-label">Which chart matches these traits?</div>
+        <div class="choices" id="choices"></div>
+
+        <div class="section-label" id="choices2-label" style="display:none"></div>
+        <div class="choices" id="choices2" style="display:none"></div>
+
+        <div class="hint-box" id="hint-box"></div>
+        <div class="feedback" id="feedback"></div>
+
+        <div class="controls">
+          <button class="btn btn-ghost" id="hint-btn" onclick="showHint()">Show a hint</button>
+          <button class="btn btn-primary" id="check-btn" onclick="checkBasket()" style="display:none" disabled>Check my picks</button>
+          <button class="btn btn-primary" id="next-btn" onclick="nextRound()" disabled>Next round</button>
+          <button class="btn btn-ghost" onclick="resetGame()">Restart</button>
+        </div>
+      </div>
+
+      <aside class="recipe-card" id="recipe-card" aria-live="polite">
+        <div class="mystery">
+          <div class="qmark">?</div>
+          <p>The guide entry stays hidden until you answer.</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- STUDY VIEW -->
+  <section class="view" id="view-study">
+    <div class="panel">
+      <div class="study-controls">
+        <input type="search" id="search" placeholder="Search charts, traits, or uses" oninput="renderDeck()">
+        <select id="family-filter" onchange="renderDeck()">
+          <option value="all">All categories</option>
+          <option>Change over Time</option>
+          <option>Distribution</option>
+          <option>Spatial</option>
+          <option>Flow</option>
+          <option>Deviation</option>
+          <option>Part-to-whole</option>
+          <option>Magnitude</option>
+          <option>Correlation</option>
+          <option>Ranking</option>
+        </select>
+        <select id="rarity-filter" onchange="renderDeck()">
+          <option value="all">All rarities</option>
+          <option>Common</option>
+          <option>Uncommon</option>
+          <option>Rare</option>
+        </select>
+        <select id="difficulty-filter" onchange="renderDeck()">
+          <option value="all">All difficulties</option>
+          <option>Beginner</option>
+          <option>Intermediate</option>
+          <option>Advanced</option>
+        </select>
+      </div>
+      <div class="deck-grid" id="deck-grid"></div>
+    </div>
+  </section>
+
+  <!-- PANTRY VIEW -->
+  <section class="view" id="view-pantry">
+    <div class="panel">
+      <div id="pantry-browse">
+        <p class="pantry-intro">Every term in this glossary sits in one of six sections. The Nine Families section holds the nine chart categories from the Financial Times Visual Vocabulary, a widely used guide for choosing the right chart. Browse the sections below, or take a Field Quiz to test yourself. Ten definitions, four terms each, with the wrong answers pulled from the same section to keep you honest.</p>
+        <div class="study-controls">
+          <input type="search" id="pantry-search" placeholder="Search terms, definitions, or examples" oninput="renderPantry()">
+          <select id="shelf-filter" onchange="renderPantry()">
+            <option value="all">All sections</option>
+            <option>Data Types</option>
+            <option>The Dataset</option>
+            <option>Prep Work</option>
+            <option>Reading the Numbers</option>
+            <option>Chart Parts</option>
+            <option>The Nine Families</option>
+          </select>
+          <button class="btn btn-primary" onclick="startPantryQuiz()">Field Quiz</button>
+        </div>
+        <div class="deck-grid" id="pantry-grid"></div>
+      </div>
+
+      <div id="pantry-quiz" style="display:none">
+        <div class="round-label" id="pq-label"></div>
+        <div class="section-label">Which term matches this definition?</div>
+        <div class="basket"><p id="pq-def"></p></div>
+        <div class="choices" id="pq-choices"></div>
+        <div class="feedback" id="pq-feedback"></div>
+        <div class="controls">
+          <button class="btn btn-primary" id="pq-next" onclick="pantryNext()" disabled>Next term</button>
+          <button class="btn btn-ghost" onclick="endPantryQuiz()">Back to the glossary</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-progress">
+    <div class="panel">
+      <h2 style="font-family: var(--display); font-weight: 600; font-size: 26px; margin-bottom: 4px;">Your progress</h2>
+      <p style="font-size: 13px; color: var(--ink-muted); margin-bottom: 18px;">Saved in this browser on this device. It is not shared between people or synced between devices. A private browsing window will not keep it.</p>
+      <div id="progress-body"></div>
+    </div>
+  </section>
+
+  <footer>The Chart Field Guide &middot; A Visualization Field Guide &middot; Best score is saved in this browser</footer>
+</div>
+
+<script>
+/* ---------- Recipe data ---------- */
+const CATEGORIES = ["Change over Time", "Distribution", "Spatial", "Flow", "Deviation", "Part-to-whole", "Magnitude", "Correlation", "Ranking"];
+
+const CATEGORY_INFO = {
+  "Change over Time": "These charts show how values move across periods.",
+  "Distribution": "These charts show the shape and spread of values.",
+  "Spatial": "These charts show where things happen on a map.",
+  "Flow": "These charts show movement between stages, places, or groups.",
+  "Deviation": "These charts show distance above or below a reference point.",
+  "Part-to-whole": "These charts show how a total divides into parts.",
+  "Magnitude": "These charts show size comparisons between things.",
+  "Correlation": "These charts show how two or more variables relate.",
+  "Ranking": "These charts show positions in an ordered list."
+};
+
+const recipes = [
+  {
+    key: "bar", name: "Bar Chart", family: "Magnitude", difficulty: "Beginner", rarity: "Common",
+    ingredients: ["One category field", "One number per category", "Horizontal bars with room for labels", "Optional grouping"],
+    serves: "Comparing values across groups.",
+    method: ["Put the categories on one axis.", "Put the number on the other axis.", "Lay the bars horizontally so long labels stay readable.", "Start the number axis at zero."],
+    burn: "Too many categories can make the chart crowded.",
+    pairs: "Counts, group comparisons, and survey results by group.",
+    example: "Which department has the most students?",
+    hint: "This chart lines up groups side by side so the biggest one stands out."
+  },
+  {
+    key: "line", name: "Line Chart", family: "Change over Time", difficulty: "Beginner", rarity: "Common",
+    ingredients: ["Time or another natural order", "One number tracked over time", "Consistent intervals", "Optional second line"],
+    serves: "Trends, growth, decline, seasonality, or any change over time.",
+    method: ["Put time on the horizontal axis.", "Plot one point for each time period.", "Connect the points with a line.", "Label the start and end values clearly."],
+    burn: "Using a line chart for categories that have no natural order.",
+    pairs: "Trend questions, enrollment over years, and before and after stories.",
+    example: "How did enrollment change from 2018 to 2025?",
+    hint: "This chart needs time on one axis. It shows movement, not a snapshot."
+  },
+  {
+    key: "scatter", name: "Scatter Plot", family: "Correlation", difficulty: "Beginner", rarity: "Common",
+    ingredients: ["Two numeric variables", "Many rows of data", "Optional group color", "Optional trend line"],
+    serves: "Relationships, correlations, clusters, and outliers.",
+    method: ["Put one numeric variable on each axis.", "Plot one dot for each row of data.", "Add a trend line if it helps the story.", "Look for clusters, gaps, and outliers."],
+    burn: "Assuming the chart proves cause and effect.",
+    pairs: "Correlation analysis, regression, and outlier hunting.",
+    example: "Do students who study more tend to earn higher exam scores?",
+    hint: "This chart needs two numbers per row. It asks whether one moves with the other."
+  },
+  {
+    key: "histogram", name: "Histogram", family: "Distribution", difficulty: "Beginner", rarity: "Common",
+    ingredients: ["One numeric variable", "Many values", "A chosen bin width", "No categories required"],
+    serves: "Seeing the shape of one numeric variable.",
+    method: ["Choose a bin width.", "Count how many values fall into each bin.", "Draw one bar per bin with no gaps between bars.", "Try a few bin widths before settling on one."],
+    burn: "Changing the bin size can change the story.",
+    pairs: "Checking spread and shape before reporting averages.",
+    example: "What is the spread of student ages in a program?",
+    hint: "This chart uses only one numeric variable and shows its overall shape."
+  },
+  {
+    key: "box", name: "Box Plot", family: "Distribution", difficulty: "Intermediate", rarity: "Common",
+    ingredients: ["One numeric variable", "Optional category for groups", "Enough rows per group", "Outlier awareness"],
+    serves: "Comparing distributions across groups.",
+    method: ["Find the median and quartiles for each group.", "Draw a box from the lower quartile to the upper quartile.", "Mark the median with a line inside the box.", "Plot unusual values as separate dots."],
+    burn: "Box plots may confuse beginners unless the parts are explained.",
+    pairs: "Group comparisons and the results of t-tests or ANOVA.",
+    example: "How do salaries vary across job families?",
+    hint: "This chart summarizes a spread with a box, whiskers, and a median line."
+  },
+  {
+    key: "heatmap", name: "Heat Map", family: "Correlation", difficulty: "Intermediate", rarity: "Common",
+    ingredients: ["Two categories or ordered fields", "One numeric value per cell", "A color scale", "Careful labels"],
+    serves: "Scanning a grid to find high, low, or changing values.",
+    method: ["Build a grid from the two category fields.", "Fill each cell with a color based on its value.", "Choose a color scale that reads clearly.", "Add a legend so the colors have meaning."],
+    burn: "Using color without a clear legend.",
+    pairs: "Schedules, correlation tables, and year by program grids.",
+    example: "Which programs changed the most across years?",
+    hint: "This chart is a colored grid. Two fields make the rows and columns, and color carries the value."
+  },
+  {
+    key: "smallmult", name: "Small Multiples", family: "Change over Time", difficulty: "Intermediate", rarity: "Uncommon", noSort: true,
+    ingredients: ["One repeated chart type", "One grouping field", "A shared scale", "A consistent layout"],
+    serves: "Showing several small versions of the same chart, one for each group.",
+    method: ["Pick one simple chart type.", "Make one small copy of it for each group.", "Use the same scale in every panel.", "Arrange the panels in a tidy grid."],
+    burn: "Changing the scale in each panel without explaining it.",
+    pairs: "Line charts over time and comparisons across many groups.",
+    example: "How did each college's enrollment change over time?",
+    hint: "The same chart repeated once per group, arranged in one tidy grid."
+  },
+  {
+    key: "stacked", name: "Stacked Bar Chart", family: "Part-to-whole", difficulty: "Intermediate", rarity: "Common",
+    ingredients: ["One main category", "One subgroup field", "One number", "A limited set of subgroups"],
+    serves: "Showing totals and how each total is divided into parts.",
+    method: ["Pick the main category for the bars.", "Split each bar into its subgroups.", "Keep the subgroup order the same in every bar.", "Limit the subgroups to a handful."],
+    burn: "Middle segments are hard to compare because they do not share a baseline.",
+    pairs: "Enrollment mixes and budget breakdowns across units.",
+    example: "What share of each college's students are undergraduate, graduate, or non-degree?",
+    hint: "This chart shows a total and its layers at the same time."
+  },
+  {
+    key: "pie", name: "Pie Chart", family: "Part-to-whole", difficulty: "Beginner", rarity: "Common",
+    ingredients: ["One whole to divide", "A few categories", "One number or percent", "Clear slice labels"],
+    serves: "Simple parts of one whole.",
+    method: ["Check that the slices add up to one whole.", "Limit the chart to about five slices.", "Order the slices from largest to smallest.", "Label each slice with its share."],
+    burn: "Too many slices make the chart hard to read.",
+    pairs: "Simple share questions and one time snapshots.",
+    example: "What share of registrations came from each audience type?",
+    hint: "This chart divides one whole into a few labeled slices."
+  },
+  {
+    key: "area", name: "Area Chart", family: "Change over Time", difficulty: "Intermediate", rarity: "Common",
+    ingredients: ["Time or another natural order", "One or more numbers", "A meaningful baseline", "Optional categories"],
+    serves: "Showing volume or accumulated change over time.",
+    method: ["Put time on the horizontal axis.", "Plot the value and fill the space below the line.", "Keep the baseline at zero so the fill is honest.", "Stack categories only when the total matters."],
+    burn: "Stacked area charts can hide smaller categories.",
+    pairs: "Cumulative totals and volume over time.",
+    example: "How did total registrations grow across the year?",
+    hint: "This chart is a line chart with the space below filled in, so volume becomes visible."
+  },
+  {
+    key: "dot", name: "Dot Plot", family: "Ranking", difficulty: "Intermediate", rarity: "Common", alt: ["Magnitude"],
+    ingredients: ["One category field", "One number per category", "Readable labels", "Optional reference line"],
+    serves: "Clean comparisons with less visual weight than bars.",
+    method: ["List the categories down the side.", "Place one dot for each value.", "Add a reference line for the average if it helps.", "Sort the categories by value."],
+    burn: "Using it when the audience expects part to whole totals.",
+    pairs: "Rankings, survey scores, and comparisons against a benchmark.",
+    example: "Which programs are above or below the average satisfaction score?",
+    hint: "This chart replaces heavy bars with single dots, often against a reference line."
+  },
+  {
+    key: "choropleth", name: "Choropleth Map", family: "Spatial", difficulty: "Advanced", rarity: "Common",
+    ingredients: ["Geographic areas", "One numeric value per area", "Boundary data", "A color scale"],
+    serves: "Showing how a value changes across places.",
+    method: ["Get the boundary shapes for each area.", "Join your value to each area.", "Use rates instead of raw totals when populations differ.", "Pick a color scale and add a legend."],
+    burn: "Raw totals can make large population areas look more important than they are.",
+    pairs: "County or state comparisons and participation rates.",
+    example: "Which counties have the highest participation rate?",
+    hint: "This chart needs geography. Each place is shaded by its value."
+  },
+  {
+    key: "orderedbar", name: "Ordered Bar Chart", family: "Ranking", difficulty: "Beginner", rarity: "Common", alt: ["Magnitude"],
+    ingredients: ["One category field", "One number per category", "A sort from largest to smallest", "Horizontal bars for long labels"],
+    serves: "Showing who leads and who trails at a glance.",
+    method: ["Count or measure one number per category.", "Sort the bars by value, never by name.", "Lay the bars horizontally if labels are long.", "Start the number axis at zero."],
+    burn: "Sorting alphabetically when the order should follow the values.",
+    pairs: "Top ten lists and league tables.",
+    example: "Which ten programs award the most degrees?",
+    hint: "It is a bar chart with one extra rule: the order must follow the values."
+  },
+  {
+    key: "orderedcol", name: "Ordered Column Chart", family: "Ranking", difficulty: "Beginner", rarity: "Common", alt: ["Magnitude"],
+    ingredients: ["One category field", "One number per category", "A sort from largest to smallest", "Vertical columns with short labels"],
+    serves: "Ranking a handful of items with vertical columns.",
+    method: ["Count or measure one number per category.", "Sort the columns by value.", "Keep the category labels short.", "Start the number axis at zero."],
+    burn: "Long labels turn unreadable underneath vertical columns.",
+    pairs: "Short ranked lists with short names.",
+    example: "Which five campuses received the most applications?",
+    hint: "The vertical twin of the ordered bar."
+  },
+  {
+    key: "orderedsymbol", name: "Ordered Proportional Symbol", family: "Ranking", difficulty: "Intermediate", rarity: "Rare",
+    ingredients: ["One category field", "One number per category", "Circles sized by value", "An order from largest to smallest"],
+    serves: "Ranking with sized circles when impression matters more than precision.",
+    method: ["Compute one number per category.", "Scale each circle's area by its value.", "Arrange the circles in ranked order.", "Label each circle directly."],
+    burn: "Readers judge circle area poorly, so close values look equal.",
+    pairs: "Headlines and posters more than analysis.",
+    example: "Which student organizations have the largest memberships?",
+    hint: "The ranking is carried by circle size instead of bar length."
+  },
+  {
+    key: "dotstrip", name: "Dot Strip Plot", family: "Ranking", difficulty: "Intermediate", rarity: "Uncommon", alt: ["Distribution"],
+    ingredients: ["One numeric variable", "One row per case", "A single shared axis", "Optional group labels"],
+    serves: "Placing every case as a dot on one line to compare positions.",
+    method: ["Draw one shared number line.", "Place one dot per case at its value.", "Label the cases that matter most.", "Nudge or fade dots where they pile up."],
+    burn: "Overlapping dots hide how many sit in the same spot.",
+    pairs: "Comparing many cases against each other on one measure.",
+    example: "Where does each program's average class size fall on one line?",
+    hint: "Every value becomes a dot on a single strip."
+  },
+  {
+    key: "slope", name: "Slope Chart", family: "Ranking", difficulty: "Intermediate", rarity: "Uncommon", alt: ["Change over Time"],
+    ingredients: ["Two points in time", "One number per category at each point", "A line connecting each pair", "A few categories, not dozens"],
+    serves: "Showing who rose and who fell between two moments.",
+    method: ["Place the two time points as two vertical axes.", "Plot each category's value on both axes.", "Connect each pair with a line.", "Highlight the biggest risers and fallers."],
+    burn: "Too many crossing lines turn it into spaghetti.",
+    pairs: "Before and after comparisons across groups.",
+    example: "How did each college's retention rate change from 2020 to 2025?",
+    hint: "Two columns of values, and the tilt of each line tells the story."
+  },
+  {
+    key: "lollipop", name: "Lollipop Chart", family: "Ranking", difficulty: "Beginner", rarity: "Common", alt: ["Magnitude"],
+    ingredients: ["One category field", "One number per category", "A thin stem ending in a dot", "A sort by value"],
+    serves: "Bar chart comparisons with less ink and a lighter look.",
+    method: ["Compute one number per category.", "Draw a thin line from zero to the value.", "Place a dot at the end of each line.", "Sort by value."],
+    burn: "The center of the dot, not its edge, marks the value, which can mislead.",
+    pairs: "Ranked comparisons where bars feel heavy.",
+    example: "How do departments compare on average course rating?",
+    hint: "A slimmed down bar: a thin stem with a dot on top."
+  },
+  {
+    key: "bump", name: "Bump Chart", family: "Ranking", difficulty: "Advanced", rarity: "Uncommon",
+    ingredients: ["Ranks over several periods", "One line per category", "Time across the horizontal axis", "Rank positions instead of raw values"],
+    serves: "Tracking how rankings shuffle over time.",
+    method: ["Convert each period's values to rank positions.", "Plot one line per category across the periods.", "Put rank one at the top.", "Label the lines at both ends."],
+    burn: "It shows position changes but hides how big the gaps really are.",
+    pairs: "Leaderboards and popularity contests over time.",
+    example: "How did the top five majors trade places over ten years?",
+    hint: "Lines race up and down a leaderboard over time."
+  },
+  {
+    key: "divergingbar", name: "Diverging Bar Chart", family: "Deviation", difficulty: "Intermediate", rarity: "Common",
+    ingredients: ["One category field", "One number that can sit above or below a reference", "A zero or benchmark line", "Bars growing in two directions"],
+    serves: "Showing which groups sit above or below a reference point.",
+    method: ["Compute each group's difference from the reference.", "Draw bars left or down for negative, right or up for positive.", "Use two clear colors for the two directions.", "Sort by the size of the difference."],
+    burn: "Mixing up the two directions when the colors are not clearly labeled.",
+    pairs: "Gains and losses, and comparisons against a benchmark.",
+    example: "Which programs gained or lost enrollment compared with last year?",
+    hint: "Bars grow in two directions from a shared center line."
+  },
+  {
+    key: "divergingstacked", name: "Diverging Stacked Bar", family: "Deviation", difficulty: "Advanced", rarity: "Uncommon",
+    ingredients: ["Ordered survey style responses", "Counts or percents per response level", "A center split between agree and disagree", "One bar per question or group"],
+    serves: "Comparing agreement and disagreement across survey questions.",
+    method: ["Order the response levels from strong disagree to strong agree.", "Center each bar where disagree meets agree.", "Stack the segments outward in both directions.", "Keep the color order consistent across bars."],
+    burn: "Neutral responses are hard to place and easy to misread.",
+    pairs: "Likert scale surveys and evaluation results.",
+    example: "How did students respond to each course evaluation question?",
+    hint: "The classic survey chart: agreement to the right, disagreement to the left."
+  },
+  {
+    key: "spine", name: "Spine Chart", family: "Deviation", difficulty: "Intermediate", rarity: "Rare",
+    ingredients: ["Exactly two opposing shares per group", "A center axis splitting them", "One bar per group", "Percents facing left and right"],
+    serves: "Splitting each group into two opposing sides around a center.",
+    method: ["Compute the two shares for each group.", "Place the split point on a shared center axis.", "Extend one share left and the other right.", "Use one color per side."],
+    burn: "It only works when there are exactly two sides.",
+    pairs: "Two sided splits like yes or no, or full time versus part time.",
+    example: "What share of each program's students are full time versus part time?",
+    hint: "Each bar is split into two halves facing opposite directions."
+  },
+  {
+    key: "surplusline", name: "Surplus and Deficit Line", family: "Deviation", difficulty: "Advanced", rarity: "Rare",
+    ingredients: ["Time on the horizontal axis", "One value compared with a baseline", "Shading above and below the line", "A clearly labeled zero or target"],
+    serves: "Showing when a value ran above or below its baseline over time.",
+    method: ["Compute the difference from the baseline at each period.", "Plot the difference as a line.", "Shade above zero in one color and below in another.", "Label the baseline clearly."],
+    burn: "Without a labeled baseline the shading means nothing.",
+    pairs: "Budgets against plan and performance against target.",
+    example: "In which months did spending run over or under the plan?",
+    hint: "A line chart where the area above and below zero gets opposite shading."
+  },
+  {
+    key: "bubble", name: "Bubble Chart", family: "Correlation", difficulty: "Intermediate", rarity: "Common",
+    ingredients: ["Two numeric variables for position", "A third number for circle size", "Many rows", "Optional group color"],
+    serves: "A scatter plot with a third variable carried by size.",
+    method: ["Plot two numeric variables as a scatter plot.", "Scale each dot's area by the third number.", "Add color for groups if needed.", "Label the bubbles that matter most."],
+    burn: "Size differences read poorly, so the third variable stays vague.",
+    pairs: "Three way comparisons across many cases.",
+    example: "How do programs compare on cost, completion rate, and enrollment size?",
+    hint: "Scatter plot dots that grew to different sizes."
+  },
+  {
+    key: "connectedscatter", name: "Connected Scatterplot", family: "Correlation", difficulty: "Advanced", rarity: "Rare", alt: ["Change over Time"],
+    ingredients: ["Two numeric variables", "One point per time period", "Lines connecting points in time order", "Time labels along the path"],
+    serves: "Tracing how two measures moved together through time.",
+    method: ["Plot the two measures as a scatter plot, one point per period.", "Connect the points in time order.", "Label the first, last, and turning points.", "Add an arrow so the direction is clear."],
+    burn: "Readers lose the time direction unless the path is labeled.",
+    pairs: "Stories about two measures that influence each other.",
+    example: "How did tuition and enrollment move together across two decades?",
+    hint: "A scatter plot where the dots are connected in time order."
+  },
+  {
+    key: "colline", name: "Column and Line Chart", family: "Correlation", difficulty: "Intermediate", rarity: "Common", alt: ["Change over Time"],
+    ingredients: ["Time on the horizontal axis", "One number drawn as columns", "A second number drawn as a line", "Two clearly labeled value axes"],
+    serves: "Showing two different measures over the same time span.",
+    method: ["Put time on the horizontal axis.", "Draw the first measure as columns.", "Draw the second measure as a line.", "Label both value axes clearly."],
+    burn: "Two value axes can be scaled to suggest almost any story.",
+    pairs: "Volume and rate stories, like applications and acceptance rate.",
+    example: "How did applications and acceptance rate move across the years?",
+    hint: "Columns and a line share the same timeline but tell two stories."
+  },
+  {
+    key: "violin", name: "Violin Plot", family: "Distribution", difficulty: "Advanced", rarity: "Uncommon",
+    ingredients: ["One numeric variable", "Optional category for groups", "A mirrored density curve", "Enough rows to smooth the shape"],
+    serves: "Showing the full shape of each group's distribution.",
+    method: ["Estimate the density of values for each group.", "Mirror the curve to make a symmetric shape.", "Place the shapes side by side for comparison.", "Add a median marker inside each shape."],
+    burn: "Small groups produce smooth curves the data cannot support.",
+    pairs: "Box plot questions where the shape itself matters.",
+    example: "How are exam scores shaped in each section of a course?",
+    hint: "A box plot that grew curves showing where values bunch up."
+  },
+  {
+    key: "poppyramid", name: "Population Pyramid", family: "Distribution", difficulty: "Intermediate", rarity: "Uncommon",
+    ingredients: ["Age groups or another ordered band", "Two populations to compare", "Bars facing left and right", "A shared center axis"],
+    serves: "Comparing two groups across ordered bands like age.",
+    method: ["Bin both populations into the same ordered bands.", "Draw one population's bars to the left, the other to the right.", "Keep the scales identical on both sides.", "Label the bands down the center."],
+    burn: "Different scales on the two sides break the comparison.",
+    pairs: "Demographic comparisons between two groups.",
+    example: "How do age bands compare between online and on campus students?",
+    hint: "Two histograms standing back to back."
+  },
+  {
+    key: "barcode", name: "Barcode Plot", family: "Distribution", difficulty: "Intermediate", rarity: "Rare",
+    ingredients: ["One numeric variable", "One thin line per value", "A single shared axis", "Optional groups in rows"],
+    serves: "Showing every single value as a fine line.",
+    method: ["Draw one shared number line per group.", "Mark each value with a thin vertical stripe.", "Stack the groups as rows for comparison.", "Fade the stripes where they overlap."],
+    burn: "Dense regions turn solid and hide the counts.",
+    pairs: "Small datasets where every case deserves to be visible.",
+    example: "Where does every course's enrollment fall along one axis?",
+    hint: "Each value is one thin stripe, like the lines on a barcode."
+  },
+  {
+    key: "cumcurve", name: "Cumulative Curve", family: "Distribution", difficulty: "Advanced", rarity: "Rare",
+    ingredients: ["One numeric variable", "Values sorted from low to high", "A running percent of cases", "A rising S shaped line"],
+    serves: "Reading what share of cases fall below any value.",
+    method: ["Sort the values from low to high.", "Compute the running percent of cases at each value.", "Plot the percent against the value.", "Mark the values where key shares are reached."],
+    burn: "Readers unfamiliar with it mistake it for a trend over time.",
+    pairs: "Threshold questions, like time to degree.",
+    example: "What share of students complete the degree within four, five, or six years?",
+    hint: "The line always rises, and its height tells you the share below."
+  },
+  {
+    key: "beeswarm", name: "Beeswarm Plot", family: "Distribution", difficulty: "Intermediate", rarity: "Uncommon",
+    ingredients: ["One numeric variable", "One dot per case", "Dots nudged apart so none overlap", "Optional category lanes"],
+    serves: "Showing every case while keeping the distribution shape visible.",
+    method: ["Place one dot per case at its value.", "Nudge overlapping dots sideways until none collide.", "Arrange groups in separate lanes if needed.", "Color or label notable cases."],
+    burn: "Too many rows and the swarm becomes a blob.",
+    pairs: "Medium sized datasets where individuals matter.",
+    example: "How is every section's average grade spread within each department?",
+    hint: "Dots crowd around common values like bees around a hive."
+  },
+  {
+    key: "column", name: "Column Chart", family: "Magnitude", difficulty: "Beginner", rarity: "Common", alt: ["Change over Time"],
+    ingredients: ["One category or time period", "One number per column", "Vertical bars", "A zero baseline"],
+    serves: "Comparing values with vertical bars, especially across a few periods.",
+    method: ["Put the categories or periods along the bottom.", "Draw one vertical bar per value.", "Start the value axis at zero.", "Keep the labels short."],
+    burn: "Too many columns crowd the axis; switch to a line for long time spans.",
+    pairs: "A few periods or a few categories with short names.",
+    example: "How many students enrolled in each of the last six terms?",
+    hint: "The vertical twin of the bar chart."
+  },
+  {
+    key: "candlestick", name: "Candlestick Chart", family: "Change over Time", difficulty: "Advanced", rarity: "Uncommon",
+    ingredients: ["Time periods", "Open and close values", "High and low values", "A box and wick per period"],
+    serves: "Showing the range and direction of a value within each period.",
+    method: ["For each period record open, close, high, and low.", "Draw a box from open to close.", "Draw thin wicks to the high and low.", "Color the box by whether the period rose or fell."],
+    burn: "Each mark packs four numbers, which overwhelms new readers.",
+    pairs: "Financial values and anything with within period swings.",
+    example: "How did the endowment fund move within each week?",
+    hint: "Each period gets a box for open and close, and wicks for high and low."
+  },
+  {
+    key: "fan", name: "Fan Chart", family: "Change over Time", difficulty: "Advanced", rarity: "Rare",
+    ingredients: ["A historical line", "A forecast period", "Widening bands of uncertainty", "Lighter shading for less likely ranges"],
+    serves: "Showing a forecast and how uncertain it becomes.",
+    method: ["Plot the historical values as a line.", "Extend a central forecast line into the future.", "Add shaded bands that widen with time.", "Shade likelier ranges darker than unlikely ones."],
+    burn: "Readers treat the central line as a promise instead of a middle guess.",
+    pairs: "Projections, budgets, and enrollment planning.",
+    example: "What is projected enrollment for the next five years, with uncertainty?",
+    hint: "The future spreads out like an opening fan."
+  },
+  {
+    key: "calheatmap", name: "Calendar Heat Map", family: "Change over Time", difficulty: "Intermediate", rarity: "Uncommon",
+    ingredients: ["Daily values", "A calendar grid of weeks and days", "A color scale", "About a year of data"],
+    serves: "Spotting daily and weekly rhythms across a year.",
+    method: ["Arrange the days into a calendar shaped grid.", "Color each day's cell by its value.", "Keep weekdays aligned in rows or columns.", "Add a legend for the color scale."],
+    burn: "Weekday and weekend patterns hide if the grid is arranged poorly.",
+    pairs: "Traffic, attendance, and usage rhythms.",
+    example: "Which days of the year saw the heaviest library traffic?",
+    hint: "A year of squares, one per day, colored by value."
+  },
+  {
+    key: "streamgraph", name: "Streamgraph", family: "Change over Time", difficulty: "Advanced", rarity: "Rare", alt: ["Part-to-whole"],
+    ingredients: ["Time on the horizontal axis", "Several categories stacked", "A flowing centered baseline", "Smooth curving bands"],
+    serves: "Showing how several categories swell and shrink over time.",
+    method: ["Stack the category values at each time period.", "Center the stack around a flowing middle line.", "Smooth the band edges into curves.", "Label the bands directly where they are widest."],
+    burn: "The wavy baseline makes exact values nearly impossible to read.",
+    pairs: "Long time spans with shifting category mixes.",
+    example: "How did interest in each course subject flow across a decade?",
+    hint: "A stacked area chart that flows around a center like a river."
+  },
+  {
+    key: "donut", name: "Donut Chart", family: "Part-to-whole", difficulty: "Beginner", rarity: "Common",
+    ingredients: ["One whole to divide", "A few categories", "One number or percent", "A hole in the middle for a label"],
+    serves: "A pie chart with center space for a headline number.",
+    method: ["Check that the parts add up to one whole.", "Draw the shares as a ring.", "Put the headline number in the center hole.", "Limit the chart to a handful of segments."],
+    burn: "The missing center makes angles even harder to judge than a pie.",
+    pairs: "Dashboards and single headline shares.",
+    example: "What share of the budget went to each division?",
+    hint: "A pie chart that lost its middle."
+  },
+  {
+    key: "treemap", name: "Treemap", family: "Part-to-whole", difficulty: "Intermediate", rarity: "Common",
+    ingredients: ["A whole divided into parts", "One number per part", "Nested rectangles sized by value", "Optional levels of grouping"],
+    serves: "Showing many parts of a whole, even in nested levels.",
+    method: ["Size each rectangle's area by its value.", "Pack the rectangles to fill one big rectangle.", "Nest sub parts inside their parents.", "Label the rectangles big enough to read."],
+    burn: "Skinny rectangles are hard to compare and label.",
+    pairs: "Budgets, enrollments, and anything with a hierarchy.",
+    example: "How is total enrollment divided across colleges and their departments?",
+    hint: "The whole is a rectangle, and every part claims its share of the space."
+  },
+  {
+    key: "waffle", name: "Waffle Chart", family: "Part-to-whole", difficulty: "Beginner", rarity: "Uncommon",
+    ingredients: ["A grid of one hundred squares", "One number or percent per category", "Colored squares matching each share", "Clear category labels"],
+    serves: "Making percents countable, one square per percent.",
+    method: ["Draw a ten by ten grid of squares.", "Color squares to match each category's percent.", "Fill in a consistent order.", "Add a small legend."],
+    burn: "More than four or five categories turn the grid into confetti.",
+    pairs: "Single striking percents and simple breakdowns.",
+    example: "What percent of applicants reached each admissions stage?",
+    hint: "One hundred little squares, each worth one percent."
+  },
+  {
+    key: "marimekko", name: "Marimekko Chart", family: "Part-to-whole", difficulty: "Advanced", rarity: "Rare",
+    ingredients: ["Two categorical breakdowns", "Column widths sized by one total", "Segment heights sized by share", "Percent scales on both axes"],
+    serves: "Showing two part-to-whole breakdowns in one rectangle.",
+    method: ["Size each column's width by its group total.", "Split each column vertically by the second breakdown.", "Scale both axes as percents.", "Label segments directly where they fit."],
+    burn: "Both width and height carry meaning, which overloads most readers.",
+    pairs: "Market share style questions with two breakdowns.",
+    example: "How do each college's size and degree mix compare at once?",
+    hint: "A stacked bar chart where the bar widths also carry data."
+  },
+  {
+    key: "sunburst", name: "Sunburst Chart", family: "Part-to-whole", difficulty: "Advanced", rarity: "Rare",
+    ingredients: ["A hierarchy of parts", "Rings for each level", "Arc sizes by value", "A center representing the whole"],
+    serves: "Showing a hierarchy as rings spreading from the center.",
+    method: ["Put the whole at the center.", "Add one ring per level of the hierarchy.", "Size each arc by its value.", "Label the largest arcs directly."],
+    burn: "Outer rings exaggerate area and labels barely fit.",
+    pairs: "Deep hierarchies that a treemap would also handle.",
+    example: "How does enrollment break down by college, department, and program?",
+    hint: "A donut chart with generations of rings."
+  },
+  {
+    key: "venn", name: "Venn Diagram", family: "Part-to-whole", difficulty: "Beginner", rarity: "Uncommon",
+    ingredients: ["Two or three overlapping groups", "Counts for each region", "Circles sized roughly by group", "Labeled overlaps"],
+    serves: "Showing what groups share and what they do not.",
+    method: ["Draw one circle per group.", "Overlap the circles where members are shared.", "Write the count in every region.", "Stop at three circles."],
+    burn: "Region sizes rarely match the true counts.",
+    pairs: "Membership overlap questions.",
+    example: "How many students are in honors, athletics, or both?",
+    hint: "Overlapping circles where the shared space is the point."
+  },
+  {
+    key: "groupedbar", name: "Grouped Bar Chart", family: "Magnitude", difficulty: "Intermediate", rarity: "Common",
+    ingredients: ["One main category", "A small subgroup per category", "Bars standing side by side", "A shared zero baseline"],
+    serves: "Comparing subgroups side by side within each category.",
+    method: ["Pick the main category for the groups.", "Draw the subgroup bars side by side within each group.", "Keep subgroup colors and order consistent.", "Limit subgroups to two or three."],
+    burn: "Comparing across the main categories gets hard as subgroups multiply.",
+    pairs: "Within group comparisons, like levels inside each college.",
+    example: "How do undergraduate and graduate enrollments compare within each college?",
+    hint: "Bars stand in small teams instead of stacks."
+  },
+  {
+    key: "propsymbol", name: "Proportional Symbol Chart", family: "Magnitude", difficulty: "Intermediate", rarity: "Uncommon",
+    ingredients: ["One category field", "One number per category", "Circles scaled by area", "Labels beside each circle"],
+    serves: "Showing rough size differences with scaled circles.",
+    method: ["Compute one number per category.", "Scale each circle's area, not its radius, by the value.", "Arrange the circles with room to breathe.", "Label each circle with its value."],
+    burn: "Scaling by radius instead of area wildly exaggerates differences.",
+    pairs: "Big picture size stories where precision matters less.",
+    example: "How large is each campus's student body, roughly?",
+    hint: "The values become circles, and area carries the number."
+  },
+  {
+    key: "pictogram", name: "Pictogram", family: "Magnitude", difficulty: "Beginner", rarity: "Uncommon",
+    ingredients: ["One category field", "Counts shown as repeated icons", "A fixed value per icon", "A key explaining the icon"],
+    serves: "Making counts friendly with repeated icons.",
+    method: ["Choose a simple icon and a fixed value per icon.", "Repeat the icon to build each count.", "Line the rows up for easy comparison.", "State the icon's value in a key."],
+    burn: "Partial icons confuse readers, and resizing icons misleads them.",
+    pairs: "Public facing posters and simple counts.",
+    example: "How many advising appointments happened per week, shown in person icons?",
+    hint: "Every icon stands for a fixed number of things."
+  },
+  {
+    key: "radar", name: "Radar Chart", family: "Magnitude", difficulty: "Intermediate", rarity: "Uncommon",
+    ingredients: ["Several measures on spokes", "One or two cases to compare", "A shared scale on every spoke", "A closed shape per case"],
+    serves: "Comparing a few cases across several measures at once.",
+    method: ["Arrange the measures as spokes around a center.", "Plot each case's value on every spoke.", "Connect the points into a closed shape.", "Compare at most two or three cases."],
+    burn: "The shape's area misleads, and changing spoke order changes the picture.",
+    pairs: "Profiles, scorecards, and rubric results.",
+    example: "How does each program score across five review criteria?",
+    hint: "Measures fan out like spokes and each case draws a shape."
+  },
+  {
+    key: "bullet", name: "Bullet Chart", family: "Magnitude", difficulty: "Advanced", rarity: "Rare",
+    ingredients: ["One measure per row", "A target marker", "Shaded bands from poor to good", "A compact horizontal bar"],
+    serves: "Showing progress against a target in tight space.",
+    method: ["Draw shaded background bands for poor, fair, and good.", "Draw the actual value as a slim dark bar.", "Mark the target with a vertical tick.", "Stack several rows for several measures."],
+    burn: "Without a legend, the bands and the marker mean nothing.",
+    pairs: "Dashboards and goal tracking.",
+    example: "How close is each department to its annual advising goal?",
+    hint: "A bar, a target line, and grades of shading in one slim row."
+  },
+  {
+    key: "parallel", name: "Parallel Coordinates", family: "Magnitude", difficulty: "Advanced", rarity: "Rare", alt: ["Correlation"],
+    ingredients: ["Several numeric variables", "One vertical axis per variable", "One line per case crossing all axes", "A highlight for a few cases"],
+    serves: "Tracing how cases behave across many measures.",
+    method: ["Stand one vertical axis per variable side by side.", "Scale each axis to its own range.", "Draw one line per case through all the axes.", "Fade the crowd and highlight the cases that matter."],
+    burn: "More than a handful of highlighted lines becomes an unreadable tangle.",
+    pairs: "Multi measure comparisons and profile hunting.",
+    example: "How do programs compare across cost, size, retention, and rating?",
+    hint: "Each case is one line threading through every axis."
+  },
+  {
+    key: "propsymbolmap", name: "Proportional Symbol Map", family: "Spatial", difficulty: "Intermediate", rarity: "Common",
+    ingredients: ["Geographic locations", "One number per place", "Circles scaled by area on a map", "A base map for context"],
+    serves: "Showing totals at places without distorting by land size.",
+    method: ["Place a circle at each location.", "Scale each circle's area by its value.", "Make the circles slightly transparent.", "Add a size legend."],
+    burn: "Big circles overlap and bury the small ones.",
+    pairs: "City totals, campus totals, and event counts by place.",
+    example: "How many students come from each Ohio city?",
+    hint: "Sized circles sit on top of a map."
+  },
+  {
+    key: "dotdensity", name: "Dot Density Map", family: "Spatial", difficulty: "Intermediate", rarity: "Uncommon",
+    ingredients: ["Geographic areas", "Counts turned into dots", "A fixed value per dot", "Random dot placement within each area"],
+    serves: "Showing where things concentrate with one dot per amount.",
+    method: ["Decide how many things one dot represents.", "Compute the dots needed per area.", "Scatter the dots randomly inside each area.", "State the dot value in a key."],
+    burn: "Dots imply exact locations that the data does not have.",
+    pairs: "Population style concentration questions.",
+    example: "Where do enrolled students live across the state?",
+    hint: "Each dot stands for a fixed number of people or things."
+  },
+  {
+    key: "flowmap", name: "Flow Map", family: "Spatial", difficulty: "Advanced", rarity: "Rare", alt: ["Flow"],
+    ingredients: ["Origin and destination places", "A volume per route", "Lines scaled by volume", "A base map"],
+    serves: "Showing movement between places and how much.",
+    method: ["Draw a line from each origin to its destination.", "Scale each line's width by its volume.", "Curve the lines to reduce overlap.", "Label the largest flows."],
+    burn: "Many crossing routes turn the map into yarn.",
+    pairs: "Transfers, commutes, and migration questions.",
+    example: "Which counties send the most transfer students to campus?",
+    hint: "Lines on a map thicken with the traffic they carry."
+  },
+  {
+    key: "contour", name: "Contour Map", family: "Spatial", difficulty: "Advanced", rarity: "Rare",
+    ingredients: ["A continuous value across space", "Lines joining equal values", "Labels on the key lines", "Optional color between lines"],
+    serves: "Showing how a continuous value rises and falls across an area.",
+    method: ["Measure or estimate the value across the area.", "Draw lines connecting points of equal value.", "Label the lines with their values.", "Shade between lines if it helps."],
+    burn: "Crowded lines mean steep change, which readers often miss.",
+    pairs: "Coverage, elevation, and intensity surfaces.",
+    example: "How does wireless coverage strength vary across campus?",
+    hint: "Like the elevation lines on a hiking map."
+  },
+  {
+    key: "cartogram", name: "Scaled Cartogram", family: "Spatial", difficulty: "Advanced", rarity: "Rare",
+    ingredients: ["Geographic areas", "One number per area", "Area shapes resized by value", "Recognizable, if distorted, geography"],
+    serves: "Resizing places by data instead of land area.",
+    method: ["Start from the real map.", "Stretch or shrink each area until its size matches its value.", "Keep neighbors touching where possible.", "Label areas that became hard to recognize."],
+    burn: "Distorted shapes can become unrecognizable.",
+    pairs: "Population weighted stories where land size misleads.",
+    example: "What does Ohio look like if counties are sized by student counts?",
+    hint: "The map stretches so data, not land, sets each area's size."
+  },
+  {
+    key: "eqcartogram", name: "Equalized Cartogram", family: "Spatial", difficulty: "Advanced", rarity: "Rare",
+    ingredients: ["Geographic areas", "One equal tile per area", "A rough geographic arrangement", "One value shown by tile color"],
+    serves: "Giving every place equal visual weight, like one tile per county.",
+    method: ["Give every area one identical tile.", "Arrange the tiles to roughly match the map.", "Color each tile by its value.", "Label the tiles with short codes."],
+    burn: "Equal tiles erase real size differences that may matter.",
+    pairs: "Elections and one vote per area stories.",
+    example: "How did each county vote on the levy, one square per county?",
+    hint: "Every region becomes the same sized tile, arranged like the map."
+  },
+  {
+    key: "sankey", name: "Sankey Diagram", family: "Flow", difficulty: "Advanced", rarity: "Uncommon",
+    ingredients: ["Stages from left to right", "Flows between the stages", "Band widths sized by volume", "Labeled nodes"],
+    serves: "Showing how a quantity splits and merges across stages.",
+    method: ["Arrange the stages from left to right.", "Draw a band for every flow between stages.", "Scale each band's width by its volume.", "Label the nodes and the largest bands."],
+    burn: "Too many thin bands tangle into noise.",
+    pairs: "Pipelines, funnels, and student journey questions.",
+    example: "How do admitted students flow from application to enrollment to graduation?",
+    hint: "Wide ribbons split and merge as the quantity moves through stages."
+  },
+  {
+    key: "waterfall", name: "Waterfall Chart", family: "Flow", difficulty: "Intermediate", rarity: "Uncommon", alt: ["Part-to-whole"],
+    ingredients: ["A starting total", "Additions and subtractions in order", "Floating bars for each step", "An ending total"],
+    serves: "Showing how a total was built up or drained step by step.",
+    method: ["Draw the starting total as a full bar.", "Add a floating bar for each gain or loss.", "Start each bar where the last one ended.", "Close with the ending total as a full bar."],
+    burn: "Floating bars confuse readers who expect a common baseline.",
+    pairs: "Budgets, balances, and step by step changes.",
+    example: "How did the budget move from January's balance to December's?",
+    hint: "Each bar starts where the last one ended."
+  },
+  {
+    key: "chord", name: "Chord Diagram", family: "Flow", difficulty: "Advanced", rarity: "Rare",
+    ingredients: ["Groups arranged around a circle", "Flows between every pair", "Ribbon widths sized by volume", "A shared circular layout"],
+    serves: "Showing connections among many groups at once.",
+    method: ["Arrange the groups around a circle.", "Draw a ribbon between every connected pair.", "Scale each ribbon's width by its volume.", "Color the ribbons by their origin group."],
+    burn: "Beautiful but nearly unreadable without interaction.",
+    pairs: "Switching, trading, and exchange questions.",
+    example: "How do students move among majors when they switch?",
+    hint: "Ribbons sweep across a circle connecting the groups."
+  },
+  {
+    key: "network", name: "Network Diagram", family: "Flow", difficulty: "Advanced", rarity: "Uncommon",
+    ingredients: ["Nodes for entities", "Edges for relationships", "Optional node size by importance", "A layout that clusters related nodes"],
+    serves: "Showing who connects to whom.",
+    method: ["Draw one node per entity.", "Draw one edge per relationship.", "Size or color the nodes by importance.", "Let related nodes pull together in the layout."],
+    burn: "Hairballs: too many edges and the structure vanishes.",
+    pairs: "Collaboration, co-enrollment, and referral questions.",
+    example: "Which faculty co-author papers together?",
+    hint: "Dots and the lines between them are the whole story."
+  }
+];
+
+/* ---------- Icons ---------- */
+/* Every chart type now has a real image in images/charts/. If you ever add a
+   chart without an image, leave its key out of this list and the drawn glyph
+   will appear instead. */
+const CHART_IMG = new Set(['bar','line','scatter','histogram','box','heatmap','smallmult','stacked','pie','area','dot','choropleth','orderedbar','orderedcol','orderedsymbol','dotstrip','slope','lollipop','bump','divergingbar','divergingstacked','spine','surplusline','bubble','connectedscatter','colline','violin','poppyramid','barcode','cumcurve','beeswarm','column','candlestick','fan','calheatmap','streamgraph','donut','treemap','waffle','marimekko','sunburst','venn','groupedbar','propsymbol','pictogram','radar','bullet','parallel','propsymbolmap','dotdensity','flowmap','contour','cartogram','eqcartogram','sankey','waterfall','chord','network']);
+function chartArt(key, name) {
+  const fb = `<span class="art-fallback">${chartIcon(key)}</span>`;
+  if (!CHART_IMG.has(key)) return `<span class="art-wrap noimg">${fb}</span>`;
+  return `<span class="art-wrap"><img src="images/charts/${key}.png" alt="Example ${name}" loading="lazy" onerror="this.parentNode.classList.add('noimg')">${fb}</span>`;
+}
+function chartIcon(key) {
+  const s = 'stroke="#75AADB" stroke-width="2" fill="none" stroke-linecap="round"';
+  const g = 'fill="#97DEA2"';
+  const gl = 'fill="#5FA36C"';
+  const gd = 'fill="#7FD18C"';
+  const gs = 'stroke="#97DEA2" stroke-width="2.5" fill="none" stroke-linecap="round"';
+  const icons = {
+    bar: `<rect x="8" y="28" width="10" height="20" ${g}/><rect x="24" y="14" width="10" height="34" ${g}/><rect x="40" y="22" width="10" height="26" ${gl}/><rect x="56" y="34" width="10" height="14" ${gl}/><line x1="4" y1="48" x2="72" y2="48" ${s}/>`,
+    line: `<polyline points="6,42 22,30 38,34 54,16 70,22" ${gs} stroke-width="3"/><line x1="4" y1="48" x2="72" y2="48" ${s}/>`,
+    scatter: `<line x1="4" y1="48" x2="72" y2="48" ${s}/><line x1="6" y1="6" x2="6" y2="48" ${s}/>` +
+      [[16,38],[24,30],[30,34],[38,24],[46,26],[52,18],[60,14],[34,40],[58,24]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3" ${g}/>`).join(''),
+    histogram: `<rect x="8" y="36" width="11" height="12" ${gl}/><rect x="19" y="24" width="11" height="24" ${g}/><rect x="30" y="14" width="11" height="34" ${g}/><rect x="41" y="22" width="11" height="26" ${g}/><rect x="52" y="36" width="11" height="12" ${gl}/><line x1="4" y1="48" x2="70" y2="48" ${s}/>`,
+    box: `<line x1="20" y1="10" x2="20" y2="44" ${s}/><rect x="10" y="20" width="20" height="16" fill="#5FA36C" stroke="#75AADB" stroke-width="2"/><line x1="10" y1="28" x2="30" y2="28" ${s}/><line x1="48" y1="14" x2="48" y2="46" ${s}/><rect x="38" y="24" width="20" height="14" fill="#5FA36C" stroke="#75AADB" stroke-width="2"/><line x1="38" y1="30" x2="58" y2="30" ${s}/>`,
+    heatmap: [0,1,2,3].map(r=>[0,1,2,3,4].map(c=>`<rect x="${8+c*12}" y="${8+r*10}" width="10" height="8" fill="${['#22352A','#5FA36C','#97DEA2','#7FD18C'][(r+c)%4]}"/>`).join('')).join(''),
+    smallmult: [[6,6],[42,6],[6,30],[42,30]].map(p=>`<rect x="${p[0]}" y="${p[1]}" width="28" height="18" fill="none" stroke="#2E3845" stroke-width="1.5"/><polyline points="${p[0]+3},${p[1]+13} ${p[0]+11},${p[1]+7} ${p[0]+19},${p[1]+10} ${p[0]+25},${p[1]+4}" stroke="#97DEA2" stroke-width="2" fill="none"/>`).join(''),
+    stacked: [[8,'18,14,16'],[28,'12,20,12'],[48,'20,10,10']].map(b=>{
+      const parts=b[1].split(',').map(Number); let y=48; let out='';
+      const cols=['#7FD18C','#97DEA2','#5FA36C'];
+      parts.forEach((h,i)=>{ y-=h; out+=`<rect x="${b[0]}" y="${y}" width="14" height="${h}" fill="${cols[i]}"/>`; });
+      return out;
+    }).join('') + `<line x1="4" y1="48" x2="70" y2="48" ${s}/>`,
+    pie: `<circle cx="38" cy="27" r="20" fill="#5FA36C"/><path d="M38 27 L38 7 A20 20 0 0 1 56 36 Z" fill="#7FD18C"/><path d="M38 27 L56 36 A20 20 0 0 1 30 45 Z" fill="#97DEA2"/>`,
+    area: `<path d="M6 48 L6 40 L22 28 L38 33 L54 16 L70 24 L70 48 Z" fill="#5FA36C"/><polyline points="6,40 22,28 38,33 54,16 70,24" stroke="#7FD18C" stroke-width="2.5" fill="none"/><line x1="4" y1="48" x2="72" y2="48" ${s}/>`,
+    dot: `<line x1="44" y1="6" x2="44" y2="48" stroke="#2E3845" stroke-width="1.5" stroke-dasharray="3 3"/>` +
+      [[58,12],[50,21],[40,30],[34,39]].map(p=>`<line x1="10" y1="${p[1]}" x2="${p[0]}" y2="${p[1]}" stroke="#5C6878" stroke-width="2"/><circle cx="${p[0]}" cy="${p[1]}" r="4" ${g}/>`).join('') + `<line x1="8" y1="6" x2="8" y2="48" ${s}/>`,
+    choropleth: `<path d="M8 14 L26 8 L40 14 L38 28 L22 32 Z" fill="#7FD18C"/><path d="M40 14 L60 10 L68 24 L54 30 L38 28 Z" fill="#5FA36C"/><path d="M22 32 L38 28 L54 30 L50 46 L28 46 Z" fill="#97DEA2"/>`,
+    orderedbar: `<rect x="10" y="8" width="52" height="8" ${gd}/><rect x="10" y="19" width="40" height="8" ${g}/><rect x="10" y="30" width="28" height="8" ${gl}/><rect x="10" y="41" width="16" height="7" ${gl}/><line x1="10" y1="6" x2="10" y2="50" ${s}/>`,
+    orderedcol: `<rect x="10" y="12" width="11" height="36" ${gd}/><rect x="26" y="20" width="11" height="28" ${g}/><rect x="42" y="30" width="11" height="18" ${gl}/><rect x="58" y="38" width="11" height="10" ${gl}/><line x1="6" y1="48" x2="72" y2="48" ${s}/>`,
+    orderedsymbol: `<circle cx="15" cy="30" r="12" ${gd}/><circle cx="36" cy="33" r="9" ${g}/><circle cx="53" cy="36" r="6" ${gl}/><circle cx="66" cy="38" r="4" ${gl}/><line x1="4" y1="48" x2="72" y2="48" ${s}/>`,
+    dotstrip: `<line x1="6" y1="28" x2="70" y2="28" ${s}/>` + [12,18,22,30,33,40,46,49,58,66].map(x=>`<circle cx="${x}" cy="28" r="3.5" ${g}/>`).join(''),
+    slope: `<line x1="14" y1="6" x2="14" y2="48" ${s}/><line x1="62" y1="6" x2="62" y2="48" ${s}/><line x1="14" y1="14" x2="62" y2="30" ${gs}/><line x1="14" y1="28" x2="62" y2="12" ${gs}/><line x1="14" y1="38" x2="62" y2="42" stroke="#5FA36C" stroke-width="2.5"/>` + [[14,14],[62,30],[14,28],[62,12],[14,38],[62,42]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3" ${g}/>`).join(''),
+    lollipop: [[14,16],[30,24],[46,12],[62,30]].map(p=>`<line x1="${p[0]}" y1="48" x2="${p[0]}" y2="${p[1]}" stroke="#75AADB" stroke-width="2"/><circle cx="${p[0]}" cy="${p[1]}" r="5" ${g}/>`).join('') + `<line x1="6" y1="48" x2="70" y2="48" ${s}/>`,
+    bump: `<polyline points="8,12 28,12 48,30 68,30" ${gs}/><polyline points="8,30 28,30 48,12 68,12" stroke="#7FD18C" stroke-width="2.5" fill="none"/><polyline points="8,44 28,44 48,44 68,44" stroke="#5FA36C" stroke-width="2.5" fill="none"/>` + [[8,12],[8,30],[8,44],[68,30],[68,12],[68,44]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3" ${g}/>`).join(''),
+    divergingbar: `<line x1="38" y1="4" x2="38" y2="50" ${s}/><rect x="38" y="8" width="24" height="7" ${g}/><rect x="16" y="19" width="22" height="7" fill="#F2716F"/><rect x="38" y="30" width="14" height="7" ${g}/><rect x="26" y="41" width="12" height="7" fill="#F2716F"/>`,
+    divergingstacked: `<line x1="38" y1="4" x2="38" y2="50" ${s}/>` + [[8,18,14,10],[19,14,18,8],[30,10,12,14],[41,16,10,12]].map(r=>`<rect x="${38-r[1]}" y="${r[0]}" width="${r[1]}" height="7" fill="#F2716F"/><rect x="${38-r[1]-r[3]}" y="${r[0]}" width="${r[3]}" height="7" fill="#B25E5C"/><rect x="38" y="${r[0]}" width="${r[2]}" height="7" ${g}/><rect x="${38+r[2]}" y="${r[0]}" width="8" height="7" ${gl}/>`).join(''),
+    spine: [[8,30],[19,22],[30,38],[41,26]].map(r=>`<rect x="10" y="${r[0]}" width="${r[1]}" height="7" ${g}/><rect x="${10+r[1]}" y="${r[0]}" width="${56-r[1]}" height="7" ${gl}/>`).join('') + `<line x1="38" y1="4" x2="38" y2="50" ${s}/>`,
+    surplusline: `<line x1="6" y1="28" x2="70" y2="28" ${s}/><path d="M6 28 L16 18 L28 22 L38 28 Z" ${g}/><path d="M38 28 L48 38 L58 32 L64 28 Z" fill="#F2716F"/><path d="M64 28 L70 22 L70 28 Z" ${g}/><polyline points="6,28 16,18 28,22 38,28 48,38 58,32 64,28 70,22" stroke="#7FD18C" stroke-width="2" fill="none"/>`,
+    bubble: `<line x1="4" y1="48" x2="72" y2="48" ${s}/><line x1="6" y1="6" x2="6" y2="48" ${s}/><circle cx="22" cy="34" r="8" ${gl}/><circle cx="40" cy="22" r="12" ${g} fill-opacity="0.8"/><circle cx="58" cy="34" r="5" ${gd}/><circle cx="52" cy="14" r="4" ${gl}/>`,
+    connectedscatter: `<polyline points="12,40 26,28 30,14 48,18 60,32" stroke="#5FA36C" stroke-width="2" fill="none"/>` + [[12,40],[26,28],[30,14],[48,18],[60,32]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3.5" ${g}/>`).join('') + `<path d="M60 32 L66 36 L59 38 Z" ${gd}/><line x1="4" y1="48" x2="72" y2="48" ${s}/><line x1="6" y1="6" x2="6" y2="48" ${s}/>`,
+    colline: `<rect x="10" y="30" width="9" height="18" ${gl}/><rect x="24" y="24" width="9" height="24" ${gl}/><rect x="38" y="32" width="9" height="16" ${gl}/><rect x="52" y="20" width="9" height="28" ${gl}/><polyline points="14,18 28,26 42,14 56,10" stroke="#7FD18C" stroke-width="2.5" fill="none"/><line x1="6" y1="48" x2="70" y2="48" ${s}/>`,
+    violin: `<path d="M22 8 C14 18 12 24 22 30 C32 36 30 44 22 48 C14 44 12 36 22 30 C32 24 30 18 22 8 Z" ${g}/><path d="M52 8 C46 16 44 26 52 32 C60 38 58 44 52 48 C46 44 44 38 52 32 C60 26 58 16 52 8 Z" ${gl}/><line x1="14" y1="29" x2="30" y2="29" stroke="#E8EDF4" stroke-width="2"/><line x1="45" y1="31" x2="59" y2="31" stroke="#75AADB" stroke-width="2"/>`,
+    poppyramid: [[8,22,16],[17,28,22],[26,32,26],[35,24,30],[44,16,20]].map(r=>`<rect x="${36-r[1]}" y="${r[0]}" width="${r[1]}" height="7" ${g}/><rect x="40" y="${r[0]}" width="${r[2]}" height="7" ${gl}/>`).join('') + `<line x1="38" y1="6" x2="38" y2="52" ${s}/>`,
+    barcode: [9,12,14,19,23,24,28,31,33,34,38,42,45,46,50,55,59,63,66].map(x=>`<line x1="${x}" y1="16" x2="${x}" y2="40" stroke="#97DEA2" stroke-width="2"/>`).join('') + `<line x1="6" y1="44" x2="70" y2="44" ${s}/>`,
+    cumcurve: `<path d="M8 46 C26 44 28 34 38 26 C48 18 50 12 66 8" ${gs}/><line x1="6" y1="48" x2="70" y2="48" ${s}/><line x1="8" y1="6" x2="8" y2="48" ${s}/><line x1="8" y1="26" x2="38" y2="26" stroke="#2E3845" stroke-width="1.5" stroke-dasharray="3 3"/><line x1="38" y1="26" x2="38" y2="48" stroke="#2E3845" stroke-width="1.5" stroke-dasharray="3 3"/>`,
+    beeswarm: [[38,44],[33,40],[43,40],[38,36],[28,38],[48,38],[35,32],[41,32],[31,34],[45,34],[38,28],[33,26],[43,26],[38,22],[36,16],[40,12]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3" ${g}/>`).join('') + `<line x1="6" y1="50" x2="70" y2="50" ${s}/>`,
+    column: `<rect x="10" y="22" width="11" height="26" ${g}/><rect x="26" y="14" width="11" height="34" ${g}/><rect x="42" y="28" width="11" height="20" ${gl}/><rect x="58" y="20" width="11" height="28" ${gl}/><line x1="6" y1="48" x2="72" y2="48" ${s}/>`,
+    candlestick: [[12,10,20,34,'#97DEA2'],[28,16,28,40,'#F2716F'],[44,8,16,30,'#97DEA2'],[60,18,26,44,'#F2716F']].map(c=>`<line x1="${c[0]}" y1="${c[1]}" x2="${c[0]}" y2="${c[3]}" stroke="#75AADB" stroke-width="1.5"/><rect x="${c[0]-4}" y="${c[2]-8}" width="8" height="12" fill="${c[4]}"/>`).join(''),
+    fan: `<polyline points="6,34 20,28 32,24" stroke="#7FD18C" stroke-width="2.5" fill="none"/><path d="M32 24 L70 8 L70 44 Z" fill="#5FA36C" fill-opacity="0.5"/><path d="M32 24 L70 16 L70 34 Z" ${gl}/><line x1="32" y1="24" x2="70" y2="25" stroke="#7FD18C" stroke-width="2" stroke-dasharray="4 3"/>`,
+    calheatmap: [0,1,2,3].map(r=>[0,1,2,3,4,5,6].map(c=>`<rect x="${7+c*9}" y="${10+r*9}" width="7" height="7" fill="${['#22352A','#5FA36C','#97DEA2','#7FD18C'][(r*3+c)%4]}"/>`).join('')).join(''),
+    streamgraph: `<path d="M6 26 C24 18 46 20 70 14 L70 26 C46 30 24 30 6 32 Z" ${gd}/><path d="M6 32 C24 30 46 30 70 26 L70 38 C46 40 24 42 6 40 Z" ${g}/><path d="M6 40 C24 42 46 40 70 38 L70 46 C46 50 24 48 6 46 Z" ${gl}/>`,
+    donut: `<circle cx="38" cy="27" r="20" fill="#5FA36C"/><path d="M38 7 A20 20 0 0 1 57 33 L48 30 A10 10 0 0 0 38 17 Z" fill="#7FD18C"/><path d="M57 33 A20 20 0 0 1 30 45 L34 36 A10 10 0 0 0 48 30 Z" fill="#97DEA2"/><circle cx="38" cy="27" r="10" fill="#161B23"/>`,
+    treemap: `<rect x="6" y="6" width="38" height="26" ${gd}/><rect x="6" y="34" width="22" height="14" ${g}/><rect x="30" y="34" width="14" height="14" ${gl}/><rect x="46" y="6" width="24" height="18" ${g}/><rect x="46" y="26" width="24" height="22" ${gl}/>`,
+    waffle: [0,1,2,3,4].map(r=>[0,1,2,3,4,5,6,7].map(c=>{const n=r*8+c; const f=n<14?'#7FD18C':(n<24?'#97DEA2':'#22352A'); return `<rect x="${8+c*8}" y="${8+r*8}" width="6.5" height="6.5" fill="${f}"/>`;}).join('')).join(''),
+    marimekko: `<rect x="6" y="8" width="26" height="16" ${gd}/><rect x="6" y="24" width="26" height="24" ${gl}/><rect x="34" y="8" width="16" height="26" ${g}/><rect x="34" y="34" width="16" height="14" ${gl}/><rect x="52" y="8" width="18" height="10" ${gd}/><rect x="52" y="18" width="18" height="30" ${g}/>`,
+    sunburst: `<circle cx="38" cy="27" r="8" ${gd}/><path d="M38 27 L38 11 A16 16 0 0 1 53 32 Z" ${g}/><path d="M38 27 L53 32 A16 16 0 0 1 26 39 Z" ${gl}/><path d="M38 27 L26 39 A16 16 0 0 1 38 11 Z" fill="#22352A"/><path d="M38 3 A24 24 0 0 1 61 34 L53 32 A16 16 0 0 0 38 11 Z" ${gl}/><path d="M61 34 A24 24 0 0 1 20 44 L26 39 A16 16 0 0 0 53 32 Z" fill="#22352A"/>`,
+    venn: `<circle cx="28" cy="27" r="17" fill="#97DEA2" fill-opacity="0.65"/><circle cx="48" cy="27" r="17" fill="#5FA36C" fill-opacity="0.75"/>`,
+    groupedbar: [[10,22,30],[34,16,26],[58,28,36]].map(p=>`<rect x="${p[0]}" y="${p[1]}" width="8" height="${48-p[1]}" ${g}/><rect x="${p[0]+9}" y="${p[2]}" width="8" height="${48-p[2]}" ${gl}/>`).join('') + `<line x1="6" y1="48" x2="78" y2="48" ${s}/>`,
+    propsymbol: `<circle cx="18" cy="28" r="14" ${g}/><circle cx="44" cy="34" r="9" ${gl}/><circle cx="62" cy="38" r="5" ${gd}/>`,
+    pictogram: [0,1].map(r=>[0,1,2,3,4].map(c=>{const x=10+c*13, y=10+r*22; const f=(r===1&&c>2)?'#22352A':'#97DEA2'; return `<circle cx="${x}" cy="${y}" r="4" fill="${f}"/><rect x="${x-4}" y="${y+5}" width="8" height="10" rx="2" fill="${f}"/>`;}).join('')).join(''),
+    radar: `<polygon points="38,5 64,22 56,48 20,48 12,22" fill="none" stroke="#2E3845" stroke-width="1.5"/><polygon points="38,15 54,25 49,42 27,42 22,25" fill="#97DEA2" fill-opacity="0.5" stroke="#7FD18C" stroke-width="2"/>` + ['38,5','64,22','56,48','20,48','12,22'].map(p=>`<line x1="38" y1="27" x2="${p.split(',')[0]}" y2="${p.split(',')[1]}" stroke="#2E3845" stroke-width="1"/>`).join(''),
+    bullet: [[10],[32]].map((r,i)=>{const y=10+i*22; return `<rect x="8" y="${y}" width="60" height="12" fill="#22352A"/><rect x="8" y="${y}" width="42" height="12" fill="#5FA36C" fill-opacity="0.6"/><rect x="8" y="${y+3}" width="${i?30:48}" height="6" ${gd}/><line x1="${i?44:56}" y1="${y-2}" x2="${i?44:56}" y2="${y+14}" stroke="#75AADB" stroke-width="2.5"/>`;}).join(''),
+    parallel: [14,32,50,68].map(x=>`<line x1="${x}" y1="8" x2="${x}" y2="48" ${s}/>`).join('') + `<polyline points="14,14 32,30 50,18 68,34" ${gs}/><polyline points="14,36 32,16 50,40 68,20" stroke="#5FA36C" stroke-width="2.5" fill="none"/>`,
+    propsymbolmap: `<path d="M8 16 L30 8 L56 12 L68 26 L58 44 L26 46 L10 34 Z" fill="#22352A" stroke="#2E3845" stroke-width="1.5"/><circle cx="26" cy="22" r="9" ${g} fill-opacity="0.85"/><circle cx="50" cy="30" r="6" ${gd} fill-opacity="0.85"/><circle cx="38" cy="38" r="4" ${gl}/>`,
+    dotdensity: `<path d="M8 16 L30 8 L56 12 L68 26 L58 44 L26 46 L10 34 Z" fill="#22352A" stroke="#2E3845" stroke-width="1.5"/>` + [[20,20],[24,26],[28,18],[32,24],[26,32],[34,30],[44,22],[48,30],[52,26],[40,36],[46,38],[56,34],[18,28],[36,16]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="2" ${gd}/>`).join(''),
+    flowmap: `<path d="M8 16 L30 8 L56 12 L68 26 L58 44 L26 46 L10 34 Z" fill="#22352A" stroke="#2E3845" stroke-width="1.5"/><path d="M18 36 C30 24 40 22 54 20" stroke="#7FD18C" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M22 40 C34 36 44 32 56 30" stroke="#97DEA2" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M30 42 C40 42 48 40 58 38" stroke="#5FA36C" stroke-width="1.8" fill="none" stroke-linecap="round"/>`,
+    contour: `<path d="M14 30 C12 14 36 6 52 12 C68 18 68 36 54 44 C38 52 16 46 14 30 Z" fill="none" stroke="#97DEA2" stroke-width="2"/><path d="M22 29 C22 18 38 13 50 18 C60 22 60 34 50 39 C38 44 22 40 22 29 Z" fill="none" stroke="#7FD18C" stroke-width="2"/><path d="M30 28 C31 22 40 20 46 23 C52 26 51 33 45 35 C38 37 29 34 30 28 Z" ${gl}/>`,
+    cartogram: `<rect x="8" y="8" width="26" height="22" ${gd}/><rect x="36" y="8" width="14" height="14" ${gl}/><rect x="52" y="8" width="16" height="26" ${g}/><rect x="8" y="32" width="18" height="16" ${gl}/><rect x="28" y="24" width="22" height="24" ${g}/>`,
+    eqcartogram: [[18,8],[28,8],[38,8],[8,18],[18,18],[28,18],[38,18],[48,18],[58,18],[18,28],[28,28],[38,28],[48,28],[28,38],[38,38]].map((p,i)=>`<rect x="${p[0]+6}" y="${p[1]+2}" width="8" height="8" fill="${['#7FD18C','#97DEA2','#5FA36C','#22352A'][i%4]}"/>`).join(''),
+    sankey: `<rect x="6" y="10" width="6" height="32" ${gd}/><rect x="64" y="6" width="6" height="16" ${g}/><rect x="64" y="28" width="6" height="20" ${gl}/><path d="M12 12 C36 12 40 8 64 8 L64 20 C40 20 36 24 12 24 Z" ${g} fill-opacity="0.7"/><path d="M12 26 C36 26 40 30 64 30 L64 46 C40 46 36 40 12 40 Z" ${gl} fill-opacity="0.8"/>`,
+    waterfall: `<rect x="6" y="26" width="10" height="22" ${gd}/><rect x="19" y="16" width="10" height="10" ${g}/><rect x="32" y="10" width="10" height="6" ${g}/><rect x="45" y="10" width="10" height="12" fill="#F2716F"/><rect x="58" y="22" width="10" height="26" ${gd}/>` + [[16,26],[29,16],[42,10],[55,22]].map(p=>`<line x1="${p[0]}" y1="${p[1]}" x2="${p[0]+3}" y2="${p[1]}" stroke="#75AADB" stroke-width="1.5" stroke-dasharray="2 2"/>`).join('') + `<line x1="4" y1="48" x2="72" y2="48" ${s}/>`,
+    chord: `<circle cx="38" cy="27" r="21" fill="none" stroke="#2E3845" stroke-width="3"/><path d="M24 12 C34 24 44 24 54 14 C50 26 46 28 28 30 Z" ${g} fill-opacity="0.7"/><path d="M20 36 C30 30 44 32 54 40 C44 44 30 44 20 36 Z" ${gl} fill-opacity="0.8"/><path d="M56 22 C48 26 46 32 52 38 C58 34 58 28 56 22 Z" ${gd} fill-opacity="0.7"/>`,
+    network: `<line x1="20" y1="14" x2="38" y2="28" ${s}/><line x1="38" y1="28" x2="58" y2="12" ${s}/><line x1="38" y1="28" x2="26" y2="44" ${s}/><line x1="38" y1="28" x2="58" y2="40" ${s}/><line x1="58" y1="12" x2="58" y2="40" ${s}/><circle cx="20" cy="14" r="5" ${gl}/><circle cx="38" cy="28" r="7" ${gd}/><circle cx="58" cy="12" r="5" ${g}/><circle cx="26" cy="44" r="4" ${gl}/><circle cx="58" cy="40" r="5" ${g}/>`
+  };
+  return `<svg viewBox="0 0 76 54" role="img" aria-label="Example sketch">${icons[key] || ''}</svg>`;
+}
+
+/* ---------- Prep the Kitchen scenarios ---------- */
+const scenarios = [
+  {
+    key: "bar",
+    goal: "Which department has the most declared majors this fall?",
+    cols: ["student_id", "department", "class_year", "gpa", "credits"],
+    rows: [["20381", "Biology", "Sophomore", "3.4", "31"], ["20382", "History", "Senior", "3.8", "104"], ["20383", "Biology", "Freshman", "3.1", "14"], ["20384", "Marketing", "Junior", "2.9", "72"], ["20385", "History", "Sophomore", "3.6", "38"], ["20386", "Nursing", "Senior", "3.7", "118"]],
+    note: "Preview of 2,150 rows. One row per student.",
+    distractors: ["line", "scatter", "choropleth"],
+    prep: "Group and summarize",
+    prepOptions: ["Use it as is", "Group and summarize", "Filter to a subset first", "Join another table"],
+    prepWhy: "The chart needs one number per department, so count the rows in each department first. The extra columns like gpa and credits are not part of this question. One row per student is too raw to chart directly.",
+    prepHint: "The chart needs one bar per department, but the data has one row per student."
+  },
+  {
+    key: "line",
+    goal: "How has total fall enrollment changed from 2018 to 2025?",
+    cols: ["student_id", "term", "college", "residency"],
+    rows: [["18204", "Fall 2018", "Arts and Sciences", "In-state"], ["18205", "Fall 2018", "Business", "Out-of-state"], ["20381", "Fall 2019", "Education", "In-state"], ["20382", "Fall 2019", "Business", "In-state"], ["22090", "Fall 2020", "Nursing", "Out-of-state"], ["24551", "Fall 2021", "Business", "In-state"]],
+    note: "Preview of 41,000 rows. One row per student per term.",
+    distractors: ["pie", "box", "choropleth"],
+    prep: "Group and summarize",
+    prepOptions: ["Use it as is", "Group and summarize", "Reshape from wide to long", "Filter to a subset first"],
+    prepWhy: "The line needs one point per term, so count the students within each term first. The data is already one row per record, so there is nothing to reshape.",
+    prepHint: "A line chart needs one point per year, not one row per student."
+  },
+  {
+    key: "scatter",
+    goal: "Do students who study more earn higher exam scores?",
+    cols: ["student_id", "hours_studied", "exam_score", "attendance_pct"],
+    rows: [["5121", "6", "81", "92"], ["5122", "11", "92", "98"], ["5123", "2", "64", "70"], ["5124", "8", "85", "88"], ["5125", "4", "73", "81"], ["5126", "13", "95", "100"]],
+    note: "Preview of 320 rows. One row per student.",
+    distractors: ["bar", "pie", "line"],
+    prep: "Use it as is",
+    prepOptions: ["Use it as is", "Group and summarize", "Build a pivot table", "Calculate a rate or percent"],
+    prepWhy: "A scatter plot wants every row as its own dot. Summarizing first would hide the pattern you are looking for.",
+    prepHint: "This chart wants one dot per student. Does the data already give you that?"
+  },
+  {
+    key: "histogram",
+    goal: "What is the spread of student ages in the evening program?",
+    cols: ["student_id", "program", "age", "credits"],
+    rows: [["7711", "Day", "19", "15"], ["7712", "Evening", "34", "9"], ["7713", "Evening", "27", "12"], ["7714", "Day", "20", "16"], ["7715", "Evening", "41", "6"], ["7716", "Evening", "23", "12"]],
+    note: "Preview of 5,800 rows. One row per student, all programs.",
+    distractors: ["pie", "line", "choropleth"],
+    prep: "Filter to a subset first",
+    prepOptions: ["Use it as is", "Group and summarize", "Filter to a subset first", "Build a pivot table"],
+    prepWhy: "The question asks about the evening program only, so filter to those rows first. After that, the ages are ready to bin.",
+    prepHint: "The question is about one program, but the data holds every program."
+  },
+  {
+    key: "box",
+    goal: "How do salaries vary across job families?",
+    cols: ["employee_id", "job_family", "salary", "years_service"],
+    rows: [["E-1042", "Advising", "52,400", "6"], ["E-1043", "IT", "68,900", "11"], ["E-1044", "Advising", "49,800", "3"], ["E-1045", "Facilities", "44,100", "9"], ["E-1046", "IT", "81,200", "15"], ["E-1047", "Advising", "57,300", "8"]],
+    note: "Preview of 1,900 rows. One row per employee.",
+    distractors: ["pie", "scatter", "line"],
+    prep: "Use it as is",
+    prepOptions: ["Use it as is", "Group and summarize", "Calculate a rate or percent", "Filter to a subset first"],
+    prepWhy: "Box plots are built from the raw values in each group. If you summarize first, there is no spread left to show.",
+    prepHint: "This chart needs the full spread of values, not one number per group."
+  },
+  {
+    key: "heatmap",
+    goal: "Which programs changed the most across years?",
+    cols: ["program", "year", "student_id", "campus"],
+    rows: [["Nursing", "2022", "31204", "Main"], ["Nursing", "2023", "33871", "Main"], ["Finance", "2022", "30992", "Downtown"], ["Finance", "2023", "34010", "Downtown"], ["Biology", "2022", "31550", "Main"], ["Biology", "2023", "30880", "Main"]],
+    note: "Preview of 60,000 rows. One row per enrollment record.",
+    distractors: ["pie", "scatter", "histogram"],
+    prep: "Build a pivot table",
+    prepOptions: ["Use it as is", "Group and summarize", "Build a pivot table", "Reshape from wide to long"],
+    prepWhy: "A pivot table counts and reshapes in one step: programs down the side, years across the top, counts in the cells. The data is already long, so there is nothing to unpivot.",
+    prepHint: "The chart is a grid. One field needs to become the rows and another the columns."
+  },
+  {
+    key: "smallmult",
+    goal: "How did each college's enrollment change over time?",
+    cols: ["college", "term", "headcount", "retention_pct"],
+    rows: [["Business", "Fall 2022", "4,210", "84"], ["Business", "Fall 2023", "4,455", "85"], ["Education", "Fall 2022", "1,980", "79"], ["Education", "Fall 2023", "1,890", "78"], ["Nursing", "Fall 2022", "2,640", "91"], ["Nursing", "Fall 2023", "2,710", "92"]],
+    note: "Preview of 96 rows. One row per college per term, already counted.",
+    distractors: ["pie", "histogram", "choropleth"],
+    prep: "Use it as is",
+    prepOptions: ["Use it as is", "Group and summarize", "Build a pivot table", "Calculate a rate or percent"],
+    prepWhy: "Someone already did the prep: each row holds one count per college per term. Sometimes the data arrives ready to chart. Always check what one row represents before reaching for a tool.",
+    prepHint: "Look closely at what one row already represents."
+  },
+  {
+    key: "stacked",
+    goal: "What share of each college's students are undergraduate or graduate?",
+    cols: ["student_id", "college", "level", "credits"],
+    rows: [["20381", "Business", "Undergraduate", "60"], ["20382", "Business", "Graduate", "18"], ["20383", "Education", "Undergraduate", "44"], ["20384", "Arts and Sciences", "Undergraduate", "92"], ["20385", "Education", "Graduate", "12"], ["20386", "Business", "Undergraduate", "30"]],
+    note: "Preview of 18,400 rows. One row per student.",
+    distractors: ["scatter", "histogram", "line"],
+    prep: "Build a pivot table",
+    prepOptions: ["Use it as is", "Build a pivot table", "Filter to a subset first", "Join another table"],
+    prepWhy: "Each bar needs a count for every level within every college: colleges down the side, levels across the top. A pivot table builds that grid in one step. Every field you need is already in the table, so no join is required.",
+    prepHint: "You need a count for every college and level combination."
+  },
+  {
+    key: "pie",
+    goal: "What share of event registrations came from each audience type?",
+    cols: ["reg_id", "audience_type", "event", "attended"],
+    rows: [["R-220", "Faculty", "Data Day", "Yes"], ["R-221", "Student", "Data Day", "No"], ["R-222", "Staff", "AI Workshop", "Yes"], ["R-223", "Student", "AI Workshop", "Yes"], ["R-224", "Faculty", "Grant Clinic", "No"], ["R-225", "Student", "Data Day", "Yes"]],
+    note: "Preview of 640 rows. One row per registration.",
+    distractors: ["scatter", "line", "histogram"],
+    prep: "Group and summarize",
+    prepOptions: ["Use it as is", "Group and summarize", "Build a pivot table", "Filter to a subset first"],
+    prepWhy: "Count the registrations in each audience type first. The question is about registrations, not attendance, so the attended column does not change the task.",
+    prepHint: "The chart needs one number per audience type."
+  },
+  {
+    key: "area",
+    goal: "How did total registrations grow across the year?",
+    cols: ["reg_id", "date", "event", "channel"],
+    rows: [["R-101", "2025-01-14", "Data Day", "Email"], ["R-102", "2025-01-30", "AI Workshop", "Web"], ["R-103", "2025-02-02", "AI Workshop", "Walk-in"], ["R-104", "2025-02-17", "Grant Clinic", "Email"], ["R-105", "2025-03-05", "Data Day", "Web"], ["R-106", "2025-03-22", "AI Workshop", "Email"]],
+    note: "Preview of 640 rows. One row per registration.",
+    distractors: ["pie", "box", "choropleth"],
+    prep: "Group and summarize",
+    prepOptions: ["Use it as is", "Group and summarize", "Build a pivot table", "Filter to a subset first"],
+    prepWhy: "Count registrations by month first. To show growth as a running total, add a column that keeps a cumulative sum as it goes.",
+    prepHint: "The chart needs one value per month, not one row per signup."
+  },
+  {
+    key: "dot",
+    goal: "Which programs sit above or below the average satisfaction score?",
+    cols: ["response_id", "program", "satisfaction", "term"],
+    rows: [["S-501", "Nursing", "4", "Fall 2024"], ["S-502", "Finance", "3", "Fall 2024"], ["S-503", "Nursing", "5", "Spring 2025"], ["S-504", "History", "4", "Spring 2025"], ["S-505", "Finance", "2", "Fall 2024"], ["S-506", "History", "5", "Spring 2025"]],
+    note: "Preview of 2,300 rows. One row per survey response. Satisfaction is rated 1 to 5.",
+    distractors: ["pie", "heatmap", "scatter"],
+    prep: "Group and summarize",
+    prepOptions: ["Use it as is", "Group and summarize", "Filter to a subset first", "Calculate a rate or percent"],
+    prepWhy: "Average the responses within each program to get one dot per program, then compare them against the overall average line.",
+    prepHint: "One dot per program means one number per program."
+  },
+  {
+    key: "choropleth",
+    goal: "Which Ohio counties have the highest participation rate?",
+    cols: ["county", "participants", "population", "region"],
+    rows: [["Franklin", "8,204", "1,323,807", "Central"], ["Cuyahoga", "7,910", "1,264,817", "Northeast"], ["Athens", "612", "62,431", "Southeast"], ["Stark", "1,498", "374,853", "Northeast"], ["Hamilton", "5,330", "830,639", "Southwest"], ["Wood", "988", "132,248", "Northwest"]],
+    note: "Preview of 88 rows. One row per county.",
+    distractors: ["pie", "line", "histogram"],
+    prep: "Calculate a rate or percent",
+    prepOptions: ["Use it as is", "Calculate a rate or percent", "Build a pivot table", "Join another table"],
+    prepWhy: "Divide participants by population to get a rate. Raw totals would make the biggest counties look the most engaged no matter what. The region column is already here, so no join is needed.",
+    prepHint: "Raw counts favor big counties. What would level the playing field?"
+  },
+  {
+    key: "groupedbar",
+    goal: "How do undergraduate and graduate headcounts compare within each college?",
+    cols: ["college", "level", "headcount", "retention_pct"],
+    rows: [["Business", "Undergraduate", "3,840", "85"], ["Business", "Graduate", "615", "90"], ["Education", "Undergraduate", "1,560", "78"], ["Education", "Graduate", "330", "88"], ["Nursing", "Undergraduate", "2,210", "92"], ["Nursing", "Graduate", "500", "94"]],
+    note: "Preview of 18 rows. One row per college per level, already counted.",
+    distractors: ["scatter", "histogram", "choropleth"],
+    prep: "Use it as is",
+    prepOptions: ["Use it as is", "Group and summarize", "Build a pivot table", "Reshape from wide to long"],
+    prepWhy: "The data already holds one headcount for each college and level pair, which is exactly the shape a grouped bar chart reads. Grouping or reshaping it again would only undo good work.",
+    prepHint: "Check what one row already represents before reaching for a tool."
+  },
+  {
+    key: "orderedbar",
+    goal: "Which programs awarded the most degrees last year?",
+    cols: ["degree_id", "program", "college", "term"],
+    rows: [["D-9001", "Nursing", "Health", "Spring 2025"], ["D-9002", "Finance", "Business", "Spring 2025"], ["D-9003", "Nursing", "Health", "Fall 2024"], ["D-9004", "Biology", "Arts and Sciences", "Spring 2025"], ["D-9005", "Finance", "Business", "Fall 2024"], ["D-9006", "Nursing", "Health", "Spring 2025"]],
+    note: "Preview of 4,100 rows. One row per degree awarded.",
+    distractors: ["line", "scatter", "pie"],
+    prep: "Group and summarize",
+    prepOptions: ["Use it as is", "Group and summarize", "Filter to a subset first", "Calculate a rate or percent"],
+    prepWhy: "Count the degrees in each program first, then the chart sorts them from most to fewest. One row per degree is too raw to rank directly.",
+    prepHint: "A ranked bar still needs one number per program before it can sort them."
+  },
+  {
+    key: "slope",
+    goal: "Which colleges rose or fell in retention rate from 2020 to 2025?",
+    cols: ["college", "retention_2020", "retention_2025", "enrollment_2025"],
+    rows: [["Business", "81", "85", "4,455"], ["Education", "80", "78", "1,890"], ["Nursing", "88", "92", "2,710"], ["Arts and Sciences", "76", "79", "6,120"], ["Engineering", "83", "87", "3,300"], ["Fine Arts", "74", "72", "910"]],
+    note: "Preview of 12 rows. One row per college, with each year in its own column.",
+    distractors: ["pie", "histogram", "choropleth"],
+    prep: "Reshape from wide to long",
+    prepOptions: ["Use it as is", "Reshape from wide to long", "Build a pivot table", "Calculate a rate or percent"],
+    prepWhy: "A slope chart wants one row per college per year, but the two years sit in separate columns. Unpivot them into a single year column with one rate value. The rate is already worked out, so no percent step is needed.",
+    prepHint: "The two years are side by side as columns. The chart wants them stacked as rows."
+  },
+  {
+    key: "propsymbolmap",
+    goal: "Which Ohio cities send the most students to campus?",
+    cols: ["student_id", "home_city", "major", "residency"],
+    rows: [["20381", "Columbus", "Biology", "In-state"], ["20382", "Cleveland", "Finance", "In-state"], ["20383", "Columbus", "Nursing", "In-state"], ["20384", "Dayton", "History", "In-state"], ["20385", "Cleveland", "Biology", "In-state"], ["20386", "Toledo", "Marketing", "In-state"]],
+    note: "Preview of 9,400 rows. One row per student.",
+    distractors: ["pie", "line", "histogram"],
+    prep: "Group and summarize",
+    prepOptions: ["Use it as is", "Group and summarize", "Calculate a rate or percent", "Join another table"],
+    prepWhy: "Count the students in each city to get one total per city, which the map shows as a sized circle. This map compares totals, so unlike a county rate map, no division is needed.",
+    prepHint: "The map sizes a circle by one number per city. Where does that number come from?"
+  },
+  {
+    key: "waterfall",
+    goal: "How did the program budget move from its starting balance to its year-end balance?",
+    cols: ["order", "item", "amount"],
+    rows: [["1", "Starting balance", "250,000"], ["2", "Grant income", "+80,000"], ["3", "Salaries", "-140,000"], ["4", "Travel", "-18,000"], ["5", "Equipment", "-32,000"], ["6", "Ending balance", "140,000"]],
+    note: "Preview of 6 rows. One row per budget step, listed in order.",
+    distractors: ["pie", "scatter", "histogram"],
+    prep: "Use it as is",
+    prepOptions: ["Use it as is", "Group and summarize", "Calculate a rate or percent", "Reshape from wide to long"],
+    prepWhy: "The steps are already in order with a signed amount for each one, which is exactly what a waterfall chart needs. Each bar simply starts where the last one ended.",
+    prepHint: "The steps are already ordered and the gains and losses are already signed."
+  },
+  {
+    key: "treemap",
+    goal: "How is total enrollment divided across colleges and their departments?",
+    cols: ["student_id", "college", "department", "level"],
+    rows: [["20381", "Business", "Finance", "Undergraduate"], ["20382", "Business", "Marketing", "Graduate"], ["20383", "Health", "Nursing", "Undergraduate"], ["20384", "Arts and Sciences", "Biology", "Undergraduate"], ["20385", "Health", "Public Health", "Graduate"], ["20386", "Business", "Finance", "Undergraduate"]],
+    note: "Preview of 18,400 rows. One row per student.",
+    distractors: ["line", "scatter", "box"],
+    prep: "Group and summarize",
+    prepOptions: ["Use it as is", "Group and summarize", "Build a pivot table", "Join another table"],
+    prepWhy: "Count students by college and then by department to get the nested totals a treemap nests inside one another. A pivot table would spread the same counts into a flat grid instead of a hierarchy.",
+    prepHint: "A treemap nests departments inside colleges, so you need a count for each pairing."
+  },
+  {
+    key: "divergingstacked",
+    goal: "How did students rate each evaluation question, from strongly disagree to strongly agree?",
+    cols: ["response_id", "question", "rating", "instructor"],
+    rows: [["S-201", "Clear goals", "5", "Reyes"], ["S-202", "Clear goals", "2", "Patel"], ["S-203", "Fair grading", "4", "Reyes"], ["S-204", "Fair grading", "1", "Patel"], ["S-205", "Useful feedback", "3", "Reyes"], ["S-206", "Useful feedback", "5", "Patel"]],
+    note: "Preview of 3,600 rows. One row per response. Rating runs 1, strongly disagree, to 5, strongly agree.",
+    distractors: ["scatter", "histogram", "line"],
+    prep: "Build a pivot table",
+    prepOptions: ["Use it as is", "Build a pivot table", "Calculate a rate or percent", "Reshape from wide to long"],
+    prepWhy: "Count the responses for each question and rating: questions down the side, the five ratings across the top. A pivot table builds that grid, which the chart then splits left and right of the center.",
+    prepHint: "You need a count for every question and rating pairing."
+  },
+  {
+    key: "column",
+    goal: "Which region of Ohio has the most enrolled students?",
+    cols: ["student_id", "home_county", "major"],
+    rows: [["20381", "Franklin", "Biology"], ["20382", "Cuyahoga", "Finance"], ["20383", "Athens", "Nursing"], ["20384", "Hamilton", "History"], ["20385", "Stark", "Biology"], ["20386", "Wood", "Marketing"]],
+    note: "Preview of 9,400 rows. One row per student. Region is not in this table; a separate county-to-region list maps each county to its region.",
+    distractors: ["line", "scatter", "histogram"],
+    prep: "Join another table",
+    prepOptions: ["Group and summarize", "Join another table", "Filter to a subset first", "Calculate a rate or percent"],
+    prepWhy: "The table has counties but not regions, and the question asks about regions. Bring in the region for each county from the lookup list first. Only then can you count students by region.",
+    prepHint: "The question asks about regions, but the table only knows the county."
+  }
+];
+
+/* ---------- State ---------- */
+const state = {
+  score: 0, streak: 0, round: 0,
+  order: [], current: null, answered: false,
+  maxRounds: recipes.length, best: 0,
+  mode: 'name', selected: new Set(), pool: [],
+  scenario: null, stage: 'chart', chartRight: false,
+  gameDecisions: 0, gameCorrect: 0
+};
+
+/* ---------- Cross-session progress ---------- */
+const STATS_KEY = 'vizGuideStats';
+const MODE_LABELS = { name: 'Name the Chart', build: 'Match the Traits', prep: 'Ready the Data', sort: 'Sort the Families' };
+
+function blankStats() {
+  return { v: 1, gamesPlayed: 0, totalDecisions: 0, totalCorrect: 0, longestStreak: 0, perChart: {}, history: [] };
+}
+
+function loadStats() {
+  try {
+    const raw = localStorage.getItem(STATS_KEY);
+    if (!raw) return blankStats();
+    return Object.assign(blankStats(), JSON.parse(raw));
+  } catch (e) { return blankStats(); }
+}
+
+function saveStats(s) {
+  try { localStorage.setItem(STATS_KEY, JSON.stringify(s)); } catch (e) {}
+}
+
+function recordDecision(decisionCorrect, chart) {
+  const s = loadStats();
+  s.totalDecisions += 1;
+  state.gameDecisions += 1;
+  if (decisionCorrect) { s.totalCorrect += 1; state.gameCorrect += 1; }
+  if (chart) {
+    const c = s.perChart[chart.key] || { seen: 0, correct: 0 };
+    c.seen += 1;
+    if (chart.correct) c.correct += 1;
+    s.perChart[chart.key] = c;
+  }
+  if (state.streak > s.longestStreak) s.longestStreak = state.streak;
+  saveStats(s);
+}
+
+function recordGameEnd() {
+  if (state.gameDecisions === 0) return;
+  const s = loadStats();
+  s.gamesPlayed += 1;
+  s.history.unshift({
+    date: new Date().toISOString(),
+    mode: state.mode,
+    score: state.score,
+    decisions: state.gameDecisions,
+    correct: state.gameCorrect
+  });
+  s.history = s.history.slice(0, 20);
+  saveStats(s);
+}
+
+function bestKey() {
+  if (state.mode === 'build') return 'vizGuideBuildBestScore';
+  if (state.mode === 'prep') return 'vizGuidePrepBestScore';
+  if (state.mode === 'sort') return 'vizGuideSortBestScore';
+  return 'vizGuideBestScore';
+}
+function loadBest() {
+  try { state.best = parseInt(localStorage.getItem(bestKey()) || '0', 10) || 0; }
+  catch (e) { state.best = 0; }
+}
+function saveBest() {
+  try { localStorage.setItem(bestKey(), String(state.best)); } catch (e) {}
+}
+
+function setMode(mode) {
+  if (state.mode === mode) return;
+  state.mode = mode;
+  ['name', 'build', 'prep', 'sort'].forEach(m => {
+    document.getElementById('mode-' + m).classList.toggle('active', m === mode);
+  });
+  loadBest();
+  resetGame();
+}
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/* ---------- Game flow ---------- */
+function playFilterMatch(r) {
+  const fam = document.getElementById('play-family').value;
+  const rar = document.getElementById('play-rarity').value;
+  const dif = document.getElementById('play-difficulty').value;
+  return (fam === 'all' || r.family === fam) &&
+         (rar === 'all' || r.rarity === rar) &&
+         (dif === 'all' || r.difficulty === dif);
+}
+
+function resetGame() {
+  state.score = 0; state.streak = 0; state.round = 0;
+  state.gameDecisions = 0; state.gameCorrect = 0;
+  let idxs;
+  if (state.mode === 'prep') {
+    idxs = scenarios.map((s, i) => i)
+      .filter(i => playFilterMatch(recipes.find(r => r.key === scenarios[i].key)));
+  } else if (state.mode === 'sort') {
+    idxs = recipes.map((r, i) => i).filter(i => !recipes[i].noSort && playFilterMatch(recipes[i]));
+  } else {
+    idxs = recipes.map((r, i) => i).filter(i => playFilterMatch(recipes[i]));
+  }
+  if (idxs.length === 0) { renderNoMatches(); return; }
+  state.maxRounds = Math.min(12, idxs.length);
+  state.order = shuffle(idxs).slice(0, state.maxRounds);
+  nextRound(true);
+}
+
+function renderNoMatches() {
+  state.maxRounds = 0; state.order = []; state.answered = true;
+  document.getElementById('round-label').textContent = 'No charts match';
+  document.getElementById('basket-label').textContent = 'Adjust the filters';
+  document.getElementById('basket').innerHTML =
+    '<p>No charts match this combination of filters' +
+    (state.mode === 'prep' ? ' among the twelve Ready the Data scenarios' : '') +
+    '. Loosen one of the dropdowns above to deal a new round.</p>';
+  document.getElementById('choices-label').textContent = '';
+  document.getElementById('choices').innerHTML = '';
+  const l2 = document.getElementById('choices2-label');
+  if (l2) l2.style.display = 'none';
+  const c2 = document.getElementById('choices2');
+  if (c2) { c2.style.display = 'none'; c2.innerHTML = ''; }
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback'; fb.innerHTML = '';
+  document.getElementById('hint-btn').disabled = true;
+  document.getElementById('next-btn').disabled = true;
+  document.getElementById('check-btn').style.display = 'none';
+  renderScore();
+  renderMystery();
+}
+
+function nextRound(first) {
+  if (!first && state.round >= state.maxRounds) { renderGameOver(); return; }
+  if (state.mode === 'prep') {
+    state.scenario = scenarios[state.order[state.round]];
+    state.current = recipes.find(r => r.key === state.scenario.key);
+  } else {
+    state.current = recipes[state.order[state.round]];
+  }
+  state.round += 1;
+  state.answered = false;
+  state.selected = new Set();
+  state.stage = 'chart';
+  state.chartRight = false;
+  renderScore();
+  document.getElementById('round-label').textContent =
+    'Round ' + state.round + ' of ' + state.maxRounds;
+  document.getElementById('choices2-label').style.display = 'none';
+  const c2 = document.getElementById('choices2');
+  c2.style.display = 'none'; c2.innerHTML = '';
+  if (state.mode === 'build') {
+    document.getElementById('basket-label').textContent = 'Your target chart';
+    document.getElementById('choices-label').textContent = 'Pick the four traits this chart needs';
+    renderDishPrompt();
+    renderIngredientPool();
+    document.getElementById('check-btn').style.display = '';
+    document.getElementById('check-btn').disabled = true;
+  } else if (state.mode === 'prep') {
+    document.getElementById('basket-label').textContent = 'The data in hand';
+    document.getElementById('choices-label').textContent = 'Step 1 of 2: Which chart fits this goal?';
+    renderScenario();
+    renderPrepChartChoices();
+    document.getElementById('check-btn').style.display = 'none';
+  } else if (state.mode === 'sort') {
+    document.getElementById('basket-label').textContent = 'The specimen';
+    document.getElementById('choices-label').textContent = 'Which family does this chart belong to?';
+    renderSortPrompt();
+    renderSortChoices();
+    document.getElementById('check-btn').style.display = 'none';
+  } else {
+    document.getElementById('basket-label').textContent = 'Traits observed';
+    document.getElementById('choices-label').textContent = 'Which chart matches these traits?';
+    document.getElementById('basket').innerHTML = '<ul id="ingredients"></ul>';
+    renderIngredients();
+    renderChoices();
+    document.getElementById('check-btn').style.display = 'none';
+  }
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback'; fb.innerHTML = '';
+  const hb = document.getElementById('hint-box');
+  hb.className = 'hint-box'; hb.textContent = '';
+  document.getElementById('hint-btn').disabled = false;
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.disabled = true;
+  nextBtn.textContent = 'Next round';
+  renderMystery();
+}
+
+function renderScore() {
+  document.getElementById('score').textContent = state.score;
+  document.getElementById('streak').textContent = state.streak;
+  document.getElementById('round').textContent = Math.min(state.round, state.maxRounds);
+  document.getElementById('best').textContent = state.best;
+}
+
+function renderIngredients() {
+  document.getElementById('ingredients').innerHTML =
+    state.current.ingredients.map(i => '<li>' + i + '</li>').join('');
+}
+
+function renderChoices() {
+  const sameCat = recipes.filter(r => r.family === state.current.family && r.key !== state.current.key);
+  const otherCat = recipes.filter(r => r.family !== state.current.family);
+  const picks = shuffle(sameCat).slice(0, 2).concat(shuffle(otherCat)).slice(0, 3);
+  const options = shuffle([state.current, ...picks]);
+  document.getElementById('choices').innerHTML = options.map(o =>
+    '<button class="choice" data-key="' + o.key + '" onclick="checkAnswer(\'' + o.key + '\')">' + o.name + '</button>'
+  ).join('');
+}
+
+/* ---------- Build the Recipe mode ---------- */
+function renderDishPrompt() {
+  const r = state.current;
+  document.getElementById('basket').innerHTML =
+    '<div class="dish-prompt">' +
+      '<div class="dish-icon">' + chartIcon(r.key) + '</div>' +
+      '<div><div class="dish-name">' + r.name + '</div>' +
+      '<div class="dish-meta">' + r.family + ' &middot; ' + r.difficulty + ' &middot; ' + r.rarity + '</div></div>' +
+    '</div>';
+}
+
+function renderIngredientPool() {
+  const correct = state.current.ingredients;
+  const seen = new Set(correct.map(i => i.toLowerCase()));
+  const distractors = [];
+  const otherFamilies = recipes.filter(x => x.family !== state.current.family);
+  for (const r of shuffle(otherFamilies)) {
+    for (const ing of shuffle(r.ingredients)) {
+      if (!seen.has(ing.toLowerCase())) {
+        seen.add(ing.toLowerCase());
+        distractors.push(ing);
+        break;
+      }
+    }
+    if (distractors.length === 4) break;
+  }
+  state.pool = shuffle([...correct, ...distractors]);
+  document.getElementById('choices').innerHTML = state.pool.map((ing, i) =>
+    '<button class="choice" data-i="' + i + '" onclick="toggleIngredient(' + i + ')">' + ing + '</button>'
+  ).join('');
+}
+
+function toggleIngredient(i) {
+  if (state.answered) return;
+  if (state.selected.has(i)) state.selected.delete(i);
+  else if (state.selected.size < 4) state.selected.add(i);
+  document.querySelectorAll('#choices .choice').forEach(btn => {
+    btn.classList.toggle('selected', state.selected.has(Number(btn.dataset.i)));
+  });
+  document.getElementById('check-btn').disabled = state.selected.size !== 4;
+}
+
+function checkBasket() {
+  if (state.answered || state.selected.size !== 4) return;
+  state.answered = true;
+  const correctSet = new Set(state.current.ingredients.map(i => i.toLowerCase()));
+  let allRight = true;
+  const wrongPicks = [];
+  const missed = [];
+  document.querySelectorAll('#choices .choice').forEach(btn => {
+    btn.disabled = true;
+    const i = Number(btn.dataset.i);
+    const ing = state.pool[i];
+    const isCorrect = correctSet.has(ing.toLowerCase());
+    const isPicked = state.selected.has(i);
+    if (isPicked && isCorrect) { btn.classList.add('correct'); }
+    else if (isPicked && !isCorrect) { btn.classList.add('wrong'); allRight = false; wrongPicks.push(ing); }
+    else if (!isPicked && isCorrect) { btn.classList.add('missed'); allRight = false; missed.push(ing); }
+    btn.classList.remove('selected');
+  });
+  if (allRight) {
+    state.score += 1; state.streak += 1;
+    if (state.score > state.best) { state.best = state.score; saveBest(); }
+  } else {
+    state.streak = 0;
+  }
+  recordDecision(allRight, { key: state.current.key, correct: allRight });
+  renderScore();
+  renderBuildFeedback(allRight, wrongPicks, missed);
+  renderRecipeCard(state.current);
+  document.getElementById('hint-btn').disabled = true;
+  document.getElementById('check-btn').disabled = true;
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.disabled = false;
+  nextBtn.textContent = state.round >= state.maxRounds ? 'See final score' : 'Next round';
+}
+
+function homeRecipe(ing) {
+  const owner = recipes.find(r =>
+    r.key !== state.current.key &&
+    r.ingredients.some(x => x.toLowerCase() === ing.toLowerCase())
+  );
+  return owner ? owner.name.toLowerCase() : null;
+}
+
+function renderBuildFeedback(allRight, wrongPicks, missed) {
+  const fb = document.getElementById('feedback');
+  if (allRight) {
+    fb.className = 'feedback show good';
+    fb.innerHTML = '<strong>Well spotted.</strong> Those are exactly the traits a ' +
+      state.current.name.toLowerCase() + ' needs. ' + state.current.serves;
+    return;
+  }
+  fb.className = 'feedback show bad';
+  let msg = '<strong>Check the guide entry.</strong> ';
+  if (missed.length) {
+    msg += 'You missed: ' + missed.map(m => m.toLowerCase()).join('; ') + '. ';
+  }
+  if (wrongPicks.length) {
+    const w = wrongPicks[0];
+    const owner = homeRecipe(w);
+    msg += '"' + w + '" does not belong here' +
+      (owner ? '. It belongs to the ' + owner + ' instead.' : '.');
+  }
+  fb.innerHTML = msg;
+}
+
+/* ---------- Prep the Kitchen mode ---------- */
+function renderScenario() {
+  const s = state.scenario;
+  document.getElementById('basket').innerHTML =
+    '<div class="goal-line">' + s.goal + '</div>' +
+    '<table class="data-table"><thead><tr>' +
+    s.cols.map(c => '<th>' + c + '</th>').join('') +
+    '</tr></thead><tbody>' +
+    s.rows.map(r => '<tr>' + r.map(v => '<td>' + v + '</td>').join('') + '</tr>').join('') +
+    '</tbody></table>' +
+    '<div class="table-note">' + s.note + '</div>';
+}
+
+function renderPrepChartChoices() {
+  const opts = shuffle([state.scenario.key, ...state.scenario.distractors]);
+  document.getElementById('choices').innerHTML = opts.map(k => {
+    const r = recipes.find(x => x.key === k);
+    return '<button class="choice" data-key="' + k + '" onclick="answerPrepChart(\'' + k + '\')">' + r.name + '</button>';
+  }).join('');
+}
+
+function answerPrepChart(key) {
+  if (state.mode !== 'prep' || state.stage !== 'chart') return;
+  state.stage = 'prep';
+  state.chartRight = key === state.scenario.key;
+  document.querySelectorAll('#choices .choice').forEach(btn => {
+    btn.disabled = true;
+    if (btn.dataset.key === state.scenario.key) btn.classList.add('correct');
+    else if (btn.dataset.key === key) btn.classList.add('wrong');
+  });
+  if (state.chartRight) state.score += 1;
+  recordDecision(state.chartRight, { key: state.current.key, correct: state.chartRight });
+  renderScore();
+  const fb = document.getElementById('feedback');
+  const name = state.current.name.toLowerCase();
+  if (state.chartRight) {
+    fb.className = 'feedback show good';
+    fb.innerHTML = '<strong>Right call.</strong> A ' + name + ' fits this goal. Now plan the prep.';
+  } else {
+    fb.className = 'feedback show bad';
+    fb.innerHTML = '<strong>The better fit is the ' + name + '.</strong> ' +
+      state.current.serves + ' Now plan the prep for it.';
+  }
+  renderPrepOptions();
+}
+
+function renderPrepOptions() {
+  const lbl = document.getElementById('choices2-label');
+  lbl.style.display = '';
+  lbl.textContent = 'Step 2 of 2: What prep does the data need?';
+  const el = document.getElementById('choices2');
+  el.style.display = '';
+  el.innerHTML = shuffle(state.scenario.prepOptions).map(o =>
+    '<button class="choice" onclick="answerPrepStep(this)">' + o + '</button>'
+  ).join('');
+}
+
+function answerPrepStep(btn) {
+  if (state.mode !== 'prep' || state.stage !== 'prep' || state.answered) return;
+  state.answered = true;
+  const right = btn.textContent === state.scenario.prep;
+  document.querySelectorAll('#choices2 .choice').forEach(b => {
+    b.disabled = true;
+    if (b.textContent === state.scenario.prep) b.classList.add('correct');
+    else if (b === btn) b.classList.add('wrong');
+  });
+  if (right) state.score += 1;
+  if (right && state.chartRight) state.streak += 1; else state.streak = 0;
+  if (state.score > state.best) { state.best = state.score; saveBest(); }
+  recordDecision(right, null);
+  renderScore();
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback show ' + (right ? 'good' : 'bad');
+  const intro = right
+    ? '<strong>Good prep.</strong> '
+    : '<strong>The prep this chart needs: ' + state.scenario.prep.toLowerCase() + '.</strong> ';
+  fb.innerHTML = intro + state.scenario.prepWhy;
+  renderRecipeCard(state.current);
+  document.getElementById('hint-btn').disabled = true;
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.disabled = false;
+  nextBtn.textContent = state.round >= state.maxRounds ? 'See final score' : 'Next round';
+}
+
+/* ---------- Sort the Menu mode ---------- */
+function renderSortPrompt() {
+  const r = state.current;
+  document.getElementById('basket').innerHTML =
+    '<div class="dish-prompt">' +
+      '<div class="dish-icon">' + chartIcon(r.key) + '</div>' +
+      '<div><div class="dish-name">' + r.name + '</div>' +
+      '<div class="dish-meta">' + r.difficulty + ' &middot; ' + r.rarity + '</div></div>' +
+    '</div>';
+}
+
+function renderSortChoices() {
+  const r = state.current;
+  const excluded = [r.family].concat(r.alt || []);
+  const wrong = shuffle(CATEGORIES.filter(c => !excluded.includes(c))).slice(0, 3);
+  const opts = shuffle([r.family, ...wrong]);
+  document.getElementById('choices').innerHTML = opts.map(c =>
+    '<button class="choice" onclick="answerSortCat(this)">' + c + '</button>'
+  ).join('');
+}
+
+function answerSortCat(btn) {
+  if (state.mode !== 'sort' || state.answered) return;
+  state.answered = true;
+  const right = btn.textContent === state.current.family;
+  document.querySelectorAll('#choices .choice').forEach(b => {
+    b.disabled = true;
+    if (b.textContent === state.current.family) b.classList.add('correct');
+    else if (b === btn) b.classList.add('wrong');
+  });
+  if (right) {
+    state.score += 1; state.streak += 1;
+    if (state.score > state.best) { state.best = state.score; saveBest(); }
+  } else {
+    state.streak = 0;
+  }
+  recordDecision(right, { key: state.current.key, correct: right });
+  renderScore();
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback show ' + (right ? 'good' : 'bad');
+  const altNote = (state.current.alt && state.current.alt.length)
+    ? ' It also makes appearances under ' + state.current.alt.join(' and ') + '.'
+    : '';
+  const intro = right ? '<strong>Well sorted.</strong> ' : '<strong>Check the guide.</strong> ';
+  fb.innerHTML = intro + 'The ' + state.current.name.toLowerCase() + ' lives under ' +
+    state.current.family + '. ' + CATEGORY_INFO[state.current.family] + altNote;
+  renderRecipeCard(state.current);
+  document.getElementById('hint-btn').disabled = true;
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.disabled = false;
+  nextBtn.textContent = state.round >= state.maxRounds ? 'See final score' : 'Next round';
+}
+
+function checkAnswer(key) {
+  if (state.answered) return;
+  state.answered = true;
+  const correct = key === state.current.key;
+  document.querySelectorAll('.choice').forEach(btn => {
+    btn.disabled = true;
+    if (btn.dataset.key === state.current.key) btn.classList.add('correct');
+    else if (btn.dataset.key === key) btn.classList.add('wrong');
+  });
+  if (correct) {
+    state.score += 1; state.streak += 1;
+    if (state.score > state.best) { state.best = state.score; saveBest(); }
+  } else {
+    state.streak = 0;
+  }
+  recordDecision(correct, { key: state.current.key, correct: correct });
+  renderScore();
+  renderFeedback(correct, key);
+  renderRecipeCard(state.current);
+  document.getElementById('hint-btn').disabled = true;
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.disabled = false;
+  nextBtn.textContent = state.round >= state.maxRounds ? 'See final score' : 'Next round';
+}
+
+function renderFeedback(correct, chosenKey) {
+  const fb = document.getElementById('feedback');
+  if (correct) {
+    fb.className = 'feedback show good';
+    fb.innerHTML = '<strong>Nice spotting.</strong> The ' + state.current.name.toLowerCase() +
+      ' is the right match for these traits. ' + state.current.serves;
+  } else {
+    const chosen = recipes.find(r => r.key === chosenKey);
+    fb.className = 'feedback show bad';
+    fb.innerHTML = '<strong>Not quite.</strong> The right chart is the ' + state.current.name.toLowerCase() +
+      '. A ' + chosen.name.toLowerCase() + ' needs different traits: ' +
+      chosen.ingredients.slice(0, 2).map(i => i.toLowerCase()).join(' and ') +
+      '. That does not match these traits.';
+  }
+}
+
+function renderGameOver() {
+  recordGameEnd();
+  const maxPts = state.mode === 'prep' ? state.maxRounds * 2 : state.maxRounds;
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback show good';
+  fb.innerHTML = '<strong>Session complete.</strong> You scored ' + state.score + ' out of ' +
+    maxPts + ' points. Your best in this browser is ' + state.best +
+    '. Press Restart to play again, or open Browse the Guide to review the charts.';
+  document.getElementById('next-btn').disabled = true;
+  document.getElementById('check-btn').disabled = true;
+}
+
+function showHint() {
+  const hb = document.getElementById('hint-box');
+  if (state.mode === 'sort') {
+    hb.textContent = 'Best used for: ' + state.current.serves.toLowerCase();
+  } else if (state.mode === 'prep') {
+    hb.textContent = state.stage === 'chart' ? state.current.hint : state.scenario.prepHint;
+  } else if (state.mode === 'build') {
+    const unpicked = state.current.ingredients.filter(ing =>
+      !state.selected.has(state.pool.indexOf(ing)));
+    const give = unpicked.length ? unpicked[0] : state.current.ingredients[0];
+    hb.textContent = 'One ingredient this recipe needs: ' + give.toLowerCase() + '.';
+  } else {
+    hb.textContent = state.current.hint;
+  }
+  hb.className = 'hint-box show';
+}
+
+/* ---------- Recipe card sidebar ---------- */
+function renderMystery() {
+  const msg = state.mode === 'build'
+    ? 'The guide entry stays hidden until you check your picks.'
+    : state.mode === 'prep'
+      ? 'The guide entry stays hidden until you finish both steps.'
+      : state.mode === 'sort'
+        ? 'The guide entry stays hidden until you sort the chart.'
+        : 'The guide entry stays hidden until you answer.';
+  document.getElementById('recipe-card').innerHTML =
+    '<div class="mystery"><div class="qmark">?</div>' +
+    '<p>' + msg + '</p></div>';
+}
+
+function renderRecipeCard(r) {
+  document.getElementById('recipe-card').innerHTML =
+    '<div class="recipe-head">' +
+      '<div class="recipe-tag">Guide Entry</div>' +
+      '<div class="recipe-name">' + r.name + '</div>' +
+      '<div class="recipe-meta">' + r.family + ' &middot; ' + r.difficulty + ' &middot; ' + r.rarity + '</div>' +
+      '<div class="recipe-art">' + chartArt(r.key, r.name) + '</div>' +
+    '</div>' +
+    '<div class="recipe-body">' +
+      section('Best for', '<p>' + r.serves + '</p>') +
+      section('Method', '<ol>' + r.method.map(m => '<li>' + m + '</li>').join('') + '</ol>') +
+      '<div class="recipe-section burn"><div class="section-label">Common mistake</div><p>' + r.burn + '</p></div>' +
+      section('Often seen with', '<p>' + r.pairs + '</p>') +
+      section('Example question', '<p class="example">' + r.example + '</p>') +
+    '</div>';
+}
+
+function section(label, inner) {
+  return '<div class="recipe-section"><div class="section-label">' + label + '</div>' + inner + '</div>';
+}
+
+/* ---------- Study the Deck ---------- */
+function renderDeck() {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  const fam = document.getElementById('family-filter').value;
+  const rar = document.getElementById('rarity-filter').value;
+  const dif = document.getElementById('difficulty-filter').value;
+  const matches = recipes.filter(r => {
+    const inFam = fam === 'all' || r.family === fam;
+    const inRar = rar === 'all' || r.rarity === rar;
+    const inDif = dif === 'all' || r.difficulty === dif;
+    const text = (r.name + ' ' + r.family + ' ' + r.rarity + ' ' + r.serves + ' ' + r.pairs + ' ' +
+      r.ingredients.join(' ') + ' ' + r.burn).toLowerCase();
+    return inFam && inRar && inDif && (q === '' || text.includes(q));
+  });
+  const grid = document.getElementById('deck-grid');
+  if (matches.length === 0) {
+    grid.innerHTML = '<div class="empty-deck">No recipes match that search. Try a broader word, such as the chart family or an ingredient.</div>';
+    return;
+  }
+  grid.innerHTML = matches.map(r =>
+    '<div class="deck-card">' +
+      '<div class="card-art">' + chartArt(r.key, r.name) + '</div>' +
+      '<h3>' + r.name + '</h3>' +
+      '<div class="meta">' + r.family + ' &middot; ' + r.difficulty + ' &middot; ' + r.rarity + '</div>' +
+      '<div class="mini-label">Traits</div><p>' + r.ingredients.join('; ') + '</p>' +
+      '<div class="mini-label">Best for</div><p>' + r.serves + '</p>' +
+      '<div class="mini-label">Common mistake</div><p>' + r.burn + '</p>' +
+      '<div class="mini-label">Often seen with</div><p>' + r.pairs + '</p>' +
+      '<div class="mini-label">Example question</div><p>' + r.example + '</p>' +
+    '</div>'
+  ).join('');
+}
+
+/* ---------- Pantry vocabulary ---------- */
+const pantry = [
+  /* Shelf: Data Types */
+  { term: "Numeric data", shelf: "Data Types",
+    def: "Data made of numbers you can do math on, such as adding, averaging, or comparing sizes.",
+    ex: "Exam scores, salaries, ages, and headcounts are all numeric.",
+    kitchen: "Any trait that says \"one number\" wants numeric data." },
+  { term: "Categorical data", shelf: "Data Types",
+    def: "Data that sorts things into named groups instead of measuring them with numbers.",
+    ex: "Department, audience type, and class year are categorical. Even a number can be categorical if it works as a label, like a zip code.",
+    kitchen: "Traits like \"one category field\" call for categorical data." },
+  { term: "Ordinal data", shelf: "Data Types",
+    def: "Categorical data whose groups have a natural order, even though the gaps between them are not measured.",
+    ex: "Freshman, sophomore, junior, senior. The order means something, but the distance between steps does not." },
+  { term: "Nominal data", shelf: "Data Types",
+    def: "Categorical data with no natural order at all.",
+    ex: "Department names like Biology and History. Sorting them alphabetically is for convenience, not meaning." },
+  { term: "Continuous data", shelf: "Data Types",
+    def: "Numeric data that can take any value within a range, including decimals.",
+    ex: "GPA can be 3.0, 3.25, or 3.317. There is always another possible value between two values." },
+  { term: "Discrete data", shelf: "Data Types",
+    def: "Numeric data that comes in separate, countable steps with nothing in between.",
+    ex: "Number of courses enrolled. A student can take 4 or 5 courses, never 4.6." },
+  { term: "Binary data", shelf: "Data Types",
+    def: "Data with exactly two possible values.",
+    ex: "Enrolled or not enrolled, pass or fail, yes or no." },
+  { term: "Time data", shelf: "Data Types",
+    def: "Data that records when something happened, such as dates, terms, or timestamps.",
+    ex: "Fall 2024, or 2025-01-14.",
+    kitchen: "Line and area charts list \"time or another natural order\" as their first trait." },
+  { term: "Geographic data", shelf: "Data Types",
+    def: "Data tied to a place, such as counties, states, campuses, or map coordinates.",
+    ex: "A table with one row for each of the 88 Ohio counties.",
+    kitchen: "The choropleth map is the one chart that cannot be built without it." },
+
+  /* Shelf: The Dataset */
+  { term: "Dataset", shelf: "The Dataset",
+    def: "A complete table of data: all the rows, columns, and values together.",
+    ex: "A spreadsheet holding every student enrolled this fall." },
+  { term: "Variable", shelf: "The Dataset",
+    def: "One column in a dataset. It holds one characteristic measured for every row.",
+    ex: "In a student dataset, age, department, and GPA are each variables." },
+  { term: "Value", shelf: "The Dataset",
+    def: "A single entry in one cell: one variable measured for one row.",
+    ex: "\"Biology\" is the value of the department variable for one particular student." },
+  { term: "Observation", shelf: "The Dataset",
+    def: "One row of a dataset: every value recorded for a single unit, such as one student or one registration. Also called a record or a row.",
+    ex: "Student 20381, Biology, Sophomore is one observation." },
+  { term: "Raw data", shelf: "The Dataset",
+    def: "Data at its most detailed level, one row per person or event, before any summarizing has happened.",
+    ex: "One row per registration, rather than a count of registrations per month.",
+    kitchen: "The note under every Ready the Data table tells you how raw the data is. Always check what one row represents." },
+
+  /* Shelf: Prep Work */
+  { term: "Filter", shelf: "Prep Work",
+    def: "Keep only the rows that match a condition and set the rest aside.",
+    ex: "Keeping only evening program students before charting their ages." },
+  { term: "Group by", shelf: "Prep Work",
+    def: "Split rows into groups based on a category so each group can be summarized separately.",
+    ex: "Grouping registrations by audience type before counting them." },
+  { term: "Summarize", shelf: "Prep Work",
+    def: "Collapse many rows into one number, such as a count, sum, or average. Also called aggregating.",
+    ex: "2,150 student rows become six department counts.",
+    kitchen: "The single most common prep step in the game, because most charts want one number per group." },
+  { term: "Pivot table", shelf: "Prep Work",
+    def: "A tool that groups, summarizes, and reshapes in one step, producing a grid with one field down the side and another across the top.",
+    ex: "Programs as rows, years as columns, enrollment counts in the cells.",
+    kitchen: "The heat map and the stacked bar chart both want this grid shape." },
+  { term: "Sort", shelf: "Prep Work",
+    def: "Arrange rows in order by one variable, from highest to lowest or the reverse.",
+    ex: "Sorting departments from largest to smallest before making a bar chart, so the tallest bar comes first." },
+  { term: "Rate", shelf: "Prep Work",
+    def: "A value divided by a base, so groups of different sizes can be compared fairly. Often shown as a percent.",
+    ex: "Participants divided by county population.",
+    kitchen: "The common mistake on the choropleth map is forgetting this step." },
+  { term: "Running total", shelf: "Prep Work",
+    def: "A total that grows row by row, adding each new value to everything that came before. Also called a cumulative sum.",
+    ex: "Registrations added up month after month to show growth across the year." },
+
+  /* Shelf: Reading the Numbers */
+  { term: "Mean", shelf: "Reading the Numbers",
+    def: "The average: add up all the values and divide by how many there are. A few extreme values can pull it strongly in their direction.",
+    ex: "The mean satisfaction score for a program across all survey responses." },
+  { term: "Median", shelf: "Reading the Numbers",
+    def: "The middle value when everything is lined up in order. Half the values sit above it and half below.",
+    ex: "Median salary often describes typical pay better than the mean, because a few very large salaries pull the mean up but barely move the median." },
+  { term: "Distribution", shelf: "Reading the Numbers",
+    def: "The overall shape of a variable's values: where they cluster, how far they spread, and whether they lean to one side.",
+    ex: "Most student ages cluster between 18 and 22, with a long tail of older students.",
+    kitchen: "The histogram and box plot exist to show this." },
+  { term: "Spread", shelf: "Reading the Numbers",
+    def: "How much the values vary. The simplest measure is the range: the highest value minus the lowest.",
+    ex: "Salaries in one job family run from 44,000 to 71,000, a spread of 27,000." },
+  { term: "Quartile", shelf: "Reading the Numbers",
+    def: "One of the three cut points that split ordered values into four equal sized groups.",
+    ex: "The box in a box plot runs from the first quartile to the third, holding the middle half of the values." },
+  { term: "Outlier", shelf: "Reading the Numbers",
+    def: "A value that sits far away from the rest of the data.",
+    ex: "One 400,000 dollar salary in a dataset where most sit near 50,000. Outliers are worth investigating, not automatically deleting." },
+  { term: "Correlation", shelf: "Reading the Numbers",
+    def: "A relationship where two numeric variables tend to move together, in the same direction or opposite directions.",
+    ex: "Students who study more hours tend to earn higher exam scores.",
+    kitchen: "The scatter plot's common mistake applies here: correlation alone does not prove cause and effect." },
+  { term: "Trend", shelf: "Reading the Numbers",
+    def: "The general direction of values over time, looking past short term bumps.",
+    ex: "Enrollment rising across eight years counts as an upward trend even if one year dipped." },
+  { term: "Bin", shelf: "Reading the Numbers",
+    def: "One of the equal sized buckets a histogram sorts values into.",
+    ex: "Ages 20 to 24 form one bin.",
+    kitchen: "The histogram's common mistake: changing the bin width can change the story." },
+
+  /* Shelf: Chart Parts */
+  { term: "Axis", shelf: "Chart Parts",
+    def: "A reference line along the edge of a chart that shows what is being measured. Most charts have a horizontal x axis and a vertical y axis.",
+    ex: "In a line chart of enrollment, the x axis holds the years and the y axis holds the headcount." },
+  { term: "Legend", shelf: "Chart Parts",
+    def: "The key that explains what each color, symbol, or line in a chart stands for.",
+    ex: "A heat map's color scale means nothing without one.",
+    kitchen: "The heat map's common mistake is using color without a clear legend." },
+  { term: "Scale", shelf: "Chart Parts",
+    def: "The range and spacing of values along an axis.",
+    ex: "A bar chart's number axis should usually start at zero so the bar heights compare honestly.",
+    kitchen: "Small multiples share one scale across every panel for exactly this reason." },
+  { term: "Baseline", shelf: "Chart Parts",
+    def: "The starting line a chart measures from, usually zero.",
+    ex: "Bars all start from the same baseline, which is what makes them easy to compare. Middle segments of a stacked bar are hard to judge because they do not share one." },
+  { term: "Change over Time", shelf: "The Nine Families",
+    def: "Charts in this family show how a value moves across periods, revealing trends, cycles, and turning points.",
+    ex: "Line charts, area charts, candlestick charts, and streamgraphs all live here.",
+    kitchen: "If the question contains a span of years, months, or days, start your search in this family." },
+  { term: "Distribution", shelf: "The Nine Families",
+    def: "Charts in this family show the shape and spread of a set of values: where they bunch up, how far they stretch, and which values are unusual.",
+    ex: "Histograms, box plots, violin plots, and beeswarm plots all live here.",
+    kitchen: "An average alone can mislead. These charts show the whole crowd, not just its center." },
+  { term: "Spatial", shelf: "The Nine Families",
+    def: "Charts in this family show where things happen, using maps and geography as the canvas.",
+    ex: "Choropleth maps, dot density maps, flow maps, and cartograms all live here.",
+    kitchen: "Only choose this family when location truly matters. A map of values is often weaker than a sorted bar chart." },
+  { term: "Flow", shelf: "The Nine Families",
+    def: "Charts in this family show movement between stages, places, or groups, and how much moves along each path.",
+    ex: "Sankey diagrams, waterfall charts, chord diagrams, and network diagrams all live here.",
+    kitchen: "Look for origin and destination in the question. Words like from, to, and through point this way." },
+  { term: "Deviation", shelf: "The Nine Families",
+    def: "Charts in this family show how far values sit above or below a reference point, such as zero, a target, or an average.",
+    ex: "Diverging bar charts, spine charts, and surplus and deficit lines all live here.",
+    kitchen: "The reference line is the whole point. If there is no benchmark to compare against, this is the wrong family." },
+  { term: "Part-to-whole", shelf: "The Nine Families",
+    def: "Charts in this family show how one total divides into pieces, and how big each piece's share is.",
+    ex: "Pie charts, donut charts, treemaps, and waffle charts all live here.",
+    kitchen: "Check that the parts truly add to one whole. If they overlap or come from different totals, pick another family." },
+  { term: "Magnitude", shelf: "The Nine Families",
+    def: "Charts in this family compare sizes: which value is bigger, which is smaller, and by roughly how much.",
+    ex: "Bar charts, column charts, pictograms, and bullet charts all live here.",
+    kitchen: "This is the workhorse family of the guide. When in doubt, a simple bar chart rarely fails." },
+  { term: "Correlation", shelf: "The Nine Families",
+    def: "Charts in this family show how two or more variables relate, and whether they tend to move together.",
+    ex: "Scatter plots, bubble charts, and grid style heat maps all live here.",
+    kitchen: "These charts show that two things move together. They never prove that one causes the other." },
+  { term: "Ranking", shelf: "The Nine Families",
+    def: "Charts in this family show positions in an ordered list, putting the emphasis on who leads and who trails.",
+    ex: "Ordered bars, slope charts, lollipop charts, and bump charts all live here.",
+    kitchen: "The sort is the chart. The moment you order the values from largest to smallest, you are working in this family." }
+];
+
+/* ---------- Pantry browse ---------- */
+function renderPantry() {
+  const q = document.getElementById('pantry-search').value.trim().toLowerCase();
+  const shelf = document.getElementById('shelf-filter').value;
+  const matches = pantry.filter(t => {
+    const inShelf = shelf === 'all' || t.shelf === shelf;
+    const text = (t.term + ' ' + t.shelf + ' ' + t.def + ' ' + t.ex + ' ' + (t.kitchen || '')).toLowerCase();
+    return inShelf && (q === '' || text.includes(q));
+  });
+  const grid = document.getElementById('pantry-grid');
+  if (matches.length === 0) {
+    grid.innerHTML = '<div class="empty-deck">No terms match that search. Try a broader word, or pick a section from the dropdown.</div>';
+    return;
+  }
+  grid.innerHTML = matches.map(t =>
+    '<div class="deck-card">' +
+      '<h3>' + t.term + '</h3>' +
+      '<div class="meta">' + t.shelf + ' section</div>' +
+      '<div class="mini-label">Definition</div><p>' + t.def + '</p>' +
+      '<div class="mini-label">Example</div><p>' + t.ex + '</p>' +
+      (t.kitchen ? '<div class="mini-label">Field note</div><p>' + t.kitchen + '</p>' : '') +
+    '</div>'
+  ).join('');
+}
+
+/* ---------- Stock Check quiz ---------- */
+const pq = { score: 0, round: 0, total: 10, order: [], current: null, answered: false, best: 0 };
+
+function startPantryQuiz() {
+  try { pq.best = parseInt(localStorage.getItem('vizGuideGlossaryBestScore') || '0', 10) || 0; }
+  catch (e) { pq.best = 0; }
+  pq.score = 0; pq.round = 0;
+  pq.order = shuffle(pantry.map((t, i) => i)).slice(0, pq.total);
+  document.getElementById('pantry-browse').style.display = 'none';
+  document.getElementById('pantry-quiz').style.display = '';
+  pantryNext(true);
+}
+
+function pantryNext(first) {
+  if (!first && pq.round >= pq.total) { endPantryRound(); return; }
+  pq.current = pantry[pq.order[pq.round]];
+  pq.round += 1;
+  pq.answered = false;
+  renderPqLabel();
+  document.getElementById('pq-def').textContent = pq.current.def;
+  let sameShelf = pantry.filter(t => t.shelf === pq.current.shelf && t.term !== pq.current.term);
+  let distractors = shuffle(sameShelf).slice(0, 3);
+  if (distractors.length < 3) {
+    const fill = shuffle(pantry.filter(t =>
+      t.term !== pq.current.term && !distractors.includes(t))).slice(0, 3 - distractors.length);
+    distractors = distractors.concat(fill);
+  }
+  const opts = shuffle([pq.current, ...distractors]);
+  document.getElementById('pq-choices').innerHTML = opts.map(t =>
+    '<button class="choice" onclick="pantryAnswer(this)">' + t.term + '</button>'
+  ).join('');
+  const fb = document.getElementById('pq-feedback');
+  fb.className = 'feedback'; fb.innerHTML = '';
+  const nb = document.getElementById('pq-next');
+  nb.disabled = true; nb.textContent = 'Next term';
+}
+
+function renderPqLabel() {
+  document.getElementById('pq-label').textContent =
+    'Term ' + Math.min(pq.round, pq.total) + ' of ' + pq.total +
+    ' \u00B7 Score ' + pq.score + ' \u00B7 Best ' + pq.best;
+}
+
+function pantryAnswer(btn) {
+  if (pq.answered) return;
+  pq.answered = true;
+  const right = btn.textContent === pq.current.term;
+  document.querySelectorAll('#pq-choices .choice').forEach(b => {
+    b.disabled = true;
+    if (b.textContent === pq.current.term) b.classList.add('correct');
+    else if (b === btn) b.classList.add('wrong');
+  });
+  if (right) pq.score += 1;
+  renderPqLabel();
+  const fb = document.getElementById('pq-feedback');
+  fb.className = 'feedback show ' + (right ? 'good' : 'bad');
+  const intro = right
+    ? '<strong>Spotted.</strong> '
+    : '<strong>That section holds something else.</strong> The term is ' + pq.current.term.toLowerCase() + '. ';
+  fb.innerHTML = intro + 'Example: ' + pq.current.ex;
+  const nb = document.getElementById('pq-next');
+  nb.disabled = false;
+  nb.textContent = pq.round >= pq.total ? 'See results' : 'Next term';
+}
+
+function endPantryRound() {
+  if (pq.score > pq.best) {
+    pq.best = pq.score;
+    try { localStorage.setItem('vizGuideGlossaryBestScore', String(pq.best)); } catch (e) {}
+  }
+  renderPqLabel();
+  const fb = document.getElementById('pq-feedback');
+  fb.className = 'feedback show good';
+  fb.innerHTML = '<strong>Field quiz complete.</strong> You matched ' + pq.score + ' of ' + pq.total +
+    ' terms. Your best in this browser is ' + pq.best +
+    '. Take another quiz for ten different terms, or head back to the glossary to review.';
+  document.getElementById('pq-next').disabled = true;
+}
+
+function endPantryQuiz() {
+  document.getElementById('pantry-quiz').style.display = 'none';
+  document.getElementById('pantry-browse').style.display = '';
+}
+
+/* ---------- Tabs ---------- */
+function fmtDate(iso) {
+  try {
+    return new Date(iso).toLocaleString(undefined,
+      { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+  } catch (e) { return iso; }
+}
+
+function renderProgress() {
+  const s = loadStats();
+  const body = document.getElementById('progress-body');
+  const acc = s.totalDecisions ? Math.round(100 * s.totalCorrect / s.totalDecisions) : 0;
+
+  let html = '<div class="stat-grid">' +
+    '<div class="stat-card"><div class="big">' + s.gamesPlayed + '</div><div class="lbl">Games finished</div></div>' +
+    '<div class="stat-card"><div class="big">' + (s.totalDecisions ? acc + '%' : '--') + '</div><div class="lbl">Lifetime accuracy</div></div>' +
+    '<div class="stat-card"><div class="big">' + s.longestStreak + '</div><div class="lbl">Longest streak</div></div>' +
+    '<div class="stat-card"><div class="big">' + s.totalDecisions + '</div><div class="lbl">Questions answered</div></div>' +
+    '</div>';
+
+  // Best scores per mode (from the existing per-mode keys)
+  const bestBits = ['name', 'build', 'prep', 'sort'].map(m => {
+    let v = 0;
+    try { v = Number(localStorage.getItem('vizGuide' +
+      (m === 'name' ? '' : m.charAt(0).toUpperCase() + m.slice(1)) + 'BestScore')) || 0; } catch (e) {}
+    return '<div class="stat-row"><span class="name">' + MODE_LABELS[m] +
+      '</span><span class="pct">' + v + '</span></div>';
+  }).join('');
+  html += '<div class="progress-section"><h3>Best score in each mode</h3>' +
+    '<div class="sub">The highest single-game score you have reached.</div>' + bestBits + '</div>';
+
+  // Charts to review: charts seen, sorted worst accuracy first, only those missed
+  const reviewed = Object.keys(s.perChart)
+    .map(k => {
+      const c = s.perChart[k];
+      const r = recipes.find(x => x.key === k);
+      return r ? { name: r.name, seen: c.seen, correct: c.correct, pct: c.correct / c.seen } : null;
+    })
+    .filter(x => x && x.pct < 1)
+    .sort((a, b) => a.pct - b.pct || b.seen - a.seen)
+    .slice(0, 12);
+  html += '<div class="progress-section"><h3>Charts to review</h3>';
+  if (!s.totalDecisions) {
+    html += '<div class="sub">Play a few rounds and the charts you miss most will collect here as a study list.</div>';
+  } else if (reviewed.length === 0) {
+    html += '<div class="sub">No misses yet. You have identified every chart you have seen. Impressive.</div>';
+  } else {
+    html += '<div class="sub">The charts you miss most, worst first. A good place to start studying.</div>';
+    html += reviewed.map(r =>
+      '<div class="stat-row"><span class="name">' + r.name + '</span>' +
+      '<span class="detail">' + r.correct + ' of ' + r.seen + ' right</span>' +
+      '<span class="pct low">' + Math.round(100 * r.pct) + '%</span></div>'
+    ).join('');
+  }
+  html += '</div>';
+
+  // Recent games log
+  html += '<div class="progress-section"><h3>Recent games</h3>';
+  if (s.history.length === 0) {
+    html += '<div class="sub">Finished games will appear here, newest first.</div>';
+  } else {
+    html += '<div class="sub">Your last ' + Math.min(s.history.length, 20) + ' finished games, newest first.</div>';
+    html += s.history.map(h => {
+      const a = h.decisions ? Math.round(100 * h.correct / h.decisions) : 0;
+      return '<div class="stat-row"><span class="name"><span class="hist-mode">' +
+        (MODE_LABELS[h.mode] || h.mode) + '</span><br>' + fmtDate(h.date) + '</span>' +
+        '<span class="detail">' + h.correct + ' of ' + h.decisions + ' right</span>' +
+        '<span class="pct">' + a + '%</span></div>';
+    }).join('');
+  }
+  html += '</div>';
+
+  // Reset
+  html += '<div class="reset-row"><button class="btn btn-danger" id="reset-btn" onclick="resetProgress()">Reset all progress and best scores</button></div>';
+
+  body.innerHTML = html;
+}
+
+let resetArmed = false;
+function resetProgress() {
+  const btn = document.getElementById('reset-btn');
+  if (!resetArmed) {
+    resetArmed = true;
+    btn.textContent = 'Tap again to erase everything';
+    setTimeout(() => { resetArmed = false; if (btn) btn.textContent = 'Reset all progress and best scores'; }, 4000);
+    return;
+  }
+  try {
+    localStorage.removeItem(STATS_KEY);
+    ['vizGuideBestScore', 'vizGuideBuildBestScore', 'vizGuidePrepBestScore',
+     'vizGuideSortBestScore', 'vizGuideGlossaryBestScore'].forEach(k => localStorage.removeItem(k));
+  } catch (e) {}
+  resetArmed = false;
+  state.best = 0;
+  renderScore();
+  renderProgress();
+}
+
+function switchTab(name) {
+  ['play', 'study', 'pantry', 'progress'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('active', t === name);
+    document.getElementById('view-' + t).classList.toggle('active', t === name);
+  });
+  if (name === 'study') renderDeck();
+  if (name === 'pantry') renderPantry();
+  if (name === 'progress') renderProgress();
+}
+
+/* ---------- Start ---------- */
+loadBest();
+resetGame();
+renderDeck();
+</script>
+</body>
+</html>

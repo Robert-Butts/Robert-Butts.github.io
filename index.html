@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robert Butts · Data Visualization Portfolio</title>
+<meta name="description" content="Robert Butts is an education technologist in Ohio who designs data visualizations and interactive tools for learning data analytics.">
+
+<!--
+  ============================================================
+  HOME PAGE (index.html)
+  Part of a multi-page site. Every page shares style.css and
+  site.js. The menu and footer repeat on each page, so if you
+  change one here, make the same change on the others.
+  Search this file for the word EDIT to find easy things to change.
+  ============================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ===== NAV (keep identical on every page) ===== -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html" aria-label="Home">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      Robert Butts
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a class="section-link" href="work.html">Work</a>
+      <a class="section-link" href="about.html">About</a>
+      <a class="section-link" href="practice.html">Practice</a>
+      <a class="nav-cta" href="contact.html">Get in touch</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu"><span></span></button>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu" aria-label="Menu">
+  <a href="index.html">Home</a>
+  <a href="work.html">Work</a>
+  <a href="about.html">About</a>
+  <a href="practice.html">Practice</a>
+  <a href="contact.html">Get in touch</a>
+</div>
+
+<main id="main">
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-field" id="heroField" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="eyebrow">Data visualization · Higher education</p>
+    <!-- EDIT: your headline. Wrap the accent word in <span class="under"> -->
+    <h1>
+      <span class="w" style="transition-delay:0s">I</span>
+      <span class="w" style="transition-delay:.04s">help</span>
+      <span class="w" style="transition-delay:.08s">people</span>
+      <span class="w under" style="transition-delay:.12s">see</span>
+      <span class="w" style="transition-delay:.16s">what</span>
+      <span class="w" style="transition-delay:.2s">their</span>
+      <span class="w" style="transition-delay:.24s">data</span>
+      <span class="w" style="transition-delay:.28s">is</span>
+      <span class="w" style="transition-delay:.32s">saying.</span>
+    </h1>
+    <!-- EDIT: one or two sentences about you -->
+    <p class="lead">I am an education technologist in Ohio. I design data visualizations and interactive tools that make hard questions easier to understand, for students, faculty, and anyone who has a decision to make.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="work.html">View the work <span class="arr">&rarr;</span></a>
+      <a class="btn btn-ghost" href="#tools">Explore the tools <span class="arr">&rarr;</span></a>
+    </div>
+    <span class="scroll-tag"><i aria-hidden="true"></i> scroll to explore</span>
+  </div>
+</section>
+
+<!-- ===== RUN-LOG STRIP (animated counters) ===== -->
+<section class="runlog">
+  <div class="wrap">
+    <p class="rl-label">what you can practice here</p>
+    <div class="rl-grid">
+      <div class="rl-item reveal"><b class="rl-c1" data-count="5">0</b><span>interactive tools</span></div>
+      <div class="rl-item reveal d1"><b class="rl-c2" data-count="1568">0</b><span>R flashcards</span></div>
+      <div class="rl-item reveal d2"><b class="rl-c3" data-count="58">0</b><span>chart types</span></div>
+      <div class="rl-item reveal d3"><b class="rl-c4" data-count="28">0</b><span>study decks</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SELECTED WORK (a taste, full list on work.html) ===== -->
+<section>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Selected work</p>
+      <h2>A few projects I am proud of.</h2>
+    </div>
+
+    <div class="grid-3">
+      <!-- EDIT each card. For a real image, replace the <svg>...</svg> with:
+           <img src="your-image.png" alt="Short description"> -->
+<!-- NBA score differentials (Tableau Public)
+           EDIT: the thumbnail loads from Tableau's preview image for this viz, so it
+           updates itself when you republish. To use your own screenshot instead, save
+           it as images/work/nba.png and change the img src below to that path. -->
+      <a class="card reveal" data-cc="amber" data-tilt href="https://public.tableau.com/app/profile/robert.butts6583/viz/NBAGameScoreDifferentialVisualization_17520900822570/Dashboard1" target="_blank" rel="noopener">
+        <div class="thumb">
+          <svg viewBox="0 0 320 200" aria-hidden="true">
+            <line x1="24" y1="100" x2="296" y2="100" stroke="rgba(255,255,255,.18)" stroke-width="1.5"/>
+            <g fill="#F0B95A">
+              <rect x="32" y="52" width="16" height="48" rx="2"/><rect x="56" y="100" width="16" height="30" rx="2"/>
+              <rect x="80" y="70" width="16" height="30" rx="2"/><rect x="104" y="100" width="16" height="58" rx="2"/>
+              <rect x="128" y="38" width="16" height="62" rx="2"/><rect x="152" y="100" width="16" height="22" rx="2"/>
+              <rect x="176" y="84" width="16" height="16" rx="2"/><rect x="200" y="100" width="16" height="44" rx="2"/>
+              <rect x="224" y="60" width="16" height="40" rx="2"/><rect x="248" y="100" width="16" height="36" rx="2"/>
+              <rect x="272" y="76" width="16" height="24" rx="2"/>
+            </g>
+          </svg>
+          <img class="fit" src="https://public.tableau.com/static/images/NB/NBAGameScoreDifferentialVisualization_17520900822570/Dashboard1/1.png" alt="Preview of the NBA score differential dashboard" loading="lazy" onerror="this.style.display='none'">
+          <span class="card-ext" aria-hidden="true">&#8599;</span>
+        </div>
+        <div class="card-body">
+          <span class="card-tag">Tableau Public</span>
+          <h3>NBA score differentials</h3>
+          <p>Every final margin from an NBA season in one view, so blowouts and close calls stand apart at a glance.</p>
+          <span class="card-tools">Tableau &middot; interactive dashboard</span>
+        </div>
+      </a>
+
+<!-- LEGO complexity analysis (Tableau Public)
+           EDIT: same thumbnail rule as above; local file would be images/work/lego.png -->
+      <a class="card reveal d1" data-cc="red" data-tilt href="https://public.tableau.com/app/profile/robert.butts6583/viz/LegoVisualizationfor2023BTAADataCompetition/LEGOComplexityAnalysis" target="_blank" rel="noopener">
+        <div class="thumb">
+          <svg viewBox="0 0 320 200" aria-hidden="true">
+            <line x1="24" y1="176" x2="296" y2="176" stroke="rgba(255,255,255,.10)" stroke-width="1"/>
+            <g fill="#F2716F">
+              <rect x="34" y="140" width="30" height="36" rx="3"/><rect x="76" y="122" width="30" height="54" rx="3"/>
+              <rect x="118" y="104" width="30" height="72" rx="3"/><rect x="160" y="88" width="30" height="88" rx="3"/>
+              <rect x="202" y="66" width="30" height="110" rx="3"/><rect x="244" y="46" width="30" height="130" rx="3"/>
+            </g>
+            <g fill="#F2716F" opacity=".55">
+              <rect x="41" y="132" width="16" height="6" rx="3"/><rect x="83" y="114" width="16" height="6" rx="3"/>
+              <rect x="125" y="96" width="16" height="6" rx="3"/><rect x="167" y="80" width="16" height="6" rx="3"/>
+              <rect x="209" y="58" width="16" height="6" rx="3"/><rect x="251" y="38" width="16" height="6" rx="3"/>
+            </g>
+          </svg>
+          <img class="fit" src="https://public.tableau.com/static/images/Le/LegoVisualizationfor2023BTAADataCompetition/LEGOComplexityAnalysis/1.png" alt="Preview of the LEGO complexity analysis" loading="lazy" onerror="this.style.display='none'">
+          <span class="card-ext" aria-hidden="true">&#8599;</span>
+        </div>
+        <div class="card-body">
+          <span class="card-tag">Tableau Public</span>
+          <h3>LEGO complexity analysis</h3>
+          <p>How the complexity of LEGO sets has climbed across the decades. Built for the Big Ten Academic Alliance 2023 data competition.</p>
+          <span class="card-tools">Tableau &middot; competition entry</span>
+        </div>
+      </a>
+
+      <article class="card reveal d2" data-cc="violet" data-tilt>
+        <div class="thumb">
+          <svg viewBox="0 0 320 200" aria-hidden="true">
+            <line x1="24" y1="176" x2="296" y2="176" stroke="rgba(255,255,255,.10)" stroke-width="1"/>
+            <line x1="24" y1="176" x2="296" y2="64" stroke="#B79CFF" stroke-width="2" stroke-dasharray="5 5" opacity=".55"/>
+            <g fill="#B79CFF">
+              <circle cx="44" cy="150" r="4.5"/><circle cx="70" cy="140" r="4.5"/><circle cx="92" cy="150" r="4.5"/>
+              <circle cx="116" cy="126" r="4.5"/><circle cx="138" cy="134" r="4.5"/><circle cx="160" cy="116" r="4.5"/>
+              <circle cx="182" cy="124" r="4.5"/><circle cx="204" cy="104" r="4.5"/><circle cx="226" cy="112" r="4.5"/>
+              <circle cx="248" cy="90" r="4.5"/><circle cx="270" cy="98" r="4.5"/><circle cx="292" cy="78" r="4.5"/>
+            </g>
+          </svg>
+        </div>
+        <div class="card-body">
+          <span class="card-tag">Exploratory</span>
+          <h3>Course load vs. outcomes</h3>
+          <p>A look at whether heavier course loads relate to final grades.</p>
+          <span class="card-tools">Python &middot; matplotlib</span>
+        </div>
+      </article>
+    </div>
+
+    <div class="work-more reveal">
+      <a href="work.html">See all work <span class="arr">&rarr;</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRACTICE TOOLS (the return-visit engine) ===== -->
+<section class="tools" id="tools">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Practice</p>
+      <h2>Five ways to practice data analytics.</h2>
+      <p>Small, self-contained tools I built to help students and curious people learn the ideas behind data work. Each one runs in your browser and saves your progress on your device.</p>
+    </div>
+
+    <div class="tools-grid">
+      <!-- Chart Field Guide (flagship) -->
+      <a class="tool-card featured reveal" data-tc="red" href="chart-field-guide.html">
+        <span class="tool-viz" aria-hidden="true">
+          <svg viewBox="0 0 76 54">
+            <line x1="8" y1="44" x2="68" y2="44" stroke="rgba(255,255,255,.14)" stroke-width="1.5"/>
+            <g fill="#F2716F">
+              <rect x="12" y="28" width="7" height="16" rx="1"/>
+              <rect x="23" y="20" width="7" height="24" rx="1"/>
+              <rect x="34" y="33" width="7" height="11" rx="1"/>
+            </g>
+            <polyline points="46,36 54,24 62,29 68,14" fill="none" stroke="#F2716F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="68" cy="14" r="3" fill="#F2716F"/>
+          </svg>
+        </span>
+        <div class="tool-main">
+          <span class="flag-chip">&#9733; Flagship</span>
+          <p class="tool-kicker">Chart fluency · field guide</p>
+          <h3>The Chart Field Guide</h3>
+          <p>Learn 58 chart types by their field marks, across all nine families, then prove it in four quiz modes. Spot the traits. Name the chart.</p>
+          <span class="tool-go">Open the field guide <span class="arr">&rarr;</span></span>
+        </div>
+      </a>
+
+      <!-- Flashcards -> recall() study site -->
+      <a class="tool-card reveal" data-tc="blue" href="recall.html">
+        <span class="tool-viz" aria-hidden="true">
+          <svg viewBox="0 0 76 54">
+            <rect x="10" y="8" width="44" height="34" rx="4" fill="none" stroke="#75AADB" stroke-width="2" opacity=".5"/>
+            <rect x="20" y="16" width="44" height="34" rx="4" fill="#0E1116" stroke="#75AADB" stroke-width="2"/>
+            <path d="M28 27 l6 5 -6 5" fill="none" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="42" y1="37" x2="56" y2="37" stroke="#75AADB" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+          </svg>
+        </span>
+        <div class="tool-main">
+          <p class="tool-kicker">recall() · R flashcards</p>
+          <h3>Study decks for R</h3>
+          <p>1,568 cards across 28 decks, with confidence-based review that brings weak cards back until they stick.</p>
+          <span class="tool-go">Open the decks <span class="arr">&rarr;</span></span>
+        </div>
+      </a>
+
+      <!-- Visual Vocabulary Challenge -->
+      <a class="tool-card reveal d1" data-tc="amber" href="challenge.html">
+        <span class="tool-viz" aria-hidden="true">
+          <svg viewBox="0 0 76 54">
+            <g fill="#F0B95A">
+              <rect x="8" y="30" width="5" height="14" rx="1"/><rect x="15" y="22" width="5" height="22" rx="1"/><rect x="22" y="34" width="5" height="10" rx="1"/>
+            </g>
+            <polyline points="34,40 40,30 46,34 52,22" fill="none" stroke="#F0B95A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="63" cy="18" r="8" fill="none" stroke="#F0B95A" stroke-width="4" opacity=".35"/>
+            <path d="M63 10 a8 8 0 0 1 6.9 12.4" fill="none" stroke="#F0B95A" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <div class="tool-main">
+          <p class="tool-kicker">Data fluency</p>
+          <h3>Visual Vocabulary Challenge</h3>
+          <p>Build one chart in each of the nine chart families from the Financial Times Visual Vocabulary. A small test of data fluency.</p>
+          <span class="tool-go">Take the challenge <span class="arr">&rarr;</span></span>
+        </div>
+      </a>
+
+      <!-- Method Finder -->
+      <a class="tool-card reveal d2" data-tc="green" href="method-finder.html">
+        <span class="tool-viz" aria-hidden="true">
+          <svg viewBox="0 0 76 54">
+            <line x1="22" y1="27" x2="40" y2="27" stroke="#7FD18C" stroke-width="2"/>
+            <line x1="40" y1="27" x2="52" y2="15" stroke="#7FD18C" stroke-width="2"/>
+            <line x1="40" y1="27" x2="52" y2="39" stroke="#7FD18C" stroke-width="2"/>
+            <circle cx="18" cy="27" r="5" fill="#7FD18C"/>
+            <circle cx="56" cy="14" r="4" fill="none" stroke="#7FD18C" stroke-width="2"/>
+            <circle cx="56" cy="40" r="4" fill="none" stroke="#7FD18C" stroke-width="2"/>
+          </svg>
+        </span>
+        <div class="tool-main">
+          <p class="tool-kicker">Statistical tests</p>
+          <h3>The Method Finder</h3>
+          <p>Learn to choose the right statistical test. Eighteen tests across five families, with practice on real scenarios.</p>
+          <span class="tool-go">Find the method <span class="arr">&rarr;</span></span>
+        </div>
+      </a>
+
+      <!-- Research Card Builder -->
+      <a class="tool-card reveal d3" data-tc="violet" href="research-card-builder.html">
+        <span class="tool-viz" aria-hidden="true">
+          <svg viewBox="0 0 76 54">
+            <g stroke="#B79CFF" stroke-width="2">
+              <rect x="16" y="31" width="44" height="12" rx="3" fill="#0E1116"/>
+              <rect x="16" y="21" width="44" height="12" rx="3" fill="#161B23"/>
+              <rect x="16" y="11" width="44" height="12" rx="3" fill="#1B212B"/>
+            </g>
+          </svg>
+        </span>
+        <div class="tool-main">
+          <p class="tool-kicker">Research design</p>
+          <h3>The Research Card Builder</h3>
+          <p>Assemble a sound research design piece by piece, then see where the hidden traps in a study can hide.</p>
+          <span class="tool-go">Build a study <span class="arr">&rarr;</span></span>
+        </div>
+      </a>
+    </div>
+
+    <div class="work-more reveal">
+      <a href="practice.html">Open the practice hub <span class="arr">&rarr;</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ABOUT TEASER ===== -->
+<section>
+  <div class="wrap about-grid">
+    <div class="about-text reveal">
+      <p class="eyebrow">About</p>
+      <h2 style="font-family:var(--display); font-weight:600; font-size:clamp(1.8rem,3.4vw,2.6rem); letter-spacing:-.02em; margin-top:14px">Part educator. Part technologist.  Always curious.</h2>
+      <!-- EDIT: your short intro -->
+      <p>The thread through all of my work is the same: <strong>taking something complicated and making it clear.</strong> In my day job I help faculty choose and use the right technology. On my own time I turn data into pictures, and ideas into small tools that make learning stick.</p>
+      <p>I am always learning, and right now that means data analytics. I also enjoy basketball, video games, and a healthy amount of YouTube.</p>
+      <div class="chips">
+        <span class="chip">R</span>
+        <span class="chip">ggplot2</span>
+        <span class="chip">Tableau</span>
+        <span class="chip">Python</span>
+        <span class="chip">SQL</span>
+        <span class="chip">D3.js</span>
+      </div>
+      <div class="cta-row" style="margin-top:32px">
+        <a class="btn btn-ghost" href="about.html">Read more about me <span class="arr">&rarr;</span></a>
+      </div>
+    </div>
+
+    <!-- EDIT: replace with your photo -->
+    <div class="portrait reveal d1">
+	<img src="./images/profile/robert-headshot.jpg" alt="Headshot of Robert Butts">
+	</div>
+  </div>
+</section>
+
+<!-- ===== CONTACT CALL TO ACTION ===== -->
+<section class="cta-band">
+  <div class="wrap">
+    <div class="cta-inner reveal">
+      <p class="eyebrow" style="justify-content:center">Get in touch</p>
+      <h2>Have a project, or want to talk data?</h2>
+      <p>I am always glad to hear about interesting problems, teaching ideas, and data questions of any size.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="contact.html">Get in touch <span class="arr">&rarr;</span></a>
+        <a class="btn btn-ghost" href="work.html">See the work</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===== FOOTER (keep identical on every page) ===== -->
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="fb-name">
+          <span class="mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+              <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          Robert Butts
+        </div>
+        <p>Data visualization and clear thinking, from a technologist in Ohio higher education.</p>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>Site</h4>
+          <a href="index.html">Home</a>
+          <a href="work.html">Work</a>
+          <a href="about.html">About</a>
+          <a href="practice.html">Practice</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="foot-col">
+          <h4>Elsewhere</h4>
+          <a href="https://www.linkedin.com/in/robertmbutts/" target="_blank" rel="noopener">LinkedIn</a>
+          <!-- EDIT: add your GitHub and YouTube links, or delete these two lines 
+          <a href="#">GitHub</a>
+          <a href="#">YouTube</a>
+		  -->
+        </div>
+        <div class="foot-col">
+          <h4>Say hello</h4>
+          <a href="mailto:rbutts42@gmail.com">rbutts42@gmail.com</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 Robert Butts</span>
+      <span>Charts, questions, and the occasional insight.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="site.js"></script>
+</body>
+</html>
