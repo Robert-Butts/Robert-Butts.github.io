@@ -207,6 +207,11 @@ section[id], #main{scroll-margin-top:84px}   /* clear the fixed menu on anchor j
 .card h3{font-family:var(--display); font-weight:600; font-size:1.24rem; letter-spacing:-.01em}
 .card p{font-size:.95rem; color:var(--muted)}
 .card-tools{margin-top:6px; font-family:var(--mono); font-size:.72rem; color:var(--faint); letter-spacing:.02em}
+.card-links{margin-top:12px; display:flex; flex-wrap:wrap; gap:10px}
+.card-links a{font-family:var(--mono); font-size:.74rem; letter-spacing:.03em; display:inline-flex; align-items:center; gap:7px; padding:8px 13px; border:1px solid var(--line-2); border-radius:9px; color:var(--text); transition:border-color .18s ease, color .18s ease}
+.card-links a:hover{border-color:var(--cc, var(--blue)); color:var(--cc, var(--blue))}
+.card-links a .arr{transition:transform .18s ease}
+.card-links a:hover .arr{transform:translateX(3px)}
 .card[data-cc="blue"]{--cc:var(--blue)}
 .card[data-cc="green"]{--cc:var(--green)}
 .card[data-cc="violet"]{--cc:var(--violet)}
