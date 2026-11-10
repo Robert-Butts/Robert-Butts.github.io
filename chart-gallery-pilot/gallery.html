@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Chart Gallery · Robert Butts</title>
+<meta name="description" content="58 chart types sorted by the question each one answers, with sample Excel templates and R code for building every chart.">
+
+<!--
+  ============================================================
+  THE CHART GALLERY (gallery.html)
+  A wall of every chart type, sorted into the nine Financial Times
+  Visual Vocabulary families. The tiles are drawn by gallery.js from
+  the data in gallery-data.js, so to add or change a chart, edit
+  gallery-data.js, not this file.
+  Link to one family with gallery.html#magnitude (or #deviation,
+  #correlation, #ranking, #distribution, #change, #part, #spatial,
+  #flow).
+  Search for EDIT to find the parts to change.
+  ============================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ===== NAV (keep identical on every page) ===== -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html" aria-label="Home">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      Robert Butts
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a class="section-link" href="work.html">Work</a>
+      <a class="section-link active" href="gallery.html" aria-current="page">Gallery</a>
+      <a class="section-link" href="practice.html">Practice</a>
+      <a class="section-link" href="about.html">About</a>
+      <a class="nav-cta" href="contact.html">Get in touch</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu"><span></span></button>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu" aria-label="Menu">
+  <a href="index.html">Home</a>
+  <a href="work.html">Work</a>
+  <a href="gallery.html">Gallery</a>
+  <a href="practice.html">Practice</a>
+  <a href="about.html">About</a>
+  <a href="contact.html">Get in touch</a>
+</div>
+
+<main id="main">
+
+<!-- ===== PAGE HEADER ===== -->
+<div class="page-head">
+  <div class="wrap">
+    <p class="eyebrow ph-a">Gallery</p>
+    <!-- EDIT: page heading and intro -->
+    <h1 class="ph-b">The Chart Gallery.</h1>
+    <p class="ph-lead ph-c">58 ways to show data, sorted into nine families by the question each one answers. Open any chart to see how it works, what the data should look like in Excel, and the R code to build it yourself.</p>
+    <p class="g-credit-line ph-d">Inspired by the Financial Times Visual Vocabulary. <a href="#credits">Read the credits</a></p>
+  </div>
+</div>
+
+<!-- ===== FILTERS (filled in by gallery.js) ===== -->
+<div class="g-bar">
+  <div class="wrap g-bar-inner">
+    <div class="g-chips" id="gChips" role="group" aria-label="Show one chart family"></div>
+    <label class="g-search">
+      <span class="sr-only">Search the charts</span>
+      <input type="search" id="gSearch" placeholder="Search, like map or time" autocomplete="off">
+    </label>
+    <span class="g-count" id="gCount" aria-live="polite"></span>
+  </div>
+</div>
+
+<!-- ===== THE WALL (filled in by gallery.js) ===== -->
+<div class="g-main">
+  <div class="wrap" id="gWall">
+    <noscript><p class="g-empty">The gallery needs JavaScript turned on to show the charts.</p></noscript>
+  </div>
+</div>
+
+<!-- ===== CREDITS ===== -->
+<section class="g-credits" id="credits">
+  <div class="wrap">
+    <div class="g-credits-card reveal">
+      <div>
+        <p class="eyebrow">Credit where it is due</p>
+        <h2>Built on the Financial Times Visual Vocabulary.</h2>
+        <!-- EDIT: your own words about the influence -->
+        <p>The nine families in this gallery come from the <strong>Visual Vocabulary</strong>, a poster and guide made by the <strong>Financial Times Visual Journalism team</strong>. It grew out of the <strong>Graphic Continuum</strong> by Jon Schwabish and Severino Ribecca. In 2018, <strong>Andy Kriebel</strong> rebuilt the whole guide in Tableau so anyone could explore every chart with real data.</p>
+        <p>Their work changed how I think about choosing a chart: start with the question, then find the family that answers it. This gallery would not exist without them.</p>
+        <p class="g-fine">This site is independent and is not affiliated with or endorsed by the Financial Times. The descriptions, sample data, charts, and code here are my own.</p>
+      </div>
+      <div class="g-credit-links">
+        <a class="g-credit-link" href="https://github.com/Financial-Times/chart-doctor/tree/main/visual-vocabulary" target="_blank" rel="noopener">
+          <span>The original</span><b>FT Visual Vocabulary <em>&nearr;</em></b>
+          <span class="sr-only">(opens in a new tab)</span>
+        </a>
+        <a class="g-credit-link" href="https://public.tableau.com/app/profile/andy.kriebel/viz/VisualVocabulary/VisualVocabulary" target="_blank" rel="noopener">
+          <span>Explore it in Tableau</span><b>Andy Kriebel's Visual Vocabulary <em>&nearr;</em></b>
+          <span class="sr-only">(opens in a new tab)</span>
+        </a>
+        <a class="g-credit-link" href="chart-field-guide.html">
+          <span>Test yourself</span><b>The Chart Field Guide <em>&rarr;</em></b>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===== FOOTER (keep identical on every page) ===== -->
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="fb-name">
+          <span class="mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+              <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          Robert Butts
+        </div>
+        <p>Data visualization and clear thinking, from a technologist in Ohio higher education.</p>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>Site</h4>
+          <a href="index.html">Home</a>
+          <a href="work.html">Work</a>
+          <a href="gallery.html">Gallery</a>
+          <a href="practice.html">Practice</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="foot-col">
+          <h4>Elsewhere</h4>
+          <a href="https://www.linkedin.com/in/robertmbutts/" target="_blank" rel="noopener">LinkedIn</a>
+          <!-- EDIT: add your GitHub and YouTube links, or delete these two lines 
+          <a href="#">GitHub</a>
+          <a href="#">YouTube</a>
+		  -->
+        </div>
+        <div class="foot-col">
+          <h4>Say hello</h4>
+          <a href="mailto:rbutts42@gmail.com">rbutts42@gmail.com</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 Robert Butts.</span>
+      <span>Charts, questions, and the occasional insight.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="gallery-data.js"></script>
+<script src="gallery.js"></script>
+<script src="site.js"></script>
+</body>
+</html>

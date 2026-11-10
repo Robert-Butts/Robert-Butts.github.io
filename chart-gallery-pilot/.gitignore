@@ -1,0 +1,13 @@
+# R and RStudio files that should never be published
+.Rhistory
+.RData
+.Rproj.user/
+
+# Test images that render-all.R saves beside the scripts.
+# Move the ones you want into images/gallery/lesson/ instead.
+templates/*.png
+
+# Windows and Mac folder clutter
+Thumbs.db
+desktop.ini
+.DS_Store

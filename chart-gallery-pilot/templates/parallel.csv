@@ -1,0 +1,11 @@
+program,cost,students,retention_pct,rating
+Accounting,38000,320,88,4.1
+Art,34000,120,81,4.4
+Biology,41000,410,86,4.0
+Chemistry,42000,180,84,3.8
+Economics,39000,260,90,4.2
+English,33000,150,83,4.5
+History,33500,140,85,4.3
+Music,36000,90,79,4.6
+Nursing,45000,380,92,3.9
+Psychology,35000,450,82,4.1
