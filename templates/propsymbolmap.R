@@ -15,7 +15,7 @@ theme_gallery <- function() {
   theme_minimal(base_size = 16, base_family = font) +
     theme(
       plot.background  = element_rect(fill = "#161B23", color = NA),
-      panel.grid.major = element_line(color = "#222A34"),
+      panel.grid       = element_line(color = "#222A34"),
       panel.grid.minor = element_blank(),
       text             = element_text(color = ink),
       axis.text        = element_text(color = ink),

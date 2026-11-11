@@ -15,7 +15,7 @@ theme_gallery <- function() {
   theme_minimal(base_size = 16, base_family = font) +
     theme(
       plot.background  = element_rect(fill = "#161B23", color = NA),
-      panel.grid.major = element_line(color = "#222A34"),
+      panel.grid       = element_line(color = "#222A34"),
       panel.grid.minor = element_blank(),
       text             = element_text(color = ink),
       axis.text        = element_text(color = ink),
@@ -35,7 +35,7 @@ grid <- read_csv("contour.csv", show_col_types = FALSE)
 outline <- st_union(ohio)
 box <- st_as_sfc(st_bbox(c(xmin = min(grid$lon) - 1, ymin = min(grid$lat) - 1,
                            xmax = max(grid$lon) + 1, ymax = max(grid$lat) + 1),
-                         crs = st_crs(4326)))
+                         crs = st_crs(ohio)))
 mask <- st_difference(box, outline)
 
 p <- ggplot() +

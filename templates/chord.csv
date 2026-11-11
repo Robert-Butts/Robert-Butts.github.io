@@ -1,0 +1,18 @@
+from_area,to_area,students
+Undecided,Business,60
+Undecided,Social Sciences,55
+Undecided,Sciences,45
+Undecided,Humanities,35
+Undecided,Engineering,20
+Engineering,Sciences,40
+Engineering,Business,30
+Sciences,Social Sciences,30
+Sciences,Business,25
+Sciences,Humanities,10
+Sciences,Engineering,8
+Business,Social Sciences,18
+Business,Humanities,12
+Social Sciences,Business,20
+Social Sciences,Humanities,14
+Humanities,Social Sciences,15
+Humanities,Business,10

@@ -1,0 +1,11 @@
+applied_as,decision,result,students
+First-year,Admitted,Enrolled,480
+First-year,Admitted,Went elsewhere,720
+First-year,Waitlisted,Enrolled,40
+First-year,Waitlisted,Went elsewhere,60
+First-year,Waitlisted,Not admitted,150
+First-year,Denied,Not admitted,550
+Transfer,Admitted,Enrolled,160
+Transfer,Admitted,Went elsewhere,70
+Transfer,Waitlisted,Not admitted,30
+Transfer,Denied,Not admitted,90

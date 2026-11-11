@@ -969,7 +969,7 @@ window.GALLERY = {
       402
      ]
     ],
-    "code": "# Bar Chart\n# Question: Which department has the most students?\n# Put this script and bar.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"bar.csv\", show_col_types = FALSE)\n\n# fct_inorder keeps the table's order, and fct_rev puts the first row on top\np <- ggplot(df, aes(x = students, y = fct_rev(fct_inorder(department)))) +\n  geom_col(fill = \"#75AADB\", width = 0.6) +\n  scale_x_continuous(expand = expansion(mult = c(0, 0.05))) +\n  labs(x = \"Students enrolled\", y = NULL) +\n  theme_gallery() +\n  theme(panel.grid.major.y = element_blank())\n\nggsave(\"bar.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Bar Chart\n# Question: Which department has the most students?\n# Put this script and bar.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"bar.csv\", show_col_types = FALSE)\n\n# fct_inorder keeps the table's order, and fct_rev puts the first row on top\np <- ggplot(df, aes(x = students, y = fct_rev(fct_inorder(department)))) +\n  geom_col(fill = \"#75AADB\", width = 0.6) +\n  scale_x_continuous(expand = expansion(mult = c(0, 0.05))) +\n  labs(x = \"Students enrolled\", y = NULL) +\n  theme_gallery() +\n  theme(panel.grid.major.y = element_blank())\n\nggsave(\"bar.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse"
     ]
@@ -1059,7 +1059,7 @@ window.GALLERY = {
       2085
      ]
     ],
-    "code": "# Column Chart\n# Question: How many students enrolled in each of the last six fall terms?\n# Put this script and column.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"column.csv\", show_col_types = FALSE)\n\np <- ggplot(df, aes(x = fct_inorder(term), y = students)) +\n  geom_col(fill = \"#75AADB\", width = 0.6) +\n  scale_y_continuous(labels = scales::comma, expand = expansion(mult = c(0, 0.05))) +\n  labs(x = NULL, y = \"Students enrolled\") +\n  theme_gallery() +\n  theme(panel.grid.major.x = element_blank())\n\nggsave(\"column.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Column Chart\n# Question: How many students enrolled in each of the last six fall terms?\n# Put this script and column.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"column.csv\", show_col_types = FALSE)\n\np <- ggplot(df, aes(x = fct_inorder(term), y = students)) +\n  geom_col(fill = \"#75AADB\", width = 0.6) +\n  scale_y_continuous(labels = scales::comma, expand = expansion(mult = c(0, 0.05))) +\n  labs(x = NULL, y = \"Students enrolled\") +\n  theme_gallery() +\n  theme(panel.grid.major.x = element_blank())\n\nggsave(\"column.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse"
     ]
@@ -1139,7 +1139,7 @@ window.GALLERY = {
       70
      ]
     ],
-    "code": "# Pictogram\n# Question: How many advising appointments happened each week?\n# Put this script and pictogram.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\nper_icon <- 10\n\ndf <- read_csv(\"pictogram.csv\", show_col_types = FALSE) |>\n  mutate(row = row_number())\n\n# uncount() repeats each row once per icon and numbers the copies\nicons <- df |>\n  mutate(n = appointments / per_icon) |>\n  uncount(n, .id = \"col\")\n\np <- ggplot(icons, aes(x = col)) +\n  # body: a thick line with round ends\n  geom_segment(aes(xend = col, y = -row - 0.22, yend = -row + 0.02),\n               color = \"#75AADB\", linewidth = 7, lineend = \"round\") +\n  # head: a dot above the body\n  geom_point(aes(y = -row + 0.24), color = \"#75AADB\", size = 5) +\n  scale_y_continuous(breaks = -df$row, labels = df$week) +\n  scale_x_continuous(limits = c(0.5, max(icons$col) + 0.5)) +\n  labs(x = NULL, y = NULL, caption = paste(\"One figure =\", per_icon, \"appointments\")) +\n  theme_gallery() +\n  theme(panel.grid = element_blank(), axis.text.x = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"pictogram.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Pictogram\n# Question: How many advising appointments happened each week?\n# Put this script and pictogram.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\nper_icon <- 10\n\ndf <- read_csv(\"pictogram.csv\", show_col_types = FALSE) |>\n  mutate(row = row_number())\n\n# uncount() repeats each row once per icon and numbers the copies\nicons <- df |>\n  mutate(n = appointments / per_icon) |>\n  uncount(n, .id = \"col\")\n\np <- ggplot(icons, aes(x = col)) +\n  # body: a thick line with round ends\n  geom_segment(aes(xend = col, y = -row - 0.22, yend = -row + 0.02),\n               color = \"#75AADB\", linewidth = 7, lineend = \"round\") +\n  # head: a dot above the body\n  geom_point(aes(y = -row + 0.24), color = \"#75AADB\", size = 5) +\n  scale_y_continuous(breaks = -df$row, labels = df$week) +\n  scale_x_continuous(limits = c(0.5, max(icons$col) + 0.5)) +\n  labs(x = NULL, y = NULL, caption = paste(\"One figure =\", per_icon, \"appointments\")) +\n  theme_gallery() +\n  theme(panel.grid = element_blank(), axis.text.x = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"pictogram.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse"
     ]
@@ -1258,7 +1258,7 @@ window.GALLERY = {
       310
      ]
     ],
-    "code": "# Grouped Bar Chart\n# Question: How do undergraduate and graduate enrollments compare within each college?\n# Put this script and groupedbar.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"groupedbar.csv\", show_col_types = FALSE) |>\n  mutate(level = fct_inorder(level))\n\np <- ggplot(df, aes(x = college, y = students, fill = level)) +\n  geom_col(position = position_dodge(width = 0.75), width = 0.7) +\n  scale_fill_manual(values = c(\"Undergraduate\" = \"#75AADB\", \"Graduate\" = \"#7FD18C\")) +\n  scale_y_continuous(labels = scales::comma, expand = expansion(mult = c(0, 0.05))) +\n  labs(x = NULL, y = \"Students enrolled\") +\n  theme_gallery() +\n  theme(panel.grid.major.x = element_blank())\n\nggsave(\"groupedbar.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Grouped Bar Chart\n# Question: How do undergraduate and graduate enrollments compare within each college?\n# Put this script and groupedbar.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"groupedbar.csv\", show_col_types = FALSE) |>\n  mutate(level = fct_inorder(level))\n\np <- ggplot(df, aes(x = college, y = students, fill = level)) +\n  geom_col(position = position_dodge(width = 0.75), width = 0.7) +\n  scale_fill_manual(values = c(\"Undergraduate\" = \"#75AADB\", \"Graduate\" = \"#7FD18C\")) +\n  scale_y_continuous(labels = scales::comma, expand = expansion(mult = c(0, 0.05))) +\n  labs(x = NULL, y = \"Students enrolled\") +\n  theme_gallery() +\n  theme(panel.grid.major.x = element_blank())\n\nggsave(\"groupedbar.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse"
     ]
@@ -1332,7 +1332,7 @@ window.GALLERY = {
       650
      ]
     ],
-    "code": "# Proportional Symbol Chart\n# Question: How large is each campus's student body, roughly?\n# Put this script and propsymbol.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"propsymbol.csv\", show_col_types = FALSE)\n\n# scale_size_area() makes each circle's AREA match the number\np <- ggplot(df, aes(x = fct_inorder(campus), y = 0)) +\n  geom_point(aes(size = students), color = \"#75AADB\", alpha = 0.9) +\n  geom_text(aes(y = -0.3, label = paste0(campus, \"\n\", scales::comma(students))),\n            vjust = 1, lineheight = 1.1, color = ink, family = font, size = 5) +\n  scale_size_area(max_size = 30, guide = \"none\") +\n  scale_y_continuous(limits = c(-1, 1)) +\n  labs(x = NULL, y = NULL) +\n  theme_gallery() +\n  theme(panel.grid = element_blank(), axis.text = element_blank())\n\nggsave(\"propsymbol.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Proportional Symbol Chart\n# Question: How large is each campus's student body, roughly?\n# Put this script and propsymbol.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"propsymbol.csv\", show_col_types = FALSE)\n\n# scale_size_area() makes each circle's AREA match the number\np <- ggplot(df, aes(x = fct_inorder(campus), y = 0)) +\n  geom_point(aes(size = students), color = \"#75AADB\", alpha = 0.9) +\n  geom_text(aes(y = -0.3, label = paste0(campus, \"\n\", scales::comma(students))),\n            vjust = 1, lineheight = 1.1, color = ink, family = font, size = 5) +\n  scale_size_area(max_size = 30, guide = \"none\") +\n  scale_y_continuous(limits = c(-1, 1)) +\n  labs(x = NULL, y = NULL) +\n  theme_gallery() +\n  theme(panel.grid = element_blank(), axis.text = element_blank())\n\nggsave(\"propsymbol.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse"
     ]
@@ -1441,7 +1441,7 @@ window.GALLERY = {
       6
      ]
     ],
-    "code": "# Radar Chart\n# Question: How does each program score across five review criteria?\n# Put this script and radar.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"radar.csv\", show_col_types = FALSE)\n\n# Place each criterion on a spoke, starting at the top and going clockwise\nspokes <- tibble(criterion = unique(df$criterion)) |>\n  mutate(angle = 2 * pi * (row_number() - 1) / n())\n\npoints <- df |>\n  left_join(spokes, by = \"criterion\") |>\n  mutate(x = score * sin(angle), y = score * cos(angle))\n\nrings <- expand_grid(level = c(2.5, 5, 7.5, 10), spokes) |>\n  mutate(x = level * sin(angle), y = level * cos(angle))\n\np <- ggplot() +\n  geom_polygon(data = rings, aes(x, y, group = level), fill = NA, color = \"#2E3845\") +\n  geom_segment(data = spokes, aes(x = 0, y = 0, xend = 10 * sin(angle), yend = 10 * cos(angle)),\n               color = \"#2E3845\") +\n  geom_polygon(data = points, aes(x, y, group = program, fill = program, color = program),\n               alpha = 0.22, linewidth = 1.1) +\n  geom_point(data = points, aes(x, y, color = program), size = 2.6) +\n  geom_text(data = spokes, aes(x = 11.6 * sin(angle), y = 11.6 * cos(angle), label = criterion),\n            color = ink, family = font, size = 5) +\n  scale_fill_manual(values = c(\"Biology\" = \"#B79CFF\", \"History\" = \"#75AADB\")) +\n  scale_color_manual(values = c(\"Biology\" = \"#B79CFF\", \"History\" = \"#75AADB\")) +\n  coord_equal(clip = \"off\") +\n  theme_gallery() +\n  theme(panel.grid = element_blank(), axis.text = element_blank(), axis.title = element_blank())\n\nggsave(\"radar.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Radar Chart\n# Question: How does each program score across five review criteria?\n# Put this script and radar.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"radar.csv\", show_col_types = FALSE)\n\n# Place each criterion on a spoke, starting at the top and going clockwise\nspokes <- tibble(criterion = unique(df$criterion)) |>\n  mutate(angle = 2 * pi * (row_number() - 1) / n())\n\npoints <- df |>\n  left_join(spokes, by = \"criterion\") |>\n  mutate(x = score * sin(angle), y = score * cos(angle))\n\nrings <- expand_grid(level = c(2.5, 5, 7.5, 10), spokes) |>\n  mutate(x = level * sin(angle), y = level * cos(angle))\n\np <- ggplot() +\n  geom_polygon(data = rings, aes(x, y, group = level), fill = NA, color = \"#2E3845\") +\n  geom_segment(data = spokes, aes(x = 0, y = 0, xend = 10 * sin(angle), yend = 10 * cos(angle)),\n               color = \"#2E3845\") +\n  geom_polygon(data = points, aes(x, y, group = program, fill = program, color = program),\n               alpha = 0.22, linewidth = 1.1) +\n  geom_point(data = points, aes(x, y, color = program), size = 2.6) +\n  geom_text(data = spokes, aes(x = 11.6 * sin(angle), y = 11.6 * cos(angle), label = criterion),\n            color = ink, family = font, size = 5) +\n  scale_fill_manual(values = c(\"Biology\" = \"#B79CFF\", \"History\" = \"#75AADB\")) +\n  scale_color_manual(values = c(\"Biology\" = \"#B79CFF\", \"History\" = \"#75AADB\")) +\n  coord_equal(clip = \"off\") +\n  theme_gallery() +\n  theme(panel.grid = element_blank(), axis.text = element_blank(), axis.title = element_blank())\n\nggsave(\"radar.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse"
     ]
@@ -1557,7 +1557,7 @@ window.GALLERY = {
       230
      ]
     ],
-    "code": "# Bullet Chart\n# Question: How close is each department to its annual advising goal?\n# Put this script and bullet.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"bullet.csv\", show_col_types = FALSE) |>\n  mutate(department = fct_rev(fct_inorder(department)))\n\n# Draw the widest band first, then narrower ones on top of it\np <- ggplot(df, aes(y = department)) +\n  geom_col(aes(x = good), fill = \"#222A35\", width = 0.62) +\n  geom_col(aes(x = fair), fill = \"#2E3846\", width = 0.62) +\n  geom_col(aes(x = poor), fill = \"#3D4858\", width = 0.62) +\n  geom_col(aes(x = advised), fill = \"#F0B95A\", width = 0.24) +\n  geom_errorbar(aes(xmin = target, xmax = target), width = 0.46,\n                color = \"#E8EDF4\", linewidth = 1.3) +\n  scale_x_continuous(expand = expansion(mult = c(0, 0.03))) +\n  labs(x = \"Students advised this year\", y = NULL,\n       caption = \"Gold bar = advised so far. White tick = goal. Shades = poor, fair, good.\") +\n  theme_gallery() +\n  theme(panel.grid.major.y = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"bullet.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Bullet Chart\n# Question: How close is each department to its annual advising goal?\n# Put this script and bullet.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"bullet.csv\", show_col_types = FALSE) |>\n  mutate(department = fct_rev(fct_inorder(department)))\n\n# Draw the widest band first, then narrower ones on top of it\np <- ggplot(df, aes(y = department)) +\n  geom_col(aes(x = good), fill = \"#222A35\", width = 0.62) +\n  geom_col(aes(x = fair), fill = \"#2E3846\", width = 0.62) +\n  geom_col(aes(x = poor), fill = \"#3D4858\", width = 0.62) +\n  geom_col(aes(x = advised), fill = \"#F0B95A\", width = 0.24) +\n  geom_errorbar(aes(xmin = target, xmax = target), width = 0.46,\n                color = \"#E8EDF4\", linewidth = 1.3) +\n  scale_x_continuous(expand = expansion(mult = c(0, 0.03))) +\n  labs(x = \"Students advised this year\", y = NULL,\n       caption = \"Gold bar = advised so far. White tick = goal. Shades = poor, fair, good.\") +\n  theme_gallery() +\n  theme(panel.grid.major.y = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"bullet.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse"
     ]
@@ -1708,7 +1708,7 @@ window.GALLERY = {
       4.1
      ]
     ],
-    "code": "# Parallel Coordinates\n# Question: How do programs compare across cost, size, retention, and rating?\n# Put this script and parallel.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\nhighlight <- \"Music\"\n\ndf <- read_csv(\"parallel.csv\", show_col_types = FALSE)\n\n# Reshape to one row per program per measure, then scale each measure 0 to 1\nlong <- df |>\n  pivot_longer(-program, names_to = \"measure\", values_to = \"value\") |>\n  group_by(measure) |>\n  mutate(scaled = (value - min(value)) / (max(value) - min(value))) |>\n  ungroup() |>\n  mutate(measure = factor(measure, levels = names(df)[-1]))\n\np <- ggplot(long, aes(x = measure, y = scaled, group = program)) +\n  geom_vline(xintercept = 1:4, color = \"#2E3845\") +\n  geom_line(data = filter(long, program != highlight), color = \"#5A6575\", linewidth = 0.8) +\n  geom_line(data = filter(long, program == highlight), color = \"#F0B95A\", linewidth = 1.8) +\n  scale_x_discrete(labels = c(\"Cost\", \"Students\", \"Retention\", \"Rating\"),\n                   expand = expansion(add = 0.2)) +\n  scale_y_continuous(breaks = c(0, 1), labels = c(\"Lowest\", \"Highest\")) +\n  labs(x = NULL, y = NULL, caption = paste(\"Gold line:\", highlight)) +\n  theme_gallery() +\n  theme(panel.grid = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"parallel.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Parallel Coordinates\n# Question: How do programs compare across cost, size, retention, and rating?\n# Put this script and parallel.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\nhighlight <- \"Music\"\n\ndf <- read_csv(\"parallel.csv\", show_col_types = FALSE)\n\n# Reshape to one row per program per measure, then scale each measure 0 to 1\nlong <- df |>\n  pivot_longer(-program, names_to = \"measure\", values_to = \"value\") |>\n  group_by(measure) |>\n  mutate(scaled = (value - min(value)) / (max(value) - min(value))) |>\n  ungroup() |>\n  mutate(measure = factor(measure, levels = names(df)[-1]))\n\np <- ggplot(long, aes(x = measure, y = scaled, group = program)) +\n  geom_vline(xintercept = 1:4, color = \"#2E3845\") +\n  geom_line(data = filter(long, program != highlight), color = \"#5A6575\", linewidth = 0.8) +\n  geom_line(data = filter(long, program == highlight), color = \"#F0B95A\", linewidth = 1.8) +\n  scale_x_discrete(labels = c(\"Cost\", \"Students\", \"Retention\", \"Rating\"),\n                   expand = expansion(add = 0.2)) +\n  scale_y_continuous(breaks = c(0, 1), labels = c(\"Lowest\", \"Highest\")) +\n  labs(x = NULL, y = NULL, caption = paste(\"Gold line:\", highlight)) +\n  theme_gallery() +\n  theme(panel.grid = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"parallel.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse"
     ]
@@ -1792,7 +1792,7 @@ window.GALLERY = {
       40
      ]
     ],
-    "code": "# Pie Chart\n# Question: What share of workshop registrations came from each audience?\n# Put this script and pie.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"#75AADB\", \"#7FD18C\", \"#B79CFF\", \"#F0B95A\", \"#46D6D1\")\n\ndf <- read_csv(\"pie.csv\", show_col_types = FALSE) |>\n  arrange(desc(registrations)) |>\n  mutate(audience = fct_inorder(audience),\n         share = registrations / sum(registrations))\n\n# reverse = TRUE starts the biggest slice at 12 o'clock and goes clockwise\np <- ggplot(df, aes(x = 1, y = registrations, fill = audience)) +\n  geom_col(width = 1, color = \"#161B23\", linewidth = 1.2,\n           position = position_stack(reverse = TRUE)) +\n  geom_text(aes(label = scales::percent(share, accuracy = 1)),\n            position = position_stack(vjust = 0.5, reverse = TRUE),\n            color = \"#161B23\", family = font, fontface = \"bold\", size = 6) +\n  coord_polar(theta = \"y\") +\n  scale_fill_manual(values = pal) +\n  theme_gallery() +\n  theme(axis.text = element_blank(), axis.title = element_blank(),\n        panel.grid = element_blank(), legend.position = \"right\")\n\nggsave(\"pie.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Pie Chart\n# Question: What share of workshop registrations came from each audience?\n# Put this script and pie.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"#75AADB\", \"#7FD18C\", \"#B79CFF\", \"#F0B95A\", \"#46D6D1\")\n\ndf <- read_csv(\"pie.csv\", show_col_types = FALSE) |>\n  arrange(desc(registrations)) |>\n  mutate(audience = fct_inorder(audience),\n         share = registrations / sum(registrations))\n\n# reverse = TRUE starts the biggest slice at 12 o'clock and goes clockwise\np <- ggplot(df, aes(x = 1, y = registrations, fill = audience)) +\n  geom_col(width = 1, color = \"#161B23\", linewidth = 1.2,\n           position = position_stack(reverse = TRUE)) +\n  # x = 1.25 sets the labels toward the edge, where small slices have more room\n  geom_text(aes(x = 1.25, label = scales::percent(share, accuracy = 1)),\n            position = position_stack(vjust = 0.5, reverse = TRUE),\n            color = \"#161B23\", family = font, fontface = \"bold\", size = 6) +\n  coord_polar(theta = \"y\") +\n  scale_fill_manual(values = pal) +\n  theme_gallery() +\n  theme(axis.text = element_blank(), axis.title = element_blank(),\n        panel.grid = element_blank(), legend.position = \"right\")\n\nggsave(\"pie.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse"
     ]
@@ -1876,7 +1876,7 @@ window.GALLERY = {
       8
      ]
     ],
-    "code": "# Donut Chart\n# Question: What share of the budget went to each division?\n# Put this script and donut.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"#75AADB\", \"#7FD18C\", \"#B79CFF\", \"#F0B95A\", \"#46D6D1\")\n\ndf <- read_csv(\"donut.csv\", show_col_types = FALSE) |>\n  arrange(desc(budget_millions)) |>\n  mutate(division = fct_inorder(division),\n         share = budget_millions / sum(budget_millions))\n\ntotal <- paste0(\"$\", sum(df$budget_millions), \"M\\ntotal budget\")\n\n# The ring sits at x = 2; xlim() leaves an empty hole in the middle\np <- ggplot(df, aes(x = 2, y = budget_millions, fill = division)) +\n  geom_col(width = 1, color = \"#161B23\", linewidth = 1.2,\n           position = position_stack(reverse = TRUE)) +\n  geom_text(aes(label = scales::percent(share, accuracy = 1)),\n            position = position_stack(vjust = 0.5, reverse = TRUE),\n            color = \"#161B23\", family = font, fontface = \"bold\", size = 5.5) +\n  annotate(\"text\", x = 0.5, y = 0, label = total,\n           color = \"#E8EDF4\", family = font, size = 7, lineheight = 0.9) +\n  coord_polar(theta = \"y\") +\n  xlim(0.5, 2.5) +\n  scale_fill_manual(values = pal) +\n  theme_gallery() +\n  theme(axis.text = element_blank(), axis.title = element_blank(),\n        panel.grid = element_blank(), legend.position = \"right\")\n\nggsave(\"donut.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Donut Chart\n# Question: What share of the budget went to each division?\n# Put this script and donut.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"#75AADB\", \"#7FD18C\", \"#B79CFF\", \"#F0B95A\", \"#46D6D1\")\n\ndf <- read_csv(\"donut.csv\", show_col_types = FALSE) |>\n  arrange(desc(budget_millions)) |>\n  mutate(division = fct_inorder(division),\n         share = budget_millions / sum(budget_millions))\n\ntotal <- paste0(\"$\", sum(df$budget_millions), \"M\\ntotal budget\")\n\n# The ring sits at x = 2; xlim() leaves an empty hole in the middle\np <- ggplot(df, aes(x = 2, y = budget_millions, fill = division)) +\n  geom_col(width = 1, color = \"#161B23\", linewidth = 1.2,\n           position = position_stack(reverse = TRUE)) +\n  geom_text(aes(label = scales::percent(share, accuracy = 1)),\n            position = position_stack(vjust = 0.5, reverse = TRUE),\n            color = \"#161B23\", family = font, fontface = \"bold\", size = 5.5) +\n  annotate(\"text\", x = 0.5, y = 0, label = total,\n           color = \"#E8EDF4\", family = font, size = 7, lineheight = 0.9) +\n  coord_polar(theta = \"y\") +\n  xlim(0.5, 2.5) +\n  scale_fill_manual(values = pal) +\n  theme_gallery() +\n  theme(axis.text = element_blank(), axis.title = element_blank(),\n        panel.grid = element_blank(), legend.position = \"right\")\n\nggsave(\"donut.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse"
     ]
@@ -1946,7 +1946,7 @@ window.GALLERY = {
       45
      ]
     ],
-    "code": "# Waffle Chart\n# Question: Out of every 100 applicants, where did they end up?\n# Put this script and waffle.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"#75AADB\", \"#7FD18C\", \"#F0B95A\", \"#3A4554\")\n\ndf <- read_csv(\"waffle.csv\", show_col_types = FALSE) |>\n  mutate(outcome = fct_inorder(outcome))\n\n# One square per percent, filled left to right, then top to bottom\nsquares <- df |>\n  uncount(percent) |>\n  mutate(cell = row_number() - 1, col = cell %% 10, row = cell %/% 10)\n\np <- ggplot(squares, aes(x = col, y = row, fill = outcome)) +\n  geom_tile(width = 0.86, height = 0.86) +\n  scale_y_reverse() +\n  scale_fill_manual(values = pal) +\n  coord_equal() +\n  labs(x = NULL, y = NULL, caption = \"Each square = 1 percent of applicants\") +\n  theme_gallery() +\n  theme(axis.text = element_blank(), panel.grid = element_blank(),\n        legend.position = \"right\", plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"waffle.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Waffle Chart\n# Question: Out of every 100 applicants, where did they end up?\n# Put this script and waffle.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"#75AADB\", \"#7FD18C\", \"#F0B95A\", \"#3A4554\")\n\ndf <- read_csv(\"waffle.csv\", show_col_types = FALSE) |>\n  mutate(outcome = fct_inorder(outcome))\n\n# One square per percent, filled left to right, then top to bottom\nsquares <- df |>\n  uncount(percent) |>\n  mutate(cell = row_number() - 1, col = cell %% 10, row = cell %/% 10)\n\np <- ggplot(squares, aes(x = col, y = row, fill = outcome)) +\n  geom_tile(width = 0.86, height = 0.86) +\n  scale_y_reverse() +\n  scale_fill_manual(values = pal) +\n  coord_equal() +\n  labs(x = NULL, y = NULL, caption = \"Each square = 1 percent of applicants\") +\n  theme_gallery() +\n  theme(axis.text = element_blank(), panel.grid = element_blank(),\n        legend.position = \"right\", plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"waffle.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse"
     ]
@@ -2012,7 +2012,7 @@ window.GALLERY = {
       210
      ]
     ],
-    "code": "# Venn Diagram\n# Question: How many students are in honors, athletics, or both?\n# Put this script and venn.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"venn.csv\", show_col_types = FALSE)\n\n# Two equal circles, each drawn as a shape with 200 corners\ncircle <- function(x0, label) {\n  t <- seq(0, 2 * pi, length.out = 200)\n  tibble(x = x0 + cos(t), y = sin(t), group = label)\n}\ncircles <- bind_rows(circle(-0.55, \"Honors\"), circle(0.55, \"Athletics\"))\n\n# Where each count is written\nspots <- tibble(region = c(\"Honors only\", \"Both\", \"Athletics only\"),\n                x = c(-1.0, 0, 1.0)) |>\n  left_join(df, by = \"region\")\n\npal <- c(\"Honors\" = \"#B79CFF\", \"Athletics\" = \"#46D6D1\")\n\np <- ggplot() +\n  geom_polygon(data = circles, aes(x, y, group = group, fill = group, color = group),\n               alpha = 0.28, linewidth = 1.2) +\n  geom_text(data = spots, aes(x = x, y = 0, label = scales::comma(students)),\n            color = \"#E8EDF4\", family = font, fontface = \"bold\", size = 9) +\n  annotate(\"text\", x = c(-0.95, 0.95), y = 1.22, label = c(\"Honors\", \"Athletics\"),\n           color = c(\"#B79CFF\", \"#46D6D1\"), family = font, size = 6.5) +\n  scale_fill_manual(values = pal) +\n  scale_color_manual(values = pal) +\n  coord_equal(clip = \"off\") +\n  labs(caption = \"The circles are the same size. Read the numbers, not the areas.\") +\n  theme_gallery() +\n  theme(axis.text = element_blank(), axis.title = element_blank(), panel.grid = element_blank(),\n        legend.position = \"none\", plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"venn.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Venn Diagram\n# Question: How many students are in honors, athletics, or both?\n# Put this script and venn.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"venn.csv\", show_col_types = FALSE)\n\n# Two equal circles, each drawn as a shape with 200 corners\ncircle <- function(x0, label) {\n  t <- seq(0, 2 * pi, length.out = 200)\n  tibble(x = x0 + cos(t), y = sin(t), group = label)\n}\ncircles <- bind_rows(circle(-0.55, \"Honors\"), circle(0.55, \"Athletics\"))\n\n# Where each count is written\nspots <- tibble(region = c(\"Honors only\", \"Both\", \"Athletics only\"),\n                x = c(-1.0, 0, 1.0)) |>\n  left_join(df, by = \"region\")\n\npal <- c(\"Honors\" = \"#B79CFF\", \"Athletics\" = \"#46D6D1\")\n\np <- ggplot() +\n  geom_polygon(data = circles, aes(x, y, group = group, fill = group, color = group),\n               alpha = 0.28, linewidth = 1.2) +\n  geom_text(data = spots, aes(x = x, y = 0, label = scales::comma(students)),\n            color = \"#E8EDF4\", family = font, fontface = \"bold\", size = 9) +\n  annotate(\"text\", x = c(-0.95, 0.95), y = 1.22, label = c(\"Honors\", \"Athletics\"),\n           color = c(\"#B79CFF\", \"#46D6D1\"), family = font, size = 6.5) +\n  scale_fill_manual(values = pal) +\n  scale_color_manual(values = pal) +\n  coord_equal(clip = \"off\") +\n  labs(caption = \"The circles are the same size. Read the numbers, not the areas.\") +\n  theme_gallery() +\n  theme(axis.text = element_blank(), axis.title = element_blank(), panel.grid = element_blank(),\n        legend.position = \"none\", plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"venn.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse"
     ]
@@ -2156,7 +2156,7 @@ window.GALLERY = {
       50
      ]
     ],
-    "code": "# Stacked Bar Chart\n# Question: What share of each college's students are undergraduate, graduate, or non-degree?\n# Put this script and stacked.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"Undergraduate\" = \"#75AADB\", \"Graduate\" = \"#7FD18C\", \"Non-degree\" = \"#F0B95A\")\n\ndf <- read_csv(\"stacked.csv\", show_col_types = FALSE) |>\n  mutate(level = fct_inorder(level),\n         college = fct_rev(fct_inorder(college)))\n\n# position_fill() turns counts into shares, so every bar reaches 100%\np <- ggplot(df, aes(x = students, y = college, fill = level)) +\n  geom_col(position = position_fill(reverse = TRUE), width = 0.62,\n           color = \"#161B23\", linewidth = 0.8) +\n  scale_x_continuous(labels = scales::percent, expand = expansion(mult = c(0, 0.02))) +\n  scale_fill_manual(values = pal) +\n  labs(x = \"Share of the college's students\", y = NULL) +\n  theme_gallery() +\n  theme(panel.grid.major.y = element_blank())\n\nggsave(\"stacked.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Stacked Bar Chart\n# Question: What share of each college's students are undergraduate, graduate, or non-degree?\n# Put this script and stacked.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"Undergraduate\" = \"#75AADB\", \"Graduate\" = \"#7FD18C\", \"Non-degree\" = \"#F0B95A\")\n\ndf <- read_csv(\"stacked.csv\", show_col_types = FALSE) |>\n  mutate(level = fct_inorder(level),\n         college = fct_rev(fct_inorder(college)))\n\n# position_fill() turns counts into shares, so every bar reaches 100%\np <- ggplot(df, aes(x = students, y = college, fill = level)) +\n  geom_col(position = position_fill(reverse = TRUE), width = 0.62,\n           color = \"#161B23\", linewidth = 0.8) +\n  scale_x_continuous(labels = scales::percent, expand = expansion(mult = c(0, 0.02))) +\n  scale_fill_manual(values = pal) +\n  labs(x = \"Share of the college's students\", y = NULL) +\n  theme_gallery() +\n  theme(panel.grid.major.y = element_blank())\n\nggsave(\"stacked.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse"
     ]
@@ -2280,7 +2280,7 @@ window.GALLERY = {
       130
      ]
     ],
-    "code": "# Treemap\n# Question: How is total enrollment divided across colleges and their departments?\n# Put this script and treemap.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n# Also needs: treemapify. Run install.packages(\"treemapify\") once.\n\nlibrary(tidyverse)\nlibrary(treemapify)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"Arts and Humanities\" = \"#B79CFF\", \"Business\" = \"#F0B95A\",\n         \"Health\" = \"#46D6D1\", \"Sciences\" = \"#7FD18C\")\n\ndf <- read_csv(\"treemap.csv\", show_col_types = FALSE)\n\n# treemapify packs the rectangles; subgroup groups them by college\np <- ggplot(df, aes(area = students, fill = college, subgroup = college, label = department)) +\n  geom_treemap() +\n  geom_treemap_subgroup_border(colour = \"#161B23\") +\n  geom_treemap_text(colour = \"#161B23\", family = font, place = \"topleft\",\n                    reflow = TRUE, size = 13) +\n  scale_fill_manual(values = pal) +\n  theme_gallery()\n\nggsave(\"treemap.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Treemap\n# Question: How is total enrollment divided across colleges and their departments?\n# Put this script and treemap.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n# Also needs: treemapify. Run install.packages(\"treemapify\") once.\n\nlibrary(tidyverse)\nlibrary(treemapify)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"Arts and Humanities\" = \"#B79CFF\", \"Business\" = \"#F0B95A\",\n         \"Health\" = \"#46D6D1\", \"Sciences\" = \"#7FD18C\")\n\ndf <- read_csv(\"treemap.csv\", show_col_types = FALSE)\n\n# treemapify packs the rectangles; subgroup groups them by college\np <- ggplot(df, aes(area = students, fill = college, subgroup = college, label = department)) +\n  geom_treemap() +\n  geom_treemap_subgroup_border(colour = \"#161B23\") +\n  geom_treemap_text(colour = \"#161B23\", family = font, place = \"topleft\",\n                    reflow = TRUE, size = 13) +\n  scale_fill_manual(values = pal) +\n  theme_gallery()\n\nggsave(\"treemap.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse",
      "treemapify"
@@ -2425,7 +2425,7 @@ window.GALLERY = {
       50
      ]
     ],
-    "code": "# Marimekko Chart\n# Question: How do each college's size and degree mix compare at once?\n# Put this script and marimekko.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"Undergraduate\" = \"#75AADB\", \"Graduate\" = \"#7FD18C\", \"Non-degree\" = \"#F0B95A\")\n\ndf <- read_csv(\"marimekko.csv\", show_col_types = FALSE) |>\n  mutate(level = fct_inorder(level), college = fct_inorder(college))\n\n# Column widths: each college's share of all students\ncols <- df |>\n  group_by(college) |>\n  summarise(total = sum(students)) |>\n  mutate(xmax = cumsum(total) / sum(total), xmin = lag(xmax, default = 0))\n\n# Layer heights: each level's share within its own college\nboxes <- df |>\n  left_join(cols, by = \"college\") |>\n  group_by(college) |>\n  mutate(ymax = cumsum(students) / sum(students), ymin = lag(ymax, default = 0)) |>\n  ungroup()\n\np <- ggplot(boxes) +\n  geom_rect(aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = level),\n            color = \"#161B23\", linewidth = 1.2) +\n  scale_x_continuous(breaks = (cols$xmin + cols$xmax) / 2, labels = cols$college,\n                     expand = c(0, 0)) +\n  scale_y_continuous(labels = scales::percent, expand = c(0, 0)) +\n  scale_fill_manual(values = pal) +\n  labs(x = NULL, y = \"Share of the college's students\",\n       caption = \"Column width = the college's share of all students.\") +\n  theme_gallery() +\n  theme(panel.grid = element_blank(), plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"marimekko.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Marimekko Chart\n# Question: How do each college's size and degree mix compare at once?\n# Put this script and marimekko.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"Undergraduate\" = \"#75AADB\", \"Graduate\" = \"#7FD18C\", \"Non-degree\" = \"#F0B95A\")\n\ndf <- read_csv(\"marimekko.csv\", show_col_types = FALSE) |>\n  mutate(level = fct_inorder(level), college = fct_inorder(college))\n\n# Column widths: each college's share of all students\ncols <- df |>\n  group_by(college) |>\n  summarise(total = sum(students)) |>\n  mutate(xmax = cumsum(total) / sum(total), xmin = lag(xmax, default = 0))\n\n# Layer heights: each level's share within its own college\nboxes <- df |>\n  left_join(cols, by = \"college\") |>\n  group_by(college) |>\n  mutate(ymax = cumsum(students) / sum(students), ymin = lag(ymax, default = 0)) |>\n  ungroup()\n\np <- ggplot(boxes) +\n  geom_rect(aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = level),\n            color = \"#161B23\", linewidth = 1.2) +\n  scale_x_continuous(breaks = (cols$xmin + cols$xmax) / 2, labels = cols$college,\n                     expand = c(0, 0)) +\n  scale_y_continuous(labels = scales::percent, expand = c(0, 0)) +\n  scale_fill_manual(values = pal) +\n  labs(x = NULL, y = \"Share of the college's students\",\n       caption = \"Column width = the college's share of all students.\") +\n  theme_gallery() +\n  theme(panel.grid = element_blank(), plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"marimekko.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse"
     ]
@@ -2549,7 +2549,7 @@ window.GALLERY = {
       130
      ]
     ],
-    "code": "# Sunburst Chart\n# Question: How does enrollment break down by college and then by department?\n# Put this script and sunburst.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"Arts and Humanities\" = \"#B79CFF\", \"Business\" = \"#F0B95A\",\n         \"Health\" = \"#46D6D1\", \"Sciences\" = \"#7FD18C\")\n\ndf <- read_csv(\"sunburst.csv\", show_col_types = FALSE) |>\n  mutate(college = fct_inorder(college))\n\n# Inner ring: one arc per college. Outer ring: one arc per department.\ninner <- df |>\n  group_by(college) |>\n  summarise(students = sum(students)) |>\n  mutate(xmax = cumsum(students), xmin = lag(xmax, default = 0))\n\nouter <- df |>\n  arrange(college) |>\n  mutate(xmax = cumsum(students), xmin = lag(xmax, default = 0))\n\ntotal <- paste0(scales::comma(sum(df$students)), \"\\nstudents\")\n\np <- ggplot() +\n  geom_rect(data = inner, aes(xmin = xmin, xmax = xmax, ymin = 1, ymax = 2, fill = college),\n            color = \"#161B23\", linewidth = 1.2) +\n  geom_rect(data = outer, aes(xmin = xmin, xmax = xmax, ymin = 2, ymax = 3, fill = college),\n            color = \"#161B23\", linewidth = 1.2, alpha = 0.75) +\n  geom_text(data = filter(outer, students >= 150),\n            aes(x = (xmin + xmax) / 2, y = 2.5, label = department),\n            color = \"#161B23\", family = font, fontface = \"bold\", size = 3.6) +\n  annotate(\"text\", x = 0, y = 0, label = total,\n           color = \"#E8EDF4\", family = font, size = 6.5, lineheight = 0.9) +\n  coord_polar() +\n  scale_y_continuous(limits = c(0, 3)) +\n  scale_fill_manual(values = pal) +\n  theme_gallery() +\n  theme(axis.text = element_blank(), axis.title = element_blank(), panel.grid = element_blank())\n\nggsave(\"sunburst.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Sunburst Chart\n# Question: How does enrollment break down by college and then by department?\n# Put this script and sunburst.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"Arts and Humanities\" = \"#B79CFF\", \"Business\" = \"#F0B95A\",\n         \"Health\" = \"#46D6D1\", \"Sciences\" = \"#7FD18C\")\n\ndf <- read_csv(\"sunburst.csv\", show_col_types = FALSE) |>\n  mutate(college = fct_inorder(college))\n\n# Inner ring: one arc per college. Outer ring: one arc per department.\ninner <- df |>\n  group_by(college) |>\n  summarise(students = sum(students)) |>\n  mutate(xmax = cumsum(students), xmin = lag(xmax, default = 0))\n\nouter <- df |>\n  arrange(college) |>\n  mutate(xmax = cumsum(students), xmin = lag(xmax, default = 0))\n\ntotal <- paste0(scales::comma(sum(df$students)), \"\\nstudents\")\n\np <- ggplot() +\n  geom_rect(data = inner, aes(xmin = xmin, xmax = xmax, ymin = 1, ymax = 2, fill = college),\n            color = \"#161B23\", linewidth = 1.2) +\n  geom_rect(data = outer, aes(xmin = xmin, xmax = xmax, ymin = 2, ymax = 3, fill = college),\n            color = \"#161B23\", linewidth = 1.2, alpha = 0.75) +\n  geom_text(data = filter(outer, students >= 150),\n            aes(x = (xmin + xmax) / 2, y = 2.5, label = department),\n            color = \"#161B23\", family = font, fontface = \"bold\", size = 3.6) +\n  annotate(\"text\", x = 0, y = 0, label = total,\n           color = \"#E8EDF4\", family = font, size = 6.5, lineheight = 0.9) +\n  coord_polar() +\n  scale_y_continuous(limits = c(0, 3)) +\n  scale_fill_manual(values = pal) +\n  theme_gallery() +\n  theme(axis.text = element_blank(), axis.title = element_blank(), panel.grid = element_blank())\n\nggsave(\"sunburst.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse"
     ]
@@ -2713,7 +2713,7 @@ window.GALLERY = {
       350
      ]
     ],
-    "code": "# Proportional Symbol Map\n# Question: How many students attend each campus, and where are they?\n# Put this script and propsymbolmap.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n# Also needs: sf, maps. Run install.packages(c(\"sf\", \"maps\")) once.\n\nlibrary(tidyverse)\nlibrary(sf)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\n# Ohio's county outlines come with the maps package, so there is nothing to download\nohio <- st_as_sf(maps::map(\"county\", \"ohio\", plot = FALSE, fill = TRUE)) |>\n  mutate(county = str_to_title(str_remove(ID, \"ohio,\")))\n\ndf <- read_csv(\"propsymbolmap.csv\", show_col_types = FALSE)\n\np <- ggplot() +\n  geom_sf(data = ohio, fill = \"#1E2530\", color = \"#2E3845\", linewidth = 0.3) +\n  geom_point(data = df, aes(x = lon, y = lat, size = students),\n             color = \"#C1E069\", alpha = 0.75) +\n  geom_text(data = slice_max(df, students, n = 5), aes(x = lon, y = lat, label = campus),\n            nudge_y = 0.3, color = \"#E8EDF4\", family = font, size = 4) +\n  scale_size_area(max_size = 18, labels = scales::comma, name = \"Students\") +\n  labs(x = NULL, y = NULL, caption = \"Sample values, not real data.\") +\n  theme_gallery() +\n  theme(legend.title = element_text(color = ink, size = 12)) +\n  theme(panel.grid = element_blank(), axis.text = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"propsymbolmap.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Proportional Symbol Map\n# Question: How many students attend each campus, and where are they?\n# Put this script and propsymbolmap.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n# Also needs: sf, maps. Run install.packages(c(\"sf\", \"maps\")) once.\n\nlibrary(tidyverse)\nlibrary(sf)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\n# Ohio's county outlines come with the maps package, so there is nothing to download\nohio <- st_as_sf(maps::map(\"county\", \"ohio\", plot = FALSE, fill = TRUE)) |>\n  mutate(county = str_to_title(str_remove(ID, \"ohio,\")))\n\ndf <- read_csv(\"propsymbolmap.csv\", show_col_types = FALSE)\n\np <- ggplot() +\n  geom_sf(data = ohio, fill = \"#1E2530\", color = \"#2E3845\", linewidth = 0.3) +\n  geom_point(data = df, aes(x = lon, y = lat, size = students),\n             color = \"#C1E069\", alpha = 0.75) +\n  geom_text(data = slice_max(df, students, n = 5), aes(x = lon, y = lat, label = campus),\n            nudge_y = 0.3, color = \"#E8EDF4\", family = font, size = 4) +\n  scale_size_area(max_size = 18, labels = scales::comma, name = \"Students\") +\n  labs(x = NULL, y = NULL, caption = \"Sample values, not real data.\") +\n  theme_gallery() +\n  theme(legend.title = element_text(color = ink, size = 12)) +\n  theme(panel.grid = element_blank(), axis.text = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"propsymbolmap.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse",
      "sf",
@@ -3131,7 +3131,7 @@ window.GALLERY = {
       270
      ]
     ],
-    "code": "# Dot Density Map\n# Question: Where do the students in this sample live?\n# Put this script and dotdensity.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n# Also needs: sf, maps. Run install.packages(c(\"sf\", \"maps\")) once.\n\nlibrary(tidyverse)\nlibrary(sf)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\n# Ohio's county outlines come with the maps package, so there is nothing to download\nohio <- st_as_sf(maps::map(\"county\", \"ohio\", plot = FALSE, fill = TRUE)) |>\n  mutate(county = str_to_title(str_remove(ID, \"ohio,\")))\n\nper_dot <- 25\n\ndf <- read_csv(\"dotdensity.csv\", show_col_types = FALSE)\n\ncounties <- ohio |>\n  left_join(df, by = \"county\") |>\n  mutate(dots = round(students / per_dot))\n\n# st_sample() drops the right number of random dots inside each county.\n# set.seed() makes the \"random\" dots land in the same spots every time.\nset.seed(42)\ndots <- st_sample(counties, size = counties$dots)\n\np <- ggplot() +\n  geom_sf(data = ohio, fill = \"#1E2530\", color = \"#2E3845\", linewidth = 0.3) +\n  geom_sf(data = dots, color = \"#C1E069\", size = 0.7, alpha = 0.85) +\n  labs(caption = paste(\"One dot =\", per_dot, \"students, placed at random inside its county. Sample values.\")) +\n  theme_gallery() +\n  theme(panel.grid = element_blank(), axis.text = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"dotdensity.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Dot Density Map\n# Question: Where do the students in this sample live?\n# Put this script and dotdensity.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n# Also needs: sf, maps. Run install.packages(c(\"sf\", \"maps\")) once.\n\nlibrary(tidyverse)\nlibrary(sf)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\n# Ohio's county outlines come with the maps package, so there is nothing to download\nohio <- st_as_sf(maps::map(\"county\", \"ohio\", plot = FALSE, fill = TRUE)) |>\n  mutate(county = str_to_title(str_remove(ID, \"ohio,\")))\n\nper_dot <- 25\n\ndf <- read_csv(\"dotdensity.csv\", show_col_types = FALSE)\n\ncounties <- ohio |>\n  left_join(df, by = \"county\") |>\n  mutate(dots = round(students / per_dot))\n\n# st_sample() drops the right number of random dots inside each county.\n# set.seed() makes the \"random\" dots land in the same spots every time.\nset.seed(42)\ndots <- st_sample(counties, size = counties$dots)\n\np <- ggplot() +\n  geom_sf(data = ohio, fill = \"#1E2530\", color = \"#2E3845\", linewidth = 0.3) +\n  geom_sf(data = dots, color = \"#C1E069\", size = 0.7, alpha = 0.85) +\n  labs(caption = paste(\"One dot =\", per_dot, \"students, placed at random inside its county. Sample values.\")) +\n  theme_gallery() +\n  theme(panel.grid = element_blank(), axis.text = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"dotdensity.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse",
      "sf",
@@ -3549,7 +3549,7 @@ window.GALLERY = {
       71
      ]
     ],
-    "code": "# Choropleth Map\n# Question: Which counties have the most library cards per 100 residents?\n# Put this script and choropleth.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n# Also needs: sf, maps. Run install.packages(c(\"sf\", \"maps\")) once.\n\nlibrary(tidyverse)\nlibrary(sf)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\n# Ohio's county outlines come with the maps package, so there is nothing to download\nohio <- st_as_sf(maps::map(\"county\", \"ohio\", plot = FALSE, fill = TRUE)) |>\n  mutate(county = str_to_title(str_remove(ID, \"ohio,\")))\n\ndf <- read_csv(\"choropleth.csv\", show_col_types = FALSE)\n\n# Join the table to the map by county name\nmap_df <- ohio |> left_join(df, by = \"county\")\n\np <- ggplot(map_df) +\n  geom_sf(aes(fill = cards_per_100), color = \"#161B23\", linewidth = 0.3) +\n  scale_fill_gradient(low = \"#22344D\", high = \"#9CCBF5\", name = \"Library cards per 100 residents\") +\n  guides(fill = guide_colorbar(title.position = \"top\", barwidth = unit(6, \"cm\"))) +\n  labs(caption = \"Sample values, not real data.\") +\n  theme_gallery() +\n  theme(legend.title = element_text(color = ink, size = 12)) +\n  theme(panel.grid = element_blank(), axis.text = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"choropleth.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Choropleth Map\n# Question: Which counties have the most library cards per 100 residents?\n# Put this script and choropleth.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n# Also needs: sf, maps. Run install.packages(c(\"sf\", \"maps\")) once.\n\nlibrary(tidyverse)\nlibrary(sf)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\n# Ohio's county outlines come with the maps package, so there is nothing to download\nohio <- st_as_sf(maps::map(\"county\", \"ohio\", plot = FALSE, fill = TRUE)) |>\n  mutate(county = str_to_title(str_remove(ID, \"ohio,\")))\n\ndf <- read_csv(\"choropleth.csv\", show_col_types = FALSE)\n\n# Join the table to the map by county name\nmap_df <- ohio |> left_join(df, by = \"county\")\n\np <- ggplot(map_df) +\n  geom_sf(aes(fill = cards_per_100), color = \"#161B23\", linewidth = 0.3) +\n  scale_fill_gradient(low = \"#22344D\", high = \"#9CCBF5\", name = \"Library cards per 100 residents\") +\n  guides(fill = guide_colorbar(title.position = \"top\", barwidth = unit(6, \"cm\"))) +\n  labs(caption = \"Sample values, not real data.\") +\n  theme_gallery() +\n  theme(legend.title = element_text(color = ink, size = 12)) +\n  theme(panel.grid = element_blank(), axis.text = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"choropleth.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse",
      "sf",
@@ -3714,7 +3714,7 @@ window.GALLERY = {
       60
      ]
     ],
-    "code": "# Flow Map\n# Question: Where do first-year students at a Columbus campus come from?\n# Put this script and flowmap.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n# Also needs: sf, maps. Run install.packages(c(\"sf\", \"maps\")) once.\n\nlibrary(tidyverse)\nlibrary(sf)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\n# Ohio's county outlines come with the maps package, so there is nothing to download\nohio <- st_as_sf(maps::map(\"county\", \"ohio\", plot = FALSE, fill = TRUE)) |>\n  mutate(county = str_to_title(str_remove(ID, \"ohio,\")))\n\ndf <- read_csv(\"flowmap.csv\", show_col_types = FALSE) |>\n  # stop each arrow a little short so the arrowheads do not pile up\n  mutate(end_lon = from_lon + 0.9 * (to_lon - from_lon),\n         end_lat = from_lat + 0.9 * (to_lat - from_lat))\n\ncampus <- distinct(df, destination, to_lon, to_lat)\n\np <- ggplot() +\n  geom_sf(data = ohio, fill = \"#1E2530\", color = \"#2E3845\", linewidth = 0.3) +\n  geom_segment(data = df, aes(x = from_lon, y = from_lat, xend = end_lon, yend = end_lat,\n                              linewidth = students),\n               color = \"#C1E069\", alpha = 0.85, lineend = \"round\",\n               arrow = arrow(length = unit(3, \"mm\"), type = \"closed\")) +\n  geom_point(data = campus, aes(x = to_lon, y = to_lat), color = \"#E8EDF4\", size = 4) +\n  geom_text(data = df, aes(x = from_lon, y = from_lat, label = origin),\n            nudge_y = 0.18, color = \"#E8EDF4\", family = font, size = 4) +\n  scale_linewidth(range = c(0.6, 4), name = \"First-year students\") +\n  labs(x = NULL, y = NULL, caption = \"Sample values, not real data.\") +\n  theme_gallery() +\n  theme(legend.title = element_text(color = ink, size = 12)) +\n  theme(panel.grid = element_blank(), axis.text = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"flowmap.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Flow Map\n# Question: Where do first-year students at a Columbus campus come from?\n# Put this script and flowmap.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n# Also needs: sf, maps. Run install.packages(c(\"sf\", \"maps\")) once.\n\nlibrary(tidyverse)\nlibrary(sf)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\n# Ohio's county outlines come with the maps package, so there is nothing to download\nohio <- st_as_sf(maps::map(\"county\", \"ohio\", plot = FALSE, fill = TRUE)) |>\n  mutate(county = str_to_title(str_remove(ID, \"ohio,\")))\n\ndf <- read_csv(\"flowmap.csv\", show_col_types = FALSE) |>\n  # stop each arrow a little short so the arrowheads do not pile up\n  mutate(end_lon = from_lon + 0.9 * (to_lon - from_lon),\n         end_lat = from_lat + 0.9 * (to_lat - from_lat))\n\ncampus <- distinct(df, destination, to_lon, to_lat)\n\np <- ggplot() +\n  geom_sf(data = ohio, fill = \"#1E2530\", color = \"#2E3845\", linewidth = 0.3) +\n  geom_segment(data = df, aes(x = from_lon, y = from_lat, xend = end_lon, yend = end_lat,\n                              linewidth = students),\n               color = \"#C1E069\", alpha = 0.85, lineend = \"round\",\n               arrow = arrow(length = unit(3, \"mm\"), type = \"closed\")) +\n  geom_point(data = campus, aes(x = to_lon, y = to_lat), color = \"#E8EDF4\", size = 4) +\n  geom_text(data = df, aes(x = from_lon, y = from_lat, label = origin),\n            nudge_y = 0.18, color = \"#E8EDF4\", family = font, size = 4) +\n  scale_linewidth(range = c(0.6, 4), name = \"First-year students\") +\n  labs(x = NULL, y = NULL, caption = \"Sample values, not real data.\") +\n  theme_gallery() +\n  theme(legend.title = element_text(color = ink, size = 12)) +\n  theme(panel.grid = element_blank(), axis.text = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"flowmap.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse",
      "sf",
@@ -12335,7 +12335,7 @@ window.GALLERY = {
       47.6
      ]
     ],
-    "code": "# Contour Map\n# Question: How does average yearly snowfall change across Ohio?\n# Put this script and contour.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n# Also needs: sf, maps. Run install.packages(c(\"sf\", \"maps\")) once.\n\nlibrary(tidyverse)\nlibrary(sf)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\n# Ohio's county outlines come with the maps package, so there is nothing to download\nohio <- st_as_sf(maps::map(\"county\", \"ohio\", plot = FALSE, fill = TRUE)) |>\n  mutate(county = str_to_title(str_remove(ID, \"ohio,\")))\n\ngrid <- read_csv(\"contour.csv\", show_col_types = FALSE)\n\n# Cover everything outside Ohio, so the bands stop at the state line\noutline <- st_union(ohio)\nbox <- st_as_sfc(st_bbox(c(xmin = min(grid$lon) - 1, ymin = min(grid$lat) - 1,\n                           xmax = max(grid$lon) + 1, ymax = max(grid$lat) + 1),\n                         crs = st_crs(4326)))\nmask <- st_difference(box, outline)\n\np <- ggplot() +\n  geom_contour_filled(data = grid, aes(x = lon, y = lat, z = snowfall_in),\n                      breaks = seq(10, 70, by = 10)) +\n  geom_sf(data = mask, fill = \"#161B23\", color = NA) +\n  geom_sf(data = ohio, fill = NA, color = \"#161B23\", linewidth = 0.25) +\n  scale_fill_manual(values = colorRampPalette(c(\"#22344D\", \"#E8F3FF\"))(6),\n                    name = \"Yearly snowfall (inches)\") +\n  coord_sf(xlim = range(grid$lon), ylim = range(grid$lat), expand = FALSE) +\n  labs(x = NULL, y = NULL, caption = \"Sample values, not real data.\") +\n  theme_gallery() +\n  theme(legend.title = element_text(color = ink, size = 12)) +\n  theme(panel.grid = element_blank(), axis.text = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"contour.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Contour Map\n# Question: How does average yearly snowfall change across Ohio?\n# Put this script and contour.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n# Also needs: sf, maps. Run install.packages(c(\"sf\", \"maps\")) once.\n\nlibrary(tidyverse)\nlibrary(sf)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\n# Ohio's county outlines come with the maps package, so there is nothing to download\nohio <- st_as_sf(maps::map(\"county\", \"ohio\", plot = FALSE, fill = TRUE)) |>\n  mutate(county = str_to_title(str_remove(ID, \"ohio,\")))\n\ngrid <- read_csv(\"contour.csv\", show_col_types = FALSE)\n\n# Cover everything outside Ohio, so the bands stop at the state line\noutline <- st_union(ohio)\nbox <- st_as_sfc(st_bbox(c(xmin = min(grid$lon) - 1, ymin = min(grid$lat) - 1,\n                           xmax = max(grid$lon) + 1, ymax = max(grid$lat) + 1),\n                         crs = st_crs(ohio)))\nmask <- st_difference(box, outline)\n\np <- ggplot() +\n  geom_contour_filled(data = grid, aes(x = lon, y = lat, z = snowfall_in),\n                      breaks = seq(10, 70, by = 10)) +\n  geom_sf(data = mask, fill = \"#161B23\", color = NA) +\n  geom_sf(data = ohio, fill = NA, color = \"#161B23\", linewidth = 0.25) +\n  scale_fill_manual(values = colorRampPalette(c(\"#22344D\", \"#E8F3FF\"))(6),\n                    name = \"Yearly snowfall (inches)\") +\n  coord_sf(xlim = range(grid$lon), ylim = range(grid$lat), expand = FALSE) +\n  labs(x = NULL, y = NULL, caption = \"Sample values, not real data.\") +\n  theme_gallery() +\n  theme(legend.title = element_text(color = ink, size = 12)) +\n  theme(panel.grid = element_blank(), axis.text = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"contour.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse",
      "sf",
@@ -12753,7 +12753,7 @@ window.GALLERY = {
       270
      ]
     ],
-    "code": "# Scaled Cartogram\n# Question: What does Ohio look like when each county is sized by its students?\n# Put this script and cartogram.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n# Also needs: sf, maps, cartogram. Run install.packages(c(\"sf\", \"maps\", \"cartogram\")) once.\n\nlibrary(tidyverse)\nlibrary(sf)\nlibrary(cartogram)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\n# Ohio's county outlines come with the maps package, so there is nothing to download\nohio <- st_as_sf(maps::map(\"county\", \"ohio\", plot = FALSE, fill = TRUE)) |>\n  mutate(county = str_to_title(str_remove(ID, \"ohio,\")))\n\ndf <- read_csv(\"cartogram.csv\", show_col_types = FALSE)\n\n# cartogram_cont() needs flat map coordinates, so switch to UTM zone 17 first\ncounties <- ohio |>\n  left_join(df, by = \"county\") |>\n  st_transform(32617) |>\n  st_make_valid()\n\nscaled <- cartogram_cont(counties, weight = \"students\", itermax = 10)\n\np <- ggplot(scaled) +\n  geom_sf(aes(fill = students), color = \"#161B23\", linewidth = 0.3) +\n  scale_fill_gradient(low = \"#2A3420\", high = \"#C1E069\", labels = scales::comma, name = \"Students\") +\n  guides(fill = guide_colorbar(title.position = \"top\", barwidth = unit(6, \"cm\"))) +\n  labs(caption = \"County areas are resized to match student counts. Sample values, not real data.\") +\n  theme_gallery() +\n  theme(legend.title = element_text(color = ink, size = 12)) +\n  theme(panel.grid = element_blank(), axis.text = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"cartogram.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Scaled Cartogram\n# Question: What does Ohio look like when each county is sized by its students?\n# Put this script and cartogram.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n# Also needs: sf, maps, cartogram. Run install.packages(c(\"sf\", \"maps\", \"cartogram\")) once.\n\nlibrary(tidyverse)\nlibrary(sf)\nlibrary(cartogram)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\n# Ohio's county outlines come with the maps package, so there is nothing to download\nohio <- st_as_sf(maps::map(\"county\", \"ohio\", plot = FALSE, fill = TRUE)) |>\n  mutate(county = str_to_title(str_remove(ID, \"ohio,\")))\n\ndf <- read_csv(\"cartogram.csv\", show_col_types = FALSE)\n\n# cartogram_cont() needs flat map coordinates, so switch to UTM zone 17 first\ncounties <- ohio |>\n  left_join(df, by = \"county\") |>\n  st_transform(32617) |>\n  st_make_valid()\n\nscaled <- cartogram_cont(counties, weight = \"students\", itermax = 10)\n\np <- ggplot(scaled) +\n  geom_sf(aes(fill = students), color = \"#161B23\", linewidth = 0.3) +\n  scale_fill_gradient(low = \"#2A3420\", high = \"#C1E069\", labels = scales::comma, name = \"Students\") +\n  guides(fill = guide_colorbar(title.position = \"top\", barwidth = unit(6, \"cm\"))) +\n  labs(caption = \"County areas are resized to match student counts. Sample values, not real data.\") +\n  theme_gallery() +\n  theme(legend.title = element_text(color = ink, size = 12)) +\n  theme(panel.grid = element_blank(), axis.text = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"cartogram.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse",
      "sf",
@@ -13451,7 +13451,7 @@ window.GALLERY = {
       71
      ]
     ],
-    "code": "# Equalized Cartogram\n# Question: Which counties have the most library cards per 100 residents, when every county gets the same space?\n# Put this script and eqcartogram.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid.major = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"eqcartogram.csv\", show_col_types = FALSE) |>\n  # light text on dark squares, dark text on light squares\n  mutate(text_color = if_else(cards_per_100 < 64, \"#E8EDF4\", \"#161B23\"))\n\n# The grid columns and rows in the CSV place every square, so no map file is needed\np <- ggplot(df, aes(x = col, y = row, fill = cards_per_100)) +\n  geom_tile(width = 0.92, height = 0.92) +\n  geom_text(aes(label = label, color = text_color), family = font, fontface = \"bold\", size = 3) +\n  scale_color_identity() +\n  scale_y_reverse() +\n  scale_fill_gradient(low = \"#22344D\", high = \"#9CCBF5\", name = \"Library cards per 100 residents\") +\n  guides(fill = guide_colorbar(title.position = \"top\", barwidth = unit(6, \"cm\"))) +\n  coord_equal() +\n  labs(x = NULL, y = NULL, caption = \"One square per county, placed near its real location. Sample values.\") +\n  theme_gallery() +\n  theme(legend.title = element_text(color = ink, size = 12)) +\n  theme(panel.grid = element_blank(), axis.text = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"eqcartogram.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "code": "# Equalized Cartogram\n# Question: Which counties have the most library cards per 100 residents, when every county gets the same space?\n# Put this script and eqcartogram.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"eqcartogram.csv\", show_col_types = FALSE) |>\n  # light text on dark squares, dark text on light squares\n  mutate(text_color = if_else(cards_per_100 < 64, \"#E8EDF4\", \"#161B23\"))\n\n# The grid columns and rows in the CSV place every square, so no map file is needed\np <- ggplot(df, aes(x = col, y = row, fill = cards_per_100)) +\n  geom_tile(width = 0.92, height = 0.92) +\n  geom_text(aes(label = label, color = text_color), family = font, fontface = \"bold\", size = 3) +\n  scale_color_identity() +\n  scale_y_reverse() +\n  scale_fill_gradient(low = \"#22344D\", high = \"#9CCBF5\", name = \"Library cards per 100 residents\") +\n  guides(fill = guide_colorbar(title.position = \"top\", barwidth = unit(6, \"cm\"))) +\n  coord_equal() +\n  labs(x = NULL, y = NULL, caption = \"One square per county, placed near its real location. Sample values.\") +\n  theme_gallery() +\n  theme(legend.title = element_text(color = ink, size = 12)) +\n  theme(panel.grid = element_blank(), axis.text = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"eqcartogram.png\", p, width = 9, height = 6, dpi = 200)\np\n",
     "packages": [
      "tidyverse"
     ]
@@ -13498,8 +13498,68 @@ window.GALLERY = {
    ],
    "watch": "Floating bars confuse readers who expect a common baseline.",
    "pairs": "Budgets, balances, and step by step changes.",
-   "question": "How did the budget move from January's balance to December's?",
+   "question": "How did the department's balance change from the start of the year to the end?",
    "hint": "Each bar starts where the last one ended.",
+   "lesson": {
+    "question": "How did the department's balance change from the start of the year to the end?",
+    "shape": "One row per step, in the order the steps happened. The first row is the starting total. Gains are positive numbers and losses are negative numbers. R works out the ending total for you.",
+    "columns": [
+     {
+      "name": "step",
+      "type": "category",
+      "desc": "One bar, in order from left to right"
+     },
+     {
+      "name": "amount_thousands",
+      "type": "number",
+      "desc": "The starting total, then each gain (+) or loss (-), in thousands of dollars"
+     }
+    ],
+    "rows": [
+     [
+      "Starting balance",
+      250
+     ],
+     [
+      "Grants",
+      120
+     ],
+     [
+      "Tuition share",
+      85
+     ],
+     [
+      "Gifts",
+      30
+     ],
+     [
+      "Salaries",
+      -190
+     ],
+     [
+      "Equipment",
+      -45
+     ],
+     [
+      "Travel",
+      -28
+     ],
+     [
+      "Events",
+      -17
+     ]
+    ],
+    "code": "# Waterfall Chart\n# Question: How did the department's balance change from the start of the year to the end?\n# Put this script and waterfall.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"Total\" = \"#75AADB\", \"Gain\" = \"#7FD18C\", \"Loss\" = \"#F2716F\")\n\ndf <- read_csv(\"waterfall.csv\", show_col_types = FALSE)\n\n# Each bar starts where the one before it ended\nsteps <- df |>\n  mutate(end   = cumsum(amount_thousands),\n         start = lag(end, default = 0),\n         kind  = case_when(row_number() == 1     ~ \"Total\",\n                           amount_thousands >= 0 ~ \"Gain\",\n                           TRUE                  ~ \"Loss\"))\n\n# Close with the ending total as a full bar\nsteps <- steps |>\n  add_row(step = \"Ending balance\", amount_thousands = last(steps$end),\n          start = 0, end = last(steps$end), kind = \"Total\") |>\n  mutate(id    = row_number(),\n         label = if_else(kind == \"Total\",\n                         scales::dollar(end, suffix = \"K\"),\n                         scales::dollar(amount_thousands, suffix = \"K\", style_positive = \"plus\")))\n\np <- ggplot(steps) +\n  geom_rect(aes(xmin = id - 0.38, xmax = id + 0.38, ymin = start, ymax = end, fill = kind)) +\n  # dotted connectors carry each bar's end level over to the next bar\n  geom_segment(data = head(steps, -1),\n               aes(x = id + 0.38, xend = id + 0.62, y = end, yend = end),\n               color = ink, linetype = \"dotted\") +\n  geom_text(aes(x = id, y = pmax(start, end), label = label),\n            vjust = -0.6, color = \"#E8EDF4\", family = font, size = 4.6) +\n  scale_x_continuous(breaks = steps$id, labels = str_wrap(steps$step, 9)) +\n  scale_y_continuous(labels = scales::dollar_format(suffix = \"K\"),\n                     expand = expansion(mult = c(0, 0.1))) +\n  scale_fill_manual(values = pal, breaks = c(\"Gain\", \"Loss\", \"Total\")) +\n  labs(x = NULL, y = NULL, caption = \"Sample values, not real data.\") +\n  theme_gallery() +\n  theme(panel.grid.major.x = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"waterfall.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "How do districts plan to move from FY26's opening cash balance to its closing balance?",
+    "data": "FY26 Financial Forecast, statewide, fall submission. FY26 was a forecast when the file was made.",
+    "note": "Bars float, so read each one's own label instead of comparing it with the bottom axis."
+   },
+   "famous": [],
    "stories": []
   },
   {
@@ -13524,8 +13584,117 @@ window.GALLERY = {
    ],
    "watch": "Too many thin bands tangle into noise.",
    "pairs": "Pipelines, funnels, and student journey questions.",
-   "question": "How do admitted students flow from application to enrollment to graduation?",
+   "question": "How did this year's 2,350 applicants move from applying to enrolling?",
    "hint": "Wide ribbons split and merge as the quantity moves through stages.",
+   "lesson": {
+    "question": "How did this year's 2,350 applicants move from applying to enrolling?",
+    "shape": "Wide format: one row per path through the stages. Each stage gets its own column, read from left to right, and the last column counts the students who took that path. A path that nobody took needs no row.",
+    "columns": [
+     {
+      "name": "applied_as",
+      "type": "category",
+      "desc": "Stage 1: how each student applied"
+     },
+     {
+      "name": "decision",
+      "type": "category",
+      "desc": "Stage 2: the admission decision"
+     },
+     {
+      "name": "result",
+      "type": "category",
+      "desc": "Stage 3: where the student ended up"
+     },
+     {
+      "name": "students",
+      "type": "number",
+      "desc": "How many students took this path. It sets each band's width"
+     }
+    ],
+    "rows": [
+     [
+      "First-year",
+      "Admitted",
+      "Enrolled",
+      480
+     ],
+     [
+      "First-year",
+      "Admitted",
+      "Went elsewhere",
+      720
+     ],
+     [
+      "First-year",
+      "Waitlisted",
+      "Enrolled",
+      40
+     ],
+     [
+      "First-year",
+      "Waitlisted",
+      "Went elsewhere",
+      60
+     ],
+     [
+      "First-year",
+      "Waitlisted",
+      "Not admitted",
+      150
+     ],
+     [
+      "First-year",
+      "Denied",
+      "Not admitted",
+      550
+     ],
+     [
+      "Transfer",
+      "Admitted",
+      "Enrolled",
+      160
+     ],
+     [
+      "Transfer",
+      "Admitted",
+      "Went elsewhere",
+      70
+     ],
+     [
+      "Transfer",
+      "Waitlisted",
+      "Not admitted",
+      30
+     ],
+     [
+      "Transfer",
+      "Denied",
+      "Not admitted",
+      90
+     ]
+    ],
+    "code": "# Sankey Diagram\n# Question: How did this year's 2,350 applicants move from applying to enrolling?\n# Put this script and sankey.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n# Also needs: ggalluvial. Run install.packages(\"ggalluvial\") once.\n\nlibrary(tidyverse)\nlibrary(ggalluvial)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"Admitted\" = \"#7FD18C\", \"Waitlisted\" = \"#F0B95A\", \"Denied\" = \"#5B6676\")\n\ndf <- read_csv(\"sankey.csv\", show_col_types = FALSE) |>\n  mutate(across(c(applied_as, decision, result), fct_inorder))\n\n# Each axis is one stage; the bands between them are colored by the decision\np <- ggplot(df, aes(axis1 = applied_as, axis2 = decision, axis3 = result, y = students)) +\n  geom_alluvium(aes(fill = decision), width = 0.3, alpha = 0.8, curve_type = \"sigmoid\") +\n  geom_stratum(width = 0.3, fill = \"#2E3845\", color = \"#161B23\", linewidth = 0.8) +\n  # Each stage's boxes are labeled with their name and total\n  geom_text(stat = \"stratum\",\n            aes(label = paste0(str_wrap(after_stat(stratum), 10), \"\\n\", scales::comma(after_stat(count)))),\n            color = \"#E8EDF4\", family = font, size = 4, lineheight = 0.9) +\n  scale_x_discrete(limits = c(\"Applied as\", \"Decision\", \"Result\"),\n                   expand = expansion(add = 0.2)) +\n  scale_fill_manual(values = pal) +\n  labs(x = NULL, y = NULL, caption = \"Band widths show students. Sample values, not real data.\") +\n  theme_gallery() +\n  theme(panel.grid = element_blank(), axis.text.y = element_blank(),\n        axis.text.x = element_text(size = 14, color = ink),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"sankey.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse",
+     "ggalluvial"
+    ]
+   },
+   "ohio": {
+    "question": "How do Ohio's school dollars flow from sector to type of spending to purpose?",
+    "data": "FY25 Expanded List, all organizations and all 19 spending items.",
+    "note": "A few small items are combined so the bands stay readable."
+   },
+   "famous": [
+    {
+     "title": "U.S. energy flow charts",
+     "maker": "Lawrence Livermore National Laboratory",
+     "year": "",
+     "source": "",
+     "site": "Lawrence Livermore National Laboratory",
+     "note": "Since the 1970s, the lab has drawn where the nation's energy comes from and where it goes, from sources like coal, gas, and solar to homes, businesses, factories, and cars. Band widths show amounts, and much of the energy ends as rejected energy, mostly waste heat.",
+     "url": "https://star.llnl.gov/energy-homeland-security/energy-security/energy-flow-charts"
+    }
+   ],
    "stories": []
   },
   {
@@ -13550,8 +13719,137 @@ window.GALLERY = {
    ],
    "watch": "Beautiful but nearly unreadable without interaction.",
    "pairs": "Switching, trading, and exchange questions.",
-   "question": "How do students move among majors when they switch?",
+   "question": "When students switch majors, where do they go?",
    "hint": "Ribbons sweep across a circle connecting the groups.",
+   "lesson": {
+    "question": "When students switch majors, where do they go?",
+    "shape": "One row per move between two groups: where the students started, where they ended up, and how many made that move. Leave out moves that nobody made. Every group name must be spelled the same way each time.",
+    "columns": [
+     {
+      "name": "from_area",
+      "type": "category",
+      "desc": "Where the students started. Ribbons take this color"
+     },
+     {
+      "name": "to_area",
+      "type": "category",
+      "desc": "Where the students ended up"
+     },
+     {
+      "name": "students",
+      "type": "number",
+      "desc": "How many made this move. It sets each ribbon's width"
+     }
+    ],
+    "rows": [
+     [
+      "Undecided",
+      "Business",
+      60
+     ],
+     [
+      "Undecided",
+      "Social Sciences",
+      55
+     ],
+     [
+      "Undecided",
+      "Sciences",
+      45
+     ],
+     [
+      "Undecided",
+      "Humanities",
+      35
+     ],
+     [
+      "Undecided",
+      "Engineering",
+      20
+     ],
+     [
+      "Engineering",
+      "Sciences",
+      40
+     ],
+     [
+      "Engineering",
+      "Business",
+      30
+     ],
+     [
+      "Sciences",
+      "Social Sciences",
+      30
+     ],
+     [
+      "Sciences",
+      "Business",
+      25
+     ],
+     [
+      "Sciences",
+      "Humanities",
+      10
+     ],
+     [
+      "Sciences",
+      "Engineering",
+      8
+     ],
+     [
+      "Business",
+      "Social Sciences",
+      18
+     ],
+     [
+      "Business",
+      "Humanities",
+      12
+     ],
+     [
+      "Social Sciences",
+      "Business",
+      20
+     ],
+     [
+      "Social Sciences",
+      "Humanities",
+      14
+     ],
+     [
+      "Humanities",
+      "Social Sciences",
+      15
+     ],
+     [
+      "Humanities",
+      "Business",
+      10
+     ]
+    ],
+    "code": "# Chord Diagram\n# Question: When students switch majors, where do they go?\n# Put this script and chord.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n# Also needs: circlize. Run install.packages(\"circlize\") once.\n\nlibrary(tidyverse)\nlibrary(circlize)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\narea_col <- c(\"Undecided\" = \"#8B97A7\", \"Business\" = \"#F0B95A\", \"Sciences\" = \"#7FD18C\",\n              \"Engineering\" = \"#75AADB\", \"Humanities\" = \"#B79CFF\", \"Social Sciences\" = \"#46D6D1\")\n\ndf <- read_csv(\"chord.csv\", show_col_types = FALSE)\n\n# circlize draws with base R graphics instead of ggplot2, so this script opens\n# the image file itself, draws the chart, and closes the file with dev.off()\npng(\"chord.png\", width = 9, height = 6, units = \"in\", res = 200, bg = \"#161B23\")\npar(family = font, mar = c(2, 1, 1, 1), col = ink, fg = ink)\ncircos.clear()\ncircos.par(start.degree = 90, gap.degree = 4, track.margin = c(0.01, 0.01),\n           points.overflow.warning = FALSE)\n\n# directional = 1 reads each row as from_area -> to_area; the shorter end of\n# each ribbon and its arrow head point to where the students went.\n# order = names(area_col) places the groups clockwise from the top.\nchordDiagram(df, grid.col = area_col, order = names(area_col), transparency = 0.25,\n             directional = 1, direction.type = c(\"diffHeight\", \"arrows\"),\n             link.arr.type = \"big.arrow\", diffHeight = mm_h(3),\n             annotationTrack = \"grid\", preAllocateTracks = list(track.height = mm_h(9)))\n\n# Write each group's name around the outside\ncircos.track(track.index = 1, bg.border = NA, panel.fun = function(x, y) {\n  circos.text(CELL_META$xcenter, CELL_META$ylim[1], CELL_META$sector.index,\n              facing = \"bending.inside\", niceFacing = TRUE, adj = c(0.5, 0),\n              col = \"#E8EDF4\", cex = 1.15)\n})\nmtext(\"Ribbon width shows students. Sample values, not real data.\",\n      side = 1, line = 0.6, adj = 0, cex = 0.95, col = ink)\ncircos.clear()\ndev.off()\n",
+    "packages": [
+     "tidyverse",
+     "circlize"
+    ]
+   },
+   "ohio": {
+    "question": "How did districts move among spending groups between FY16 and FY25?",
+    "data": "FY16 and FY25 Expanded List, traditional districts in both years, split into four equal groups by spending per student each year.",
+    "note": "Adapted. The files have no switching data for people, so this tracks districts switching spending groups."
+   },
+   "famous": [
+    {
+     "title": "Circular plots of global migration",
+     "maker": "Nikola Sander, Guy J. Abel, Ramon Bauer, and Johannes Schmidt",
+     "year": "2014",
+     "source": "Visualising Migration Flow Data with Circular Plots",
+     "site": "Federal Institute for Population Research",
+     "note": "Regions sit around a circle, and each ribbon is a flow of migrants. Its width shows how many people moved, and its color shows where they came from. The authors argue this is easier to read than flow lines drawn on a map.",
+     "url": "https://www.bib.bund.de/Publikation/2014/Visualising-Migration-Flow-Data-with-Circular-Plots.html?nn=1219558"
+    }
+   ],
    "stories": []
   },
   {
@@ -13576,8 +13874,183 @@ window.GALLERY = {
    ],
    "watch": "Hairballs: too many edges and the structure vanishes.",
    "pairs": "Collaboration, co-enrollment, and referral questions.",
-   "question": "Which faculty co-author papers together?",
+   "question": "Which faculty members write papers together?",
    "hint": "Dots and the lines between them are the whole story.",
+   "lesson": {
+    "question": "Which faculty members write papers together?",
+    "shape": "An edge list: one row per pair of people who have written together, with the number of papers they share. The order of the two names does not matter. Each person's name must be spelled the same way every time.",
+    "columns": [
+     {
+      "name": "author_1",
+      "type": "id",
+      "desc": "One person in the pair"
+     },
+     {
+      "name": "author_2",
+      "type": "id",
+      "desc": "The other person in the pair"
+     },
+     {
+      "name": "papers",
+      "type": "number",
+      "desc": "Papers they wrote together. It sets the line's thickness"
+     }
+    ],
+    "rows": [
+     [
+      "Alvarez",
+      "Brooks",
+      6
+     ],
+     [
+      "Alvarez",
+      "Chen",
+      4
+     ],
+     [
+      "Brooks",
+      "Chen",
+      3
+     ],
+     [
+      "Brooks",
+      "Dubois",
+      2
+     ],
+     [
+      "Chen",
+      "Dubois",
+      5
+     ],
+     [
+      "Dubois",
+      "Evans",
+      3
+     ],
+     [
+      "Alvarez",
+      "Evans",
+      2
+     ],
+     [
+      "Foster",
+      "Garcia",
+      5
+     ],
+     [
+      "Foster",
+      "Hughes",
+      3
+     ],
+     [
+      "Garcia",
+      "Hughes",
+      4
+     ],
+     [
+      "Garcia",
+      "Ito",
+      2
+     ],
+     [
+      "Hughes",
+      "Jensen",
+      3
+     ],
+     [
+      "Ito",
+      "Jensen",
+      4
+     ],
+     [
+      "Kim",
+      "Lopez",
+      5
+     ],
+     [
+      "Kim",
+      "Morgan",
+      3
+     ],
+     [
+      "Lopez",
+      "Morgan",
+      2
+     ],
+     [
+      "Lopez",
+      "Novak",
+      4
+     ],
+     [
+      "Morgan",
+      "Owens",
+      3
+     ],
+     [
+      "Novak",
+      "Owens",
+      2
+     ],
+     [
+      "Patel",
+      "Alvarez",
+      2
+     ],
+     [
+      "Patel",
+      "Garcia",
+      3
+     ],
+     [
+      "Patel",
+      "Evans",
+      1
+     ],
+     [
+      "Quinn",
+      "Hughes",
+      2
+     ],
+     [
+      "Quinn",
+      "Kim",
+      2
+     ],
+     [
+      "Quinn",
+      "Jensen",
+      1
+     ],
+     [
+      "Chen",
+      "Novak",
+      1
+     ]
+    ],
+    "code": "# Network Diagram\n# Question: Which faculty members write papers together?\n# Put this script and network.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n# Also needs: tidygraph, ggraph. Run install.packages(c(\"tidygraph\", \"ggraph\")) once.\n\nlibrary(tidyverse)\nlibrary(tidygraph)\nlibrary(ggraph)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"#75AADB\", \"#7FD18C\", \"#B79CFF\", \"#F0B95A\", \"#46D6D1\", \"#F38ABE\")\n\nedges <- read_csv(\"network.csv\", show_col_types = FALSE)\n\n# Turn the edge list into a graph. Each node gets its total papers, and\n# group_louvain() finds clusters of people who mostly write with each other.\ng <- as_tbl_graph(edges, directed = FALSE) |>\n  activate(nodes) |>\n  mutate(total_papers = centrality_degree(weights = papers),\n         cluster = factor(group_louvain(weights = papers)))\n\nset.seed(7)   # the layout starts from random positions; this keeps it the same each run\np <- ggraph(g, layout = \"fr\") +\n  geom_edge_link(aes(edge_width = papers), color = \"#3A4656\") +\n  geom_node_point(aes(size = total_papers, color = cluster)) +\n  geom_node_text(aes(label = name), repel = TRUE, color = \"#E8EDF4\",\n                 family = font, size = 4.4, point.padding = unit(0.4, \"lines\")) +\n  scale_edge_width(range = c(0.5, 3.5), guide = \"none\") +\n  scale_size_area(max_size = 11, guide = \"none\") +\n  scale_color_manual(values = pal, guide = \"none\") +\n  labs(caption = \"Line width shows shared papers. Dot size shows each person's total. Sample values, not real data.\") +\n  theme_gallery() +\n  theme(panel.grid = element_blank(), axis.text = element_blank(), axis.title = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"network.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse",
+     "tidygraph",
+     "ggraph"
+    ]
+   },
+   "ohio": {
+    "question": "Which community schools list a traditional district as their parent?",
+    "data": "Building Spend per Pupil report card files, 2021-22 to 2024-25, schools whose District IRN points to a traditional district.",
+    "note": "A small network. The OEDS directory's parent organization field would connect schools to private operators and make a much richer chart."
+   },
+   "famous": [
+    {
+     "title": "Moreno's classroom sociograms, redrawn",
+     "maker": "Jacob Moreno; redrawn by Martin Grandjean",
+     "year": "1934",
+     "source": "Who Shall Survive?",
+     "site": "Martin Grandjean",
+     "note": "Moreno asked schoolchildren which classmates they wanted to sit beside, then drew each choice as a line. These are some of the first network diagrams. Grandjean shows the originals for 1st through 8th grade beside modern versions.",
+     "url": "https://martingrandjean.ch/social-network-analysis-visualization-morenos-sociograms-revisited"
+    }
+   ],
    "stories": []
   }
  ]

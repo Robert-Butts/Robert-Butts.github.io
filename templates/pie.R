@@ -13,7 +13,7 @@ theme_gallery <- function() {
   theme_minimal(base_size = 16, base_family = font) +
     theme(
       plot.background  = element_rect(fill = "#161B23", color = NA),
-      panel.grid.major = element_line(color = "#222A34"),
+      panel.grid       = element_line(color = "#222A34"),
       panel.grid.minor = element_blank(),
       text             = element_text(color = ink),
       axis.text        = element_text(color = ink),
@@ -34,7 +34,8 @@ df <- read_csv("pie.csv", show_col_types = FALSE) |>
 p <- ggplot(df, aes(x = 1, y = registrations, fill = audience)) +
   geom_col(width = 1, color = "#161B23", linewidth = 1.2,
            position = position_stack(reverse = TRUE)) +
-  geom_text(aes(label = scales::percent(share, accuracy = 1)),
+  # x = 1.25 sets the labels toward the edge, where small slices have more room
+  geom_text(aes(x = 1.25, label = scales::percent(share, accuracy = 1)),
             position = position_stack(vjust = 0.5, reverse = TRUE),
             color = "#161B23", family = font, fontface = "bold", size = 6) +
   coord_polar(theta = "y") +
