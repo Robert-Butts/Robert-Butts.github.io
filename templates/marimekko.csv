@@ -1,0 +1,16 @@
+college,level,students
+Arts,Undergraduate,820
+Arts,Graduate,140
+Arts,Non-degree,40
+Business,Undergraduate,1150
+Business,Graduate,420
+Business,Non-degree,90
+Education,Undergraduate,610
+Education,Graduate,380
+Education,Non-degree,60
+Nursing,Undergraduate,940
+Nursing,Graduate,260
+Nursing,Non-degree,30
+Sciences,Undergraduate,1280
+Sciences,Graduate,310
+Sciences,Non-degree,50

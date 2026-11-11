@@ -29,6 +29,25 @@
     return c.lesson ? 'images/gallery/lesson/' + c.key + '.png' : 'images/charts/' + c.key + '.png';
   }
   function chartUrl(c){ return 'chart.html?c=' + encodeURIComponent(c.key); }
+  /* The install line under each R script, for example
+     install.packages(c("tidyverse", "treemapify")) */
+  function packageNote(pk){
+    var names = pk.join(' and ');
+    var call = pk.length === 1 ? '"' + pk[0] + '"' : 'c(' + pk.map(function(x){ return '"' + x + '"'; }).join(', ') + ')';
+    return 'You need R, RStudio, and the ' + esc(names) + (pk.length === 1 ? ' package' : ' packages') +
+      '. Run <code>install.packages(' + esc(call) + ')</code> once if you have never used ' + (pk.length === 1 ? 'it' : 'them') + '.';
+  }
+
+  /* Links to every family whose charts all have a full lesson, for example
+     "the Magnitude family" or "the Magnitude and Part-to-whole families". */
+  function doneFamilies(){
+    var done = G.families.filter(function(f){
+      return G.charts.every(function(c){ return c.family !== f.key || c.lesson; });
+    }).map(function(f){ return '<a href="gallery.html#' + f.key + '">' + esc(f.name) + '</a>'; });
+    if(!done.length){ return 'the gallery'; }
+    var list = done.length === 1 ? done[0] : done.slice(0, -1).join(', ') + (done.length > 2 ? ',' : '') + ' and ' + done[done.length - 1];
+    return 'the ' + list + (done.length === 1 ? ' family' : ' families');
+  }
 
   function tileHTML(c, opts){
     opts = opts || {};
@@ -207,7 +226,7 @@
       var letters = 'ABCDEFGHIJ';
       var maxRows = 10;
       var rows = L.rows.slice(0, maxRows);
-      var sheet = '<div class="sheet"><div class="sheet-top"><i aria-hidden="true">X</i>' + esc(c.key) + '.xlsx</div><div class="sheet-scroll"><table>' +
+      var sheet = '<div class="sheet"><div class="sheet-top">' + esc(c.key) + '.csv</div><div class="sheet-scroll"><table>' +
         '<caption class="sr-only">Sample data for the ' + esc(c.name.toLowerCase()) + '</caption>' +
         '<thead><tr><th class="rn" scope="col"></th>' + L.columns.map(function(col, i){ return '<th scope="col">' + letters.charAt(i) + '</th>'; }).join('') + '</tr></thead><tbody>' +
         '<tr class="hd"><td class="rn">1</td>' + L.columns.map(function(col){ return '<td data-type="' + col.type + '">' + esc(col.name) + '</td>'; }).join('') + '</tr>' +
@@ -217,27 +236,26 @@
             return '<td' + (isNum ? ' class="num"' : '') + '>' + esc(isNum ? v.toLocaleString('en-US') : v) + '</td>';
           }).join('') + '</tr>';
         }).join('') +
-        (L.rows.length > maxRows ? '<tr class="more"><td class="rn"></td><td colspan="' + L.columns.length + '">' + (L.rows.length - maxRows) + ' more rows in the template</td></tr>' : '') +
-        '</tbody></table></div><div class="sheet-tabs" aria-hidden="true"><span class="on">data</span><span>about</span></div></div>';
+        (L.rows.length > maxRows ? '<tr class="more"><td class="rn"></td><td colspan="' + L.columns.length + '">' + (L.rows.length - maxRows) + ' more rows in the CSV file</td></tr>' : '') +
+        '</tbody></table></div><div class="sheet-tabs" aria-hidden="true"><span class="on">' + esc(c.key) + '</span></div></div>';
 
       var guide = '<div class="c-shape"><h3>The shape of the data</h3><p>' + esc(L.shape) + '</p><div class="c-cols">' +
         L.columns.map(function(col){
           return '<div class="c-col" data-type="' + col.type + '"><code>' + esc(col.name) + '</code><span class="type">' + esc(col.type) + '</span><p>' + esc(col.desc) + '</p></div>';
         }).join('') + '</div>' +
-        '<div class="c-dl"><a class="main" href="templates/' + c.key + '.xlsx" download>Excel template <span aria-hidden="true">&darr;</span></a>' +
-        '<a href="templates/' + c.key + '.csv" download>CSV <span aria-hidden="true">&darr;</span></a></div></div>';
+        '<div class="c-dl"><a class="main" href="templates/' + c.key + '.csv" download>Download the CSV file <span aria-hidden="true">&darr;</span></a></div></div>';
 
       html += '<section class="c-sec" aria-labelledby="s-data">' +
-        secHead('The data it needs', 'Here is how the table looks in Excel. Copy the layout, or download the template and type over it.', 's-data') +
+        secHead('The data it needs', 'Here is how the table looks when you open it in a spreadsheet. Copy the layout, or download the CSV file and type over it.', 's-data') +
         '<div class="c-data">' + sheet + guide + '</div></section>';
 
       /* build it in R */
       html += '<section class="c-sec" aria-labelledby="s-r">' +
-        secHead('Build it in R', 'This script reads the template above and draws the chart at the top of this page.', 's-r') +
+        secHead('Build it in R', 'This script reads the CSV file above and draws the chart at the top of this page.', 's-r') +
         '<div class="c-code"><div class="c-code-top"><span>' + esc(c.key) + '.R</span><div>' +
         '<button type="button" id="copyCode">Copy code</button><a href="templates/' + c.key + '.R" download>Download .R</a></div></div>' +
         '<pre><code id="rCode"></code></pre></div>' +
-        '<p class="c-code-note">You need R, RStudio, and the tidyverse. Run <code>install.packages("tidyverse")</code> once if you have never used it. Save the script beside the template, then run it.</p></section>';
+        '<p class="c-code-note">' + packageNote(L.packages || ['tidyverse']) + ' Save the script in the same folder as the CSV file, then run it.</p></section>';
 
       /* real-world examples */
       var ex = '';
@@ -259,8 +277,8 @@
         '<div class="c-ex">' + ex + '</div></section>';
     } else {
       html += '<section class="c-sec" aria-labelledby="s-soon">' + secHead('Data, code, and examples', null, 's-soon') +
-        '<div class="c-soon"><p><b>This chart\'s full lesson is on the way.</b> It will add a sample Excel template, the R code to draw it, my Ohio version, and famous examples to explore. ' +
-        'Until then, see a finished lesson in the <a href="gallery.html#magnitude">Magnitude family</a>.</p></div></section>';
+        '<div class="c-soon"><p><b>This chart\'s full lesson is on the way.</b> It will add a sample CSV file, the R code to draw it, my Ohio version, and famous examples to explore. ' +
+        'Until then, see a finished lesson in ' + doneFamilies() + '.</p></div></section>';
     }
 
     /* related charts */

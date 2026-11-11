@@ -1,0 +1,9 @@
+origin,from_lon,from_lat,destination,to_lon,to_lat,students
+Cleveland,-81.69,41.5,Columbus,-83.0,39.96,420
+Cincinnati,-84.51,39.1,Columbus,-83.0,39.96,310
+Dayton,-84.19,39.76,Columbus,-83.0,39.96,240
+Toledo,-83.54,41.65,Columbus,-83.0,39.96,180
+Akron,-81.52,41.08,Columbus,-83.0,39.96,160
+Youngstown,-80.65,41.1,Columbus,-83.0,39.96,90
+Athens,-82.1,39.33,Columbus,-83.0,39.96,70
+Lima,-84.11,40.74,Columbus,-83.0,39.96,60
