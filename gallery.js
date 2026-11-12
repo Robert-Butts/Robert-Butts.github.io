@@ -19,6 +19,7 @@
   G.families.forEach(function(f, i){ f.num = String(i + 1).padStart(2, '0'); FAM[f.key] = f; });
   var BY_KEY = {};
   G.charts.forEach(function(c, i){ c.index = i; BY_KEY[c.key] = c; });
+  var ALL_DONE = G.charts.every(function(c){ return c.lesson; });
 
   function esc(s){
     return String(s == null ? '' : s)
@@ -52,7 +53,8 @@
   function tileHTML(c, opts){
     opts = opts || {};
     var f = FAM[c.family];
-    var badge = c.lesson ? '<span class="g-badge">Full lesson</span>' : '';
+    /* The badge only matters while some charts still lack a lesson */
+    var badge = (c.lesson && !ALL_DONE) ? '<span class="g-badge">Full lesson</span>' : '';
     var delay = opts.delay != null ? ' style="--d:' + opts.delay + 's"' : '';
     return '<a class="g-tile' + (opts.big ? ' big' : '') + '" data-fc="' + f.color + '" href="' + chartUrl(c) + '"' + delay + '>' +
       '<div class="g-img">' + badge + '<img src="' + imgFor(c) + '" alt="" loading="lazy" decoding="async"></div>' +

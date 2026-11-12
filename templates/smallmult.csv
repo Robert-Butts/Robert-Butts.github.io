@@ -1,0 +1,67 @@
+college,year,students
+Arts and Sciences,2015,2100
+Arts and Sciences,2016,2053
+Arts and Sciences,2017,2058
+Arts and Sciences,2018,2027
+Arts and Sciences,2019,2034
+Arts and Sciences,2020,2038
+Arts and Sciences,2021,2024
+Arts and Sciences,2022,2008
+Arts and Sciences,2023,1951
+Arts and Sciences,2024,1962
+Arts and Sciences,2025,1967
+Business,2015,1400
+Business,2016,1409
+Business,2017,1402
+Business,2018,1415
+Business,2019,1442
+Business,2020,1478
+Business,2021,1481
+Business,2022,1487
+Business,2023,1490
+Business,2024,1503
+Business,2025,1502
+Education,2015,900
+Education,2016,891
+Education,2017,859
+Education,2018,839
+Education,2019,803
+Education,2020,791
+Education,2021,759
+Education,2022,727
+Education,2023,710
+Education,2024,703
+Education,2025,689
+Engineering,2015,800
+Engineering,2016,840
+Engineering,2017,872
+Engineering,2018,923
+Engineering,2019,951
+Engineering,2020,970
+Engineering,2021,1012
+Engineering,2022,1053
+Engineering,2023,1083
+Engineering,2024,1108
+Engineering,2025,1156
+Health,2015,1100
+Health,2016,1127
+Health,2017,1150
+Health,2018,1213
+Health,2019,1278
+Health,2020,1305
+Health,2021,1326
+Health,2022,1385
+Health,2023,1431
+Health,2024,1496
+Health,2025,1521
+Fine Arts,2015,450
+Fine Arts,2016,450
+Fine Arts,2017,446
+Fine Arts,2018,445
+Fine Arts,2019,428
+Fine Arts,2020,421
+Fine Arts,2021,419
+Fine Arts,2022,404
+Fine Arts,2023,400
+Fine Arts,2024,393
+Fine Arts,2025,387

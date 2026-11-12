@@ -1,0 +1,181 @@
+employee,job_family,salary
+E001,Administrative,44300
+E002,Administrative,51400
+E003,Administrative,55800
+E004,Administrative,61400
+E005,Administrative,38500
+E006,Administrative,92000
+E007,Administrative,41500
+E008,Administrative,45700
+E009,Administrative,46900
+E010,Administrative,38900
+E011,Administrative,50000
+E012,Administrative,37900
+E013,Administrative,52000
+E014,Administrative,41600
+E015,Administrative,50200
+E016,Administrative,51300
+E017,Administrative,47300
+E018,Administrative,43800
+E019,Administrative,42500
+E020,Administrative,39900
+E021,Administrative,59400
+E022,Administrative,52500
+E023,Administrative,61800
+E024,Administrative,50900
+E025,Administrative,50600
+E026,Administrative,43900
+E027,Administrative,46300
+E028,Administrative,36800
+E029,Administrative,55400
+E030,Administrative,55400
+E031,Administrative,59000
+E032,Administrative,58900
+E033,Administrative,40700
+E034,Administrative,29800
+E035,Administrative,53800
+E036,Administrative,50000
+E037,Administrative,41000
+E038,Administrative,41400
+E039,Facilities,49200
+E040,Facilities,55400
+E041,Facilities,46900
+E042,Facilities,39800
+E043,Facilities,49400
+E044,Facilities,51100
+E045,Facilities,36600
+E046,Facilities,48900
+E047,Facilities,38000
+E048,Facilities,44300
+E049,Facilities,47200
+E050,Facilities,44400
+E051,Facilities,74000
+E052,Facilities,46500
+E053,Facilities,35200
+E054,Facilities,48500
+E055,Facilities,32000
+E056,Facilities,40900
+E057,Facilities,41000
+E058,Facilities,39600
+E059,Facilities,45400
+E060,Facilities,45700
+E061,Facilities,55600
+E062,Facilities,46900
+E063,Facilities,51100
+E064,Facilities,36900
+E065,Facilities,50800
+E066,Facilities,49600
+E067,Facilities,52700
+E068,Facilities,53000
+E069,Facilities,38400
+E070,Facilities,35700
+E071,Facilities,39200
+E072,Facilities,40000
+E073,Information Technology,95800
+E074,Information Technology,53000
+E075,Information Technology,78700
+E076,Information Technology,90900
+E077,Information Technology,76100
+E078,Information Technology,60000
+E079,Information Technology,66900
+E080,Information Technology,85000
+E081,Information Technology,87400
+E082,Information Technology,76100
+E083,Information Technology,82400
+E084,Information Technology,95700
+E085,Information Technology,73700
+E086,Information Technology,103200
+E087,Information Technology,65500
+E088,Information Technology,102300
+E089,Information Technology,59800
+E090,Information Technology,95100
+E091,Information Technology,78100
+E092,Information Technology,58500
+E093,Information Technology,79600
+E094,Information Technology,85000
+E095,Information Technology,85400
+E096,Information Technology,79500
+E097,Information Technology,75800
+E098,Information Technology,74200
+E099,Information Technology,79200
+E100,Information Technology,93500
+E101,Information Technology,84000
+E102,Information Technology,86900
+E103,Information Technology,80400
+E104,Information Technology,95900
+E105,Information Technology,108600
+E106,Information Technology,106200
+E107,Information Technology,62600
+E108,Information Technology,67000
+E109,Student Services,43100
+E110,Student Services,49000
+E111,Student Services,68700
+E112,Student Services,48900
+E113,Student Services,52900
+E114,Student Services,50200
+E115,Student Services,35900
+E116,Student Services,41800
+E117,Student Services,45800
+E118,Student Services,44700
+E119,Student Services,49100
+E120,Student Services,48000
+E121,Student Services,131000
+E122,Student Services,38100
+E123,Student Services,60600
+E124,Student Services,56200
+E125,Student Services,45800
+E126,Student Services,47800
+E127,Student Services,44500
+E128,Student Services,35600
+E129,Student Services,57700
+E130,Student Services,48200
+E131,Student Services,61100
+E132,Student Services,64800
+E133,Student Services,40500
+E134,Student Services,42300
+E135,Student Services,56400
+E136,Student Services,47200
+E137,Student Services,46200
+E138,Student Services,48500
+E139,Student Services,55600
+E140,Student Services,40300
+E141,Student Services,52600
+E142,Student Services,61400
+E143,Student Services,47200
+E144,Student Services,48800
+E145,Student Services,55700
+E146,Student Services,60300
+E147,Student Services,60400
+E148,Student Services,56100
+E149,Finance,89100
+E150,Finance,62400
+E151,Finance,89400
+E152,Finance,76900
+E153,Finance,66400
+E154,Finance,53100
+E155,Finance,88300
+E156,Finance,73100
+E157,Finance,76700
+E158,Finance,88700
+E159,Finance,65400
+E160,Finance,79400
+E161,Finance,80400
+E162,Finance,89500
+E163,Finance,73900
+E164,Finance,92000
+E165,Finance,63800
+E166,Finance,69500
+E167,Finance,62400
+E168,Finance,58800
+E169,Finance,90200
+E170,Finance,73500
+E171,Finance,69700
+E172,Finance,72400
+E173,Finance,71800
+E174,Finance,52400
+E175,Finance,64700
+E176,Finance,74600
+E177,Finance,55600
+E178,Finance,67500
+E179,Finance,65300
+E180,Finance,58200

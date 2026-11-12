@@ -1,0 +1,17 @@
+age_band,format,students
+18-19,On campus,1420
+18-19,Online,80
+20-21,On campus,1610
+20-21,Online,160
+22-24,On campus,690
+22-24,Online,240
+25-29,On campus,210
+25-29,Online,420
+30-34,On campus,90
+30-34,Online,460
+35-44,On campus,60
+35-44,Online,610
+45-54,On campus,30
+45-54,Online,380
+55+,On campus,10
+55+,Online,150

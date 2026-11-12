@@ -106,8 +106,91 @@ window.GALLERY = {
    ],
    "watch": "Mixing up the two directions when the colors are not clearly labeled.",
    "pairs": "Gains and losses, and comparisons against a benchmark.",
-   "question": "Which programs gained or lost enrollment compared with last year?",
+   "question": "Which programs gained or lost students compared with last year?",
    "hint": "Bars grow in two directions from a shared center line.",
+   "lesson": {
+    "question": "Which programs gained or lost students compared with last year?",
+    "shape": "One row per program, with last year's count and this year's count side by side. R works out the change, so you never type a negative number.",
+    "columns": [
+     {
+      "name": "program",
+      "type": "category",
+      "desc": "One bar"
+     },
+     {
+      "name": "last_year",
+      "type": "number",
+      "desc": "Students last year: the reference point"
+     },
+     {
+      "name": "this_year",
+      "type": "number",
+      "desc": "Students this year"
+     }
+    ],
+    "rows": [
+     [
+      "Nursing",
+      412,
+      468
+     ],
+     [
+      "Computer Science",
+      305,
+      351
+     ],
+     [
+      "Data Analytics",
+      88,
+      121
+     ],
+     [
+      "Psychology",
+      290,
+      302
+     ],
+     [
+      "Biology",
+      344,
+      350
+     ],
+     [
+      "Economics",
+      176,
+      171
+     ],
+     [
+      "English",
+      142,
+      128
+     ],
+     [
+      "History",
+      118,
+      97
+     ],
+     [
+      "Education",
+      230,
+      203
+     ],
+     [
+      "Philosophy",
+      74,
+      45
+     ]
+    ],
+    "code": "# Diverging Bar Chart\n# Question: Which programs gained or lost students compared with last year?\n# Put this script and divergingbar.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"Gained\" = \"#75AADB\", \"Lost\" = \"#F2716F\")\n\ndf <- read_csv(\"divergingbar.csv\", show_col_types = FALSE) |>\n  mutate(change    = this_year - last_year,\n         direction = if_else(change >= 0, \"Gained\", \"Lost\"),\n         program   = fct_reorder(program, change))   # sort by the size of the change\n\np <- ggplot(df, aes(x = change, y = program, fill = direction)) +\n  geom_col(width = 0.68) +\n  geom_vline(xintercept = 0, color = \"#E8EDF4\", linewidth = 0.6) +\n  # labels sit just past the end of each bar, on whichever side it grows\n  geom_text(aes(label = scales::number(change, style_positive = \"plus\"),\n                hjust = if_else(change >= 0, -0.25, 1.25)),\n            color = \"#E8EDF4\", family = font, size = 4.4) +\n  scale_x_continuous(expand = expansion(mult = 0.14)) +\n  scale_fill_manual(values = pal) +\n  labs(x = \"Change in students since last year\", y = NULL,\n       caption = \"Sample values, not real data.\") +\n  theme_gallery() +\n  theme(panel.grid.major.y = element_blank(), plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"divergingbar.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "Which regions gained or lost district students between FY13 and FY26?",
+    "data": "Expanded List FY13 and FY26, traditional districts.",
+    "note": "This counts district students only. Some lost students moved to community schools, e-schools, or private schools."
+   },
+   "famous": [],
    "stories": []
   },
   {
@@ -132,8 +215,76 @@ window.GALLERY = {
    ],
    "watch": "It only works when there are exactly two sides.",
    "pairs": "Two sided splits like yes or no, or full time versus part time.",
-   "question": "What share of each program's students are full time versus part time?",
+   "question": "What share of each program's students are full time and part time?",
    "hint": "Each bar is split into two halves facing opposite directions.",
+   "lesson": {
+    "question": "What share of each program's students are full time and part time?",
+    "shape": "One row per program, with exactly two counts that make up the whole: full time and part time. R turns them into shares that add up to 100% for each program.",
+    "columns": [
+     {
+      "name": "program",
+      "type": "category",
+      "desc": "One bar"
+     },
+     {
+      "name": "full_time",
+      "type": "number",
+      "desc": "Students on the right side of the spine"
+     },
+     {
+      "name": "part_time",
+      "type": "number",
+      "desc": "Students on the left side of the spine"
+     }
+    ],
+    "rows": [
+     [
+      "Nursing",
+      380,
+      120
+     ],
+     [
+      "Business",
+      420,
+      260
+     ],
+     [
+      "Education",
+      150,
+      210
+     ],
+     [
+      "Computer Science",
+      300,
+      90
+     ],
+     [
+      "Social Work",
+      110,
+      140
+     ],
+     [
+      "Biology",
+      330,
+      50
+     ],
+     [
+      "Art",
+      160,
+      40
+     ]
+    ],
+    "code": "# Spine Chart\n# Question: What share of each program's students are full time and part time?\n# Put this script and spine.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"Part time\" = \"#F2716F\", \"Full time\" = \"#75AADB\")\n\ndf <- read_csv(\"spine.csv\", show_col_types = FALSE) |>\n  mutate(total       = full_time + part_time,\n         `Full time` = full_time / total,\n         `Part time` = -part_time / total,          # negative, so it extends left\n         program     = fct_reorder(program, `Full time`)) |>\n  pivot_longer(c(`Part time`, `Full time`), names_to = \"side\", values_to = \"share\")\n\np <- ggplot(df, aes(x = share, y = program, fill = side)) +\n  geom_col(width = 0.68) +\n  geom_vline(xintercept = 0, color = \"#E8EDF4\", linewidth = 0.8) +\n  # each share is written just past the outer end of its half\n  geom_text(aes(label = scales::percent(abs(share), accuracy = 1),\n                hjust = if_else(share > 0, -0.2, 1.2)),\n            color = \"#E8EDF4\", family = font, size = 4.4) +\n  scale_x_continuous(labels = function(x) scales::percent(abs(x)), limits = c(-1, 1),\n                     breaks = seq(-1, 1, by = 0.5)) +\n  scale_fill_manual(values = pal, breaks = c(\"Part time\", \"Full time\")) +\n  labs(x = \"Share of the program's students\", y = NULL,\n       caption = \"Each bar adds up to 100%. Sample values, not real data.\") +\n  theme_gallery() +\n  theme(panel.grid.major.y = element_blank(), plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"spine.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "What share of each sector's operating spending is classroom versus nonclassroom?",
+    "data": "FY25 Expanded List. Classroom and nonclassroom add up to all operating spending.",
+    "note": "A spine chart only works with exactly two sides, and these two sum to 100%."
+   },
+   "famous": [],
    "stories": []
   },
   {
@@ -158,8 +309,185 @@ window.GALLERY = {
    ],
    "watch": "Neutral responses are hard to place and easy to misread.",
    "pairs": "Likert scale surveys and evaluation results.",
-   "question": "How did students respond to each course evaluation question?",
+   "question": "How did students answer each course evaluation question?",
    "hint": "The classic survey chart: agreement to the right, disagreement to the left.",
+   "lesson": {
+    "question": "How did students answer each course evaluation question?",
+    "shape": "Long format: one row per question per answer, with the percent who gave that answer. Every question uses the same five answers, and each question's percents add up to 100.",
+    "columns": [
+     {
+      "name": "question",
+      "type": "category",
+      "desc": "One bar"
+     },
+     {
+      "name": "response",
+      "type": "category",
+      "desc": "One answer on the scale, from Strongly disagree to Strongly agree"
+     },
+     {
+      "name": "percent",
+      "type": "number",
+      "desc": "Share of students who gave that answer"
+     }
+    ],
+    "rows": [
+     [
+      "The course goals were clear",
+      "Strongly disagree",
+      4
+     ],
+     [
+      "The course goals were clear",
+      "Disagree",
+      8
+     ],
+     [
+      "The course goals were clear",
+      "Neutral",
+      14
+     ],
+     [
+      "The course goals were clear",
+      "Agree",
+      44
+     ],
+     [
+      "The course goals were clear",
+      "Strongly agree",
+      30
+     ],
+     [
+      "Assignments helped me learn",
+      "Strongly disagree",
+      6
+     ],
+     [
+      "Assignments helped me learn",
+      "Disagree",
+      12
+     ],
+     [
+      "Assignments helped me learn",
+      "Neutral",
+      18
+     ],
+     [
+      "Assignments helped me learn",
+      "Agree",
+      40
+     ],
+     [
+      "Assignments helped me learn",
+      "Strongly agree",
+      24
+     ],
+     [
+      "The instructor gave useful feedback",
+      "Strongly disagree",
+      5
+     ],
+     [
+      "The instructor gave useful feedback",
+      "Disagree",
+      10
+     ],
+     [
+      "The instructor gave useful feedback",
+      "Neutral",
+      15
+     ],
+     [
+      "The instructor gave useful feedback",
+      "Agree",
+      38
+     ],
+     [
+      "The instructor gave useful feedback",
+      "Strongly agree",
+      32
+     ],
+     [
+      "The workload was reasonable",
+      "Strongly disagree",
+      12
+     ],
+     [
+      "The workload was reasonable",
+      "Disagree",
+      22
+     ],
+     [
+      "The workload was reasonable",
+      "Neutral",
+      24
+     ],
+     [
+      "The workload was reasonable",
+      "Agree",
+      30
+     ],
+     [
+      "The workload was reasonable",
+      "Strongly agree",
+      12
+     ],
+     [
+      "I would recommend this course",
+      "Strongly disagree",
+      7
+     ],
+     [
+      "I would recommend this course",
+      "Disagree",
+      11
+     ],
+     [
+      "I would recommend this course",
+      "Neutral",
+      17
+     ],
+     [
+      "I would recommend this course",
+      "Agree",
+      35
+     ],
+     [
+      "I would recommend this course",
+      "Strongly agree",
+      30
+     ]
+    ],
+    "code": "# Diverging Stacked Bar\n# Question: How did students answer each course evaluation question?\n# Put this script and divergingstacked.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\nanswers <- c(\"Strongly disagree\", \"Disagree\", \"Neutral\", \"Agree\", \"Strongly agree\")\npal <- c(\"#F2716F\", \"#9E4E4F\", \"#4A5462\", \"#4F7397\", \"#75AADB\")\nnames(pal) <- answers\n\ndf <- read_csv(\"divergingstacked.csv\", show_col_types = FALSE) |>\n  mutate(response = factor(response, levels = answers))\n\n# Each bar starts left of center by everything that disagrees plus half of Neutral,\n# so Neutral straddles the center line. Then each answer stacks to the right.\nbars <- df |>\n  group_by(question) |>\n  arrange(response, .by_group = TRUE) |>\n  mutate(left_side = sum(percent[response %in% answers[1:2]]) + percent[response == \"Neutral\"] / 2,\n         start     = -left_side + lag(cumsum(percent), default = 0),\n         end       = start + percent,\n         agree     = sum(percent[response %in% answers[4:5]]),\n         disagree  = sum(percent[response %in% answers[1:2]])) |>\n  ungroup() |>\n  mutate(question = fct_reorder(question, agree),   # most agreement at the top\n         y        = as.numeric(question))\n\ntotals <- distinct(bars, question, y, agree, disagree, left_side)\n\np <- ggplot(bars) +\n  geom_rect(aes(xmin = start, xmax = end, ymin = y - 0.34, ymax = y + 0.34, fill = response),\n            color = \"#161B23\", linewidth = 0.6) +\n  geom_vline(xintercept = 0, color = \"#E8EDF4\", linewidth = 0.6) +\n  # total disagree at the left end of each bar, total agree at the right end\n  geom_text(data = totals, aes(x = -left_side, y = y, label = paste0(disagree, \"%\")),\n            hjust = 1.25, color = \"#F2716F\", family = font, size = 4.4) +\n  geom_text(data = totals, aes(x = 100 - left_side, y = y, label = paste0(agree, \"%\")),\n            hjust = -0.25, color = \"#75AADB\", family = font, size = 4.4) +\n  scale_y_continuous(breaks = seq_along(levels(bars$question)),\n                     labels = str_wrap(levels(bars$question), 22)) +\n  scale_x_continuous(labels = function(x) paste0(abs(x), \"%\"),\n                     expand = expansion(mult = 0.1)) +\n  scale_fill_manual(values = pal, breaks = answers) +\n  labs(x = NULL, y = NULL,\n       caption = \"Neutral is split in half across the center line. Sample values, not real data.\") +\n  guides(fill = guide_legend(nrow = 1)) +\n  theme_gallery() +\n  theme(panel.grid.major.y = element_blank(), legend.text = element_text(size = 12),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"divergingstacked.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "How did voters respond to each type of school ballot issue?",
+    "data": "School Election Results, 2010 to 2025, the years with real vote counts.",
+    "note": "This file has no survey data, so election margins stand in for agree and disagree levels. Two votes with known typos are removed."
+   },
+   "famous": [
+    {
+     "title": "Design of diverging stacked bar charts for Likert scales",
+     "maker": "Richard Heiberger and Naomi Robbins",
+     "year": "2014",
+     "source": "Journal of Statistical Software",
+     "site": "Journal of Statistical Software",
+     "note": "The paper that made the case for this chart. The authors recommend diverging stacked bars as the main way to show survey answers on an agree-disagree scale, with many worked examples.",
+     "url": "https://www.jstatsoft.org/v57/i05"
+    },
+    {
+     "title": "The case against diverging stacked bars",
+     "maker": "Lisa Charlotte Muth and Gregor Aisch, Datawrapper",
+     "year": "2018",
+     "source": "",
+     "site": "Datawrapper",
+     "note": "A thoughtful reply to the paper beside it. The authors argue that 100% stacked bars with clear labels are often easier to compare, and they question splitting Neutral across the center line.",
+     "url": "https://www.datawrapper.de/blog/divergingbars"
+    }
+   ],
    "stories": []
   },
   {
@@ -184,8 +512,171 @@ window.GALLERY = {
    ],
    "watch": "Without a labeled baseline the shading means nothing.",
    "pairs": "Budgets against plan and performance against target.",
-   "question": "In which months did spending run over or under the plan?",
+   "question": "In which months did spending come in under or over the plan?",
    "hint": "A line chart where the area above and below zero gets opposite shading.",
+   "lesson": {
+    "question": "In which months did spending come in under or over the plan?",
+    "shape": "One row per month, in order, with the planned amount and the actual amount. Write dates as year-month-day (2024-07-01) so R reads them as dates. R works out the difference.",
+    "columns": [
+     {
+      "name": "month",
+      "type": "time",
+      "desc": "The first day of each month"
+     },
+     {
+      "name": "planned_thousands",
+      "type": "number",
+      "desc": "What the budget planned to spend, in thousands of dollars"
+     },
+     {
+      "name": "actual_thousands",
+      "type": "number",
+      "desc": "What was actually spent, in thousands of dollars"
+     }
+    ],
+    "rows": [
+     [
+      "2024-07-01",
+      450,
+      438
+     ],
+     [
+      "2024-08-01",
+      420,
+      402
+     ],
+     [
+      "2024-09-01",
+      400,
+      392
+     ],
+     [
+      "2024-10-01",
+      390,
+      396
+     ],
+     [
+      "2024-11-01",
+      380,
+      395
+     ],
+     [
+      "2024-12-01",
+      300,
+      309
+     ],
+     [
+      "2025-01-01",
+      440,
+      436
+     ],
+     [
+      "2025-02-01",
+      410,
+      400
+     ],
+     [
+      "2025-03-01",
+      400,
+      386
+     ],
+     [
+      "2025-04-01",
+      390,
+      384
+     ],
+     [
+      "2025-05-01",
+      360,
+      364
+     ],
+     [
+      "2025-06-01",
+      340,
+      352
+     ],
+     [
+      "2025-07-01",
+      450,
+      470
+     ],
+     [
+      "2025-08-01",
+      420,
+      434
+     ],
+     [
+      "2025-09-01",
+      400,
+      405
+     ],
+     [
+      "2025-10-01",
+      390,
+      387
+     ],
+     [
+      "2025-11-01",
+      380,
+      371
+     ],
+     [
+      "2025-12-01",
+      300,
+      284
+     ],
+     [
+      "2026-01-01",
+      440,
+      418
+     ],
+     [
+      "2026-02-01",
+      410,
+      395
+     ],
+     [
+      "2026-03-01",
+      400,
+      393
+     ],
+     [
+      "2026-04-01",
+      390,
+      393
+     ],
+     [
+      "2026-05-01",
+      360,
+      368
+     ],
+     [
+      "2026-06-01",
+      340,
+      338
+     ]
+    ],
+    "code": "# Surplus and Deficit Line\n# Question: In which months did spending come in under or over the plan?\n# Put this script and surplusline.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"Under plan\" = \"#75AADB\", \"Over plan\" = \"#F2716F\")\n\ndf <- read_csv(\"surplusline.csv\", show_col_types = FALSE) |>\n  mutate(difference = planned_thousands - actual_thousands)   # above zero = under plan\n\n# Fill in many points between the months, so the shading changes color\n# exactly where the line crosses zero\ndense <- tibble(day = seq(min(as.numeric(df$month)), max(as.numeric(df$month)), length.out = 800)) |>\n  mutate(difference = approx(as.numeric(df$month), df$difference, xout = day)$y,\n         month      = as.Date(day))\n\np <- ggplot(dense, aes(x = month)) +\n  geom_ribbon(aes(ymin = 0, ymax = pmax(difference, 0), fill = \"Under plan\"), alpha = 0.85) +\n  geom_ribbon(aes(ymin = pmin(difference, 0), ymax = 0, fill = \"Over plan\"), alpha = 0.85) +\n  # the plan line stops where the data stops, leaving room for its label\n  annotate(\"segment\", x = min(df$month), xend = max(df$month), y = 0, yend = 0,\n           color = \"#E8EDF4\", linewidth = 0.7) +\n  geom_line(data = df, aes(y = difference), color = \"#E8EDF4\", linewidth = 0.9) +\n  geom_point(data = df, aes(y = difference), color = \"#E8EDF4\", size = 1.8) +\n  annotate(\"text\", x = max(df$month) + 12, y = 0, label = \"On plan\", hjust = 0,\n           color = \"#E8EDF4\", family = font, size = 4.4) +\n  scale_x_date(breaks = seq(min(df$month), max(df$month), by = \"3 months\"), date_labels = \"%b\\n%Y\",\n               expand = expansion(mult = c(0.01, 0.12))) +\n  scale_y_continuous(labels = function(x) if_else(x == 0, \"$0\",\n                                                   scales::dollar(x, suffix = \"K\", style_positive = \"plus\"))) +\n  scale_fill_manual(values = pal) +\n  labs(x = NULL, y = \"Plan minus actual spending\",\n       caption = \"Above the line, the month spent less than planned. Sample values, not real data.\") +\n  theme_gallery() +\n  theme(plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"surplusline.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "In which years do Ohio districts' revenues run above or below their spending?",
+    "data": "FY26 Financial Forecast, line 6.010, added across 660 districts and JVSDs.",
+    "note": "FY26 to FY29 are planning numbers that leave out proposed levies. The FY25 dip partly reflects a spike in transfers out, whose cause is unconfirmed."
+   },
+   "famous": [
+    {
+     "title": "Playfair's chart of trade with Denmark and Norway",
+     "maker": "William Playfair",
+     "year": "1786",
+     "source": "The Commercial and Political Atlas",
+     "site": "Open Culture",
+     "note": "Playfair drew exports and imports as two lines from 1700 to 1780. The space between the lines makes the balance of trade easy to read at a glance, which is the idea behind every surplus and deficit chart.",
+     "url": "https://www.openculture.com/2023/05/the-pioneering-data-visualizations-of-william-playfair-who-invented-the-line-bar-and-pie-charts-circa-1786.html"
+    }
+   ],
    "stories": []
   },
   {
@@ -212,6 +703,649 @@ window.GALLERY = {
    "pairs": "Correlation analysis, regression, and outlier hunting.",
    "question": "Do students who study more tend to earn higher exam scores?",
    "hint": "This chart needs two numbers per row. It asks whether one moves with the other.",
+   "lesson": {
+    "question": "Do students who study more tend to earn higher exam scores?",
+    "shape": "One row per student, with two numbers: hours studied and exam score. Each row becomes one dot.",
+    "columns": [
+     {
+      "name": "student",
+      "type": "id",
+      "desc": "Who the dot is. Not plotted, but it keeps rows traceable"
+     },
+     {
+      "name": "study_hours",
+      "type": "number",
+      "desc": "Hours studied per week: the horizontal axis"
+     },
+     {
+      "name": "exam_score",
+      "type": "number",
+      "desc": "Final exam score out of 100: the vertical axis"
+     }
+    ],
+    "rows": [
+     [
+      "S001",
+      4.1,
+      56
+     ],
+     [
+      "S002",
+      4.8,
+      57
+     ],
+     [
+      "S003",
+      15.4,
+      78
+     ],
+     [
+      "S004",
+      9.7,
+      72
+     ],
+     [
+      "S005",
+      14.9,
+      83
+     ],
+     [
+      "S006",
+      19.2,
+      93
+     ],
+     [
+      "S007",
+      2.0,
+      54
+     ],
+     [
+      "S008",
+      17.5,
+      58
+     ],
+     [
+      "S009",
+      3.6,
+      52
+     ],
+     [
+      "S010",
+      6.3,
+      69
+     ],
+     [
+      "S011",
+      4.4,
+      66
+     ],
+     [
+      "S012",
+      14.4,
+      77
+     ],
+     [
+      "S013",
+      13.5,
+      69
+     ],
+     [
+      "S014",
+      3.6,
+      55
+     ],
+     [
+      "S015",
+      22,
+      90
+     ],
+     [
+      "S016",
+      7.6,
+      72
+     ],
+     [
+      "S017",
+      12.4,
+      69
+     ],
+     [
+      "S018",
+      9.1,
+      72
+     ],
+     [
+      "S019",
+      4.9,
+      53
+     ],
+     [
+      "S020",
+      4.3,
+      59
+     ],
+     [
+      "S021",
+      6.4,
+      60
+     ],
+     [
+      "S022",
+      5.9,
+      74
+     ],
+     [
+      "S023",
+      2.7,
+      60
+     ],
+     [
+      "S024",
+      11.6,
+      69
+     ],
+     [
+      "S025",
+      21.3,
+      76
+     ],
+     [
+      "S026",
+      6.7,
+      79
+     ],
+     [
+      "S027",
+      2.7,
+      60
+     ],
+     [
+      "S028",
+      5.3,
+      56
+     ],
+     [
+      "S029",
+      7.2,
+      74
+     ],
+     [
+      "S030",
+      21.3,
+      97
+     ],
+     [
+      "S031",
+      13.2,
+      79
+     ],
+     [
+      "S032",
+      8.7,
+      89
+     ],
+     [
+      "S033",
+      1.8,
+      64
+     ],
+     [
+      "S034",
+      19.7,
+      80
+     ],
+     [
+      "S035",
+      7.3,
+      72
+     ],
+     [
+      "S036",
+      8.8,
+      65
+     ],
+     [
+      "S037",
+      11.6,
+      86
+     ],
+     [
+      "S038",
+      10.7,
+      76
+     ],
+     [
+      "S039",
+      9.6,
+      57
+     ],
+     [
+      "S040",
+      3.2,
+      71
+     ],
+     [
+      "S041",
+      1.7,
+      67
+     ],
+     [
+      "S042",
+      11.0,
+      87
+     ],
+     [
+      "S043",
+      2.0,
+      93
+     ],
+     [
+      "S044",
+      4.2,
+      62
+     ],
+     [
+      "S045",
+      6.7,
+      65
+     ],
+     [
+      "S046",
+      12.3,
+      77
+     ],
+     [
+      "S047",
+      14.1,
+      89
+     ],
+     [
+      "S048",
+      2.6,
+      59
+     ],
+     [
+      "S049",
+      4.3,
+      62
+     ],
+     [
+      "S050",
+      5.9,
+      77
+     ],
+     [
+      "S051",
+      6.8,
+      72
+     ],
+     [
+      "S052",
+      8.4,
+      66
+     ],
+     [
+      "S053",
+      9.9,
+      71
+     ],
+     [
+      "S054",
+      5.9,
+      46
+     ],
+     [
+      "S055",
+      8.7,
+      83
+     ],
+     [
+      "S056",
+      6.0,
+      71
+     ],
+     [
+      "S057",
+      3.3,
+      73
+     ],
+     [
+      "S058",
+      13.7,
+      86
+     ],
+     [
+      "S059",
+      10.3,
+      69
+     ],
+     [
+      "S060",
+      8.6,
+      64
+     ],
+     [
+      "S061",
+      7.0,
+      75
+     ],
+     [
+      "S062",
+      5.2,
+      66
+     ],
+     [
+      "S063",
+      15.9,
+      79
+     ],
+     [
+      "S064",
+      6.8,
+      68
+     ],
+     [
+      "S065",
+      10.5,
+      81
+     ],
+     [
+      "S066",
+      8.2,
+      74
+     ],
+     [
+      "S067",
+      20.5,
+      84
+     ],
+     [
+      "S068",
+      11.2,
+      66
+     ],
+     [
+      "S069",
+      12.0,
+      77
+     ],
+     [
+      "S070",
+      6.8,
+      84
+     ],
+     [
+      "S071",
+      16.2,
+      86
+     ],
+     [
+      "S072",
+      5.9,
+      65
+     ],
+     [
+      "S073",
+      6.9,
+      64
+     ],
+     [
+      "S074",
+      5.8,
+      64
+     ],
+     [
+      "S075",
+      13.1,
+      93
+     ],
+     [
+      "S076",
+      12.1,
+      89
+     ],
+     [
+      "S077",
+      6.2,
+      63
+     ],
+     [
+      "S078",
+      5.2,
+      59
+     ],
+     [
+      "S079",
+      4.0,
+      65
+     ],
+     [
+      "S080",
+      5.5,
+      74
+     ],
+     [
+      "S081",
+      7.5,
+      67
+     ],
+     [
+      "S082",
+      6.8,
+      71
+     ],
+     [
+      "S083",
+      4.4,
+      76
+     ],
+     [
+      "S084",
+      1.5,
+      60
+     ],
+     [
+      "S085",
+      2.1,
+      56
+     ],
+     [
+      "S086",
+      1.0,
+      51
+     ],
+     [
+      "S087",
+      3.1,
+      45
+     ],
+     [
+      "S088",
+      6.6,
+      71
+     ],
+     [
+      "S089",
+      19.0,
+      64
+     ],
+     [
+      "S090",
+      4.4,
+      62
+     ],
+     [
+      "S091",
+      9.1,
+      76
+     ],
+     [
+      "S092",
+      22,
+      82
+     ],
+     [
+      "S093",
+      1.5,
+      71
+     ],
+     [
+      "S094",
+      13.3,
+      87
+     ],
+     [
+      "S095",
+      4.4,
+      66
+     ],
+     [
+      "S096",
+      10.3,
+      64
+     ],
+     [
+      "S097",
+      15.1,
+      82
+     ],
+     [
+      "S098",
+      5.8,
+      72
+     ],
+     [
+      "S099",
+      2.7,
+      57
+     ],
+     [
+      "S100",
+      5.4,
+      60
+     ],
+     [
+      "S101",
+      2.1,
+      53
+     ],
+     [
+      "S102",
+      4.1,
+      52
+     ],
+     [
+      "S103",
+      7.1,
+      66
+     ],
+     [
+      "S104",
+      2.9,
+      50
+     ],
+     [
+      "S105",
+      4.7,
+      57
+     ],
+     [
+      "S106",
+      10.4,
+      81
+     ],
+     [
+      "S107",
+      12.2,
+      85
+     ],
+     [
+      "S108",
+      15.4,
+      96
+     ],
+     [
+      "S109",
+      11.5,
+      79
+     ],
+     [
+      "S110",
+      8.8,
+      55
+     ],
+     [
+      "S111",
+      22,
+      96
+     ],
+     [
+      "S112",
+      6.4,
+      65
+     ],
+     [
+      "S113",
+      10.0,
+      70
+     ],
+     [
+      "S114",
+      14.2,
+      77
+     ],
+     [
+      "S115",
+      3.0,
+      64
+     ],
+     [
+      "S116",
+      15.7,
+      92
+     ],
+     [
+      "S117",
+      7.3,
+      79
+     ],
+     [
+      "S118",
+      4.7,
+      65
+     ],
+     [
+      "S119",
+      3.6,
+      51
+     ],
+     [
+      "S120",
+      14.0,
+      86
+     ]
+    ],
+    "code": "# Scatter Plot\n# Question: Do students who study more tend to earn higher exam scores?\n# Put this script and scatter.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"scatter.csv\", show_col_types = FALSE)\n\np <- ggplot(df, aes(x = study_hours, y = exam_score)) +\n  geom_point(color = \"#B79CFF\", size = 2.8, alpha = 0.8) +\n  # a straight trend line through the cloud, with its uncertainty band\n  geom_smooth(method = \"lm\", formula = y ~ x, color = \"#E8EDF4\", fill = \"#4A5462\", linewidth = 0.9) +\n  scale_x_continuous(breaks = seq(0, 25, 5)) +\n  scale_y_continuous(limits = c(30, 100)) +\n  labs(x = \"Hours studied per week\", y = \"Exam score\",\n       caption = \"Each dot is one student. The line shows a trend, not proof of cause. Sample values.\") +\n  theme_gallery() +\n  theme(plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"scatter.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "Do larger districts spend more per student?",
+    "data": "FY25 Expanded List, the 607 traditional districts.",
+    "note": "A pattern here does not prove that size causes spending. Many other things differ between small and large districts."
+   },
+   "famous": [
+    {
+     "title": "The origins of the scatter plot",
+     "maker": "John Herschel and Francis Galton",
+     "year": "1833",
+     "source": "",
+     "site": "Quartz",
+     "note": "Herschel's 1833 chart of double stars, measured against the year, may be the first scatter plot. Galton later used scatter plots to study how children's heights relate to their parents', which helped create the idea of correlation.",
+     "url": "https://qz.com/1235712/the-origins-of-the-scatter-plot-data-visualizations-greatest-invention"
+    }
+   ],
    "stories": []
   },
   {
@@ -236,8 +1370,371 @@ window.GALLERY = {
    ],
    "watch": "Using color without a clear legend.",
    "pairs": "Schedules, correlation tables, and year by program grids.",
-   "question": "Which programs changed the most across years?",
+   "question": "Which programs changed the most across the years?",
    "hint": "This chart is a colored grid. Two fields make the rows and columns, and color carries the value.",
+   "lesson": {
+    "question": "Which programs changed the most across the years?",
+    "shape": "Long format: one row per program per year, with the number of students. The two category fields become the rows and columns of the grid. R compares every year with each program's first year, so big and small programs share one scale.",
+    "columns": [
+     {
+      "name": "program",
+      "type": "category",
+      "desc": "One row of the grid"
+     },
+     {
+      "name": "year",
+      "type": "time",
+      "desc": "One column of the grid"
+     },
+     {
+      "name": "students",
+      "type": "number",
+      "desc": "Students enrolled that year"
+     }
+    ],
+    "rows": [
+     [
+      "Data Analytics",
+      2019,
+      40
+     ],
+     [
+      "Data Analytics",
+      2020,
+      45
+     ],
+     [
+      "Data Analytics",
+      2021,
+      53
+     ],
+     [
+      "Data Analytics",
+      2022,
+      62
+     ],
+     [
+      "Data Analytics",
+      2023,
+      73
+     ],
+     [
+      "Data Analytics",
+      2024,
+      82
+     ],
+     [
+      "Data Analytics",
+      2025,
+      95
+     ],
+     [
+      "Data Analytics",
+      2026,
+      101
+     ],
+     [
+      "Computer Science",
+      2019,
+      200
+     ],
+     [
+      "Computer Science",
+      2020,
+      212
+     ],
+     [
+      "Computer Science",
+      2021,
+      236
+     ],
+     [
+      "Computer Science",
+      2022,
+      252
+     ],
+     [
+      "Computer Science",
+      2023,
+      279
+     ],
+     [
+      "Computer Science",
+      2024,
+      290
+     ],
+     [
+      "Computer Science",
+      2025,
+      322
+     ],
+     [
+      "Computer Science",
+      2026,
+      345
+     ],
+     [
+      "Nursing",
+      2019,
+      300
+     ],
+     [
+      "Nursing",
+      2020,
+      310
+     ],
+     [
+      "Nursing",
+      2021,
+      325
+     ],
+     [
+      "Nursing",
+      2022,
+      330
+     ],
+     [
+      "Nursing",
+      2023,
+      352
+     ],
+     [
+      "Nursing",
+      2024,
+      372
+     ],
+     [
+      "Nursing",
+      2025,
+      408
+     ],
+     [
+      "Nursing",
+      2026,
+      427
+     ],
+     [
+      "Business",
+      2019,
+      450
+     ],
+     [
+      "Business",
+      2020,
+      446
+     ],
+     [
+      "Business",
+      2021,
+      472
+     ],
+     [
+      "Business",
+      2022,
+      462
+     ],
+     [
+      "Business",
+      2023,
+      486
+     ],
+     [
+      "Business",
+      2024,
+      483
+     ],
+     [
+      "Business",
+      2025,
+      490
+     ],
+     [
+      "Business",
+      2026,
+      529
+     ],
+     [
+      "Psychology",
+      2019,
+      280
+     ],
+     [
+      "Psychology",
+      2020,
+      276
+     ],
+     [
+      "Psychology",
+      2021,
+      278
+     ],
+     [
+      "Psychology",
+      2022,
+      293
+     ],
+     [
+      "Psychology",
+      2023,
+      293
+     ],
+     [
+      "Psychology",
+      2024,
+      285
+     ],
+     [
+      "Psychology",
+      2025,
+      300
+     ],
+     [
+      "Psychology",
+      2026,
+      295
+     ],
+     [
+      "Biology",
+      2019,
+      320
+     ],
+     [
+      "Biology",
+      2020,
+      322
+     ],
+     [
+      "Biology",
+      2021,
+      311
+     ],
+     [
+      "Biology",
+      2022,
+      323
+     ],
+     [
+      "Biology",
+      2023,
+      316
+     ],
+     [
+      "Biology",
+      2024,
+      318
+     ],
+     [
+      "Biology",
+      2025,
+      314
+     ],
+     [
+      "Biology",
+      2026,
+      300
+     ],
+     [
+      "English",
+      2019,
+      160
+     ],
+     [
+      "English",
+      2020,
+      155
+     ],
+     [
+      "English",
+      2021,
+      148
+     ],
+     [
+      "English",
+      2022,
+      141
+     ],
+     [
+      "English",
+      2023,
+      133
+     ],
+     [
+      "English",
+      2024,
+      127
+     ],
+     [
+      "English",
+      2025,
+      121
+     ],
+     [
+      "English",
+      2026,
+      109
+     ],
+     [
+      "History",
+      2019,
+      120
+     ],
+     [
+      "History",
+      2020,
+      118
+     ],
+     [
+      "History",
+      2021,
+      110
+     ],
+     [
+      "History",
+      2022,
+      104
+     ],
+     [
+      "History",
+      2023,
+      100
+     ],
+     [
+      "History",
+      2024,
+      90
+     ],
+     [
+      "History",
+      2025,
+      82
+     ],
+     [
+      "History",
+      2026,
+      74
+     ]
+    ],
+    "code": "# Heat Map\n# Question: Which programs changed the most across the years?\n# Put this script and heatmap.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"heatmap.csv\", show_col_types = FALSE) |>\n  group_by(program) |>\n  arrange(year, .by_group = TRUE) |>\n  mutate(index = round(students / first(students) * 100)) |>   # first year = 100\n  ungroup() |>\n  mutate(program = fct_reorder(program, index, .fun = last))      # biggest growth at the top\n\np <- ggplot(df, aes(x = factor(year), y = program, fill = index)) +\n  geom_tile(color = \"#161B23\", linewidth = 1.2) +\n  geom_text(aes(label = index), color = \"#E8EDF4\", family = font, size = 3.9) +\n  # red below the first year's level, blue above it, dark gray where nothing changed.\n  # values = puts the gray exactly at 100, so both sides reach full color.\n  scale_fill_gradientn(colours = c(\"#F2716F\", \"#2E3845\", \"#75AADB\"),\n                       values = scales::rescale(c(50, 100, 260)), limits = c(50, 260),\n                       breaks = c(50, 100, 150, 200, 250), name = \"Index\\n(2019 = 100)\") +\n  labs(x = NULL, y = NULL,\n       caption = \"Each cell compares that year with the program's 2019 level. Sample values.\") +\n  theme_gallery() +\n  theme(panel.grid = element_blank(), legend.position = \"right\",\n        legend.title = element_text(color = ink, size = 12),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"heatmap.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "Which state support regions saw spending per student grow the most since FY13?",
+    "data": "Expanded List FY13 to FY26, traditional districts, grouped by the region on the report card.",
+    "note": "Each district is placed in the one region the report card lists for it."
+   },
+   "famous": [
+    {
+     "title": "Vaccines and infectious diseases",
+     "maker": "Tynan DeBold and Dov Friedman",
+     "year": "2015",
+     "source": "",
+     "site": "Information is Beautiful Awards",
+     "note": "Each row is a state and each column is a year, colored by cases per 100,000 people over more than 70 years. Disease rates fall after vaccines are introduced, which the grid makes plain at a glance.",
+     "url": "https://www.informationisbeautifulawards.com/showcase/660-vaccines-and-infectious-diseases"
+    }
+   ],
    "stories": []
   },
   {
@@ -262,8 +1759,152 @@ window.GALLERY = {
    ],
    "watch": "Size differences read poorly, so the third variable stays vague.",
    "pairs": "Three way comparisons across many cases.",
-   "question": "How do programs compare on cost, completion rate, and enrollment size?",
+   "question": "How do programs compare on cost, completion rate, and size?",
    "hint": "Scatter plot dots that grew to different sizes.",
+   "lesson": {
+    "question": "How do programs compare on cost, completion rate, and size?",
+    "shape": "One row per program with three numbers: two for position and one for bubble size. An optional category column sets the color.",
+    "columns": [
+     {
+      "name": "program",
+      "type": "category",
+      "desc": "One bubble"
+     },
+     {
+      "name": "college",
+      "type": "category",
+      "desc": "Optional group that sets the bubble color"
+     },
+     {
+      "name": "cost_thousands",
+      "type": "number",
+      "desc": "Cost to deliver per student, in thousands of dollars: the horizontal axis"
+     },
+     {
+      "name": "completion_rate",
+      "type": "number",
+      "desc": "Percent who finish within six years: the vertical axis"
+     },
+     {
+      "name": "students",
+      "type": "number",
+      "desc": "Students enrolled: sets the bubble area"
+     }
+    ],
+    "rows": [
+     [
+      "Nursing",
+      "Health",
+      24.5,
+      78,
+      520
+     ],
+     [
+      "Exercise Science",
+      "Health",
+      16.0,
+      66,
+      240
+     ],
+     [
+      "Public Health",
+      "Health",
+      14.5,
+      71,
+      160
+     ],
+     [
+      "Computer Science",
+      "Science",
+      19.5,
+      64,
+      430
+     ],
+     [
+      "Biology",
+      "Science",
+      18.0,
+      72,
+      380
+     ],
+     [
+      "Chemistry",
+      "Science",
+      21.5,
+      69,
+      140
+     ],
+     [
+      "Data Analytics",
+      "Science",
+      15.0,
+      75,
+      120
+     ],
+     [
+      "Business",
+      "Business",
+      11.5,
+      70,
+      690
+     ],
+     [
+      "Accounting",
+      "Business",
+      12.5,
+      80,
+      260
+     ],
+     [
+      "Marketing",
+      "Business",
+      10.5,
+      63,
+      300
+     ],
+     [
+      "English",
+      "Arts",
+      9.5,
+      74,
+      150
+     ],
+     [
+      "Music",
+      "Arts",
+      26.0,
+      61,
+      90
+     ],
+     [
+      "Art",
+      "Arts",
+      17.0,
+      58,
+      130
+     ]
+    ],
+    "code": "# Bubble Chart\n# Question: How do programs compare on cost, completion rate, and size?\n# Put this script and bubble.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"Health\" = \"#46D6D1\", \"Science\" = \"#B79CFF\", \"Business\" = \"#F0B95A\", \"Arts\" = \"#F38ABE\")\n\ndf <- read_csv(\"bubble.csv\", show_col_types = FALSE) |>\n  arrange(desc(students)) |>   # draw big bubbles first so small ones stay visible on top\n  # lift each label above its bubble: bigger bubbles need a bigger lift\n  mutate(lift = -0.9 - 2.4 * sqrt(students / max(students)))\n\np <- ggplot(df, aes(x = cost_thousands, y = completion_rate)) +\n  geom_point(aes(size = students, fill = college),\n             shape = 21, color = \"#161B23\", alpha = 0.85, stroke = 0.8) +\n  geom_text(aes(label = program, vjust = lift), color = \"#E8EDF4\", family = font, size = 3.6) +\n  scale_size_area(max_size = 22, breaks = c(100, 300, 600), name = \"Students\") +\n  scale_fill_manual(values = pal, name = NULL) +\n  scale_x_continuous(labels = scales::dollar_format(suffix = \"K\"), expand = expansion(mult = 0.1)) +\n  scale_y_continuous(labels = function(x) paste0(x, \"%\"), expand = expansion(mult = 0.12)) +\n  guides(fill = guide_legend(override.aes = list(size = 6), order = 1),\n         size = guide_legend(override.aes = list(fill = \"#8B97A7\"), order = 2)) +\n  labs(x = \"Cost per student\", y = \"Completion rate\",\n       caption = \"Bubble area shows enrollment. Sample values, not real data.\") +\n  theme_gallery() +\n  theme(legend.position = \"right\", legend.title = element_text(color = ink, size = 12),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"bubble.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "How do charter-style schools compare on spending, classroom share, and size?",
+    "data": "FY25 Expanded List, brick and mortar community schools, e-schools, and STEM schools.",
+    "note": "Bundled management fees can lower the classroom share, so a low share does not always mean less teaching."
+   },
+   "famous": [
+    {
+     "title": "The best stats you've ever seen",
+     "maker": "Hans Rosling",
+     "year": "2006",
+     "source": "TED2006",
+     "site": "TED",
+     "note": "Rosling used Gapminder's bubble chart software to challenge common beliefs about the developing world. The talk became one of the most watched TED talks ever, and the moving bubbles are why.",
+     "url": "https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen"
+    }
+   ],
    "stories": []
   },
   {
@@ -290,8 +1931,101 @@ window.GALLERY = {
    ],
    "watch": "Two value axes can be scaled to suggest almost any story.",
    "pairs": "Volume and rate stories, like applications and acceptance rate.",
-   "question": "How did applications and acceptance rate move across the years?",
+   "question": "How did applications and the acceptance rate move across the years?",
    "hint": "Columns and a line share the same timeline but tell two stories.",
+   "lesson": {
+    "question": "How did applications and the acceptance rate move across the years?",
+    "shape": "One row per year with two different kinds of numbers: a count (drawn as columns) and a rate (drawn as a line). R places the rate on a second axis on the right.",
+    "columns": [
+     {
+      "name": "year",
+      "type": "time",
+      "desc": "The shared horizontal axis"
+     },
+     {
+      "name": "applications",
+      "type": "number",
+      "desc": "Applications received: the columns and the left axis"
+     },
+     {
+      "name": "acceptance_rate",
+      "type": "number",
+      "desc": "Percent of applicants admitted: the line and the right axis"
+     }
+    ],
+    "rows": [
+     [
+      2014,
+      8100,
+      62.4
+     ],
+     [
+      2015,
+      8600,
+      60.8
+     ],
+     [
+      2016,
+      9200,
+      58.9
+     ],
+     [
+      2017,
+      9900,
+      57.1
+     ],
+     [
+      2018,
+      10400,
+      55.6
+     ],
+     [
+      2019,
+      11300,
+      52.3
+     ],
+     [
+      2020,
+      10900,
+      54.0
+     ],
+     [
+      2021,
+      12100,
+      50.2
+     ],
+     [
+      2022,
+      13200,
+      47.5
+     ],
+     [
+      2023,
+      13900,
+      45.1
+     ],
+     [
+      2024,
+      14600,
+      43.0
+     ],
+     [
+      2025,
+      15200,
+      41.2
+     ]
+    ],
+    "code": "# Column and Line Chart\n# Question: How did applications and the acceptance rate move across the years?\n# Put this script and colline.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ncol_color  <- \"#75AADB\"\nline_color <- \"#F0B95A\"\n\ndf <- read_csv(\"colline.csv\", show_col_types = FALSE)\n\n# The rate is drawn on the column scale, then a second axis converts it back.\n# 80% on the right lines up with 16,000 on the left, so scale = 200.\n# Both axes start at zero. Changing this number can make the story look\n# much stronger or weaker, so say what you chose.\nscale <- 200\n\np <- ggplot(df, aes(x = year)) +\n  geom_col(aes(y = applications), fill = col_color, alpha = 0.85, width = 0.7) +\n  geom_line(aes(y = acceptance_rate * scale), color = line_color, linewidth = 1.3) +\n  geom_point(aes(y = acceptance_rate * scale), color = line_color, size = 2.8) +\n  scale_x_continuous(breaks = df$year) +\n  scale_y_continuous(name = \"Applications\", labels = scales::comma, limits = c(0, 16000),\n                     sec.axis = sec_axis(~ . / scale, name = \"Acceptance rate\",\n                                         labels = function(x) paste0(x, \"%\"))) +\n  labs(x = NULL,\n       caption = \"Columns: applications (left axis). Line: acceptance rate (right axis). Sample values.\") +\n  theme_gallery() +\n  theme(panel.grid.major.x = element_blank(),\n        axis.title.y.left = element_text(color = col_color, margin = margin(r = 8)),\n        axis.title.y.right = element_text(color = line_color, margin = margin(l = 8)),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"colline.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "How did the number of school ballot issues and their pass rate change over time?",
+    "data": "School Election Results, 2003 to 2025. The Passed or Rejected result is known in every year.",
+    "note": "Two value axes can suggest almost any story, because the scale of each is a choice. Read each axis on its own."
+   },
+   "famous": [],
    "stories": []
   },
   {
@@ -320,6 +2054,149 @@ window.GALLERY = {
    "pairs": "Stories about two measures that influence each other.",
    "question": "How did tuition and enrollment move together across two decades?",
    "hint": "A scatter plot where the dots are connected in time order.",
+   "lesson": {
+    "question": "How did tuition and enrollment move together across two decades?",
+    "shape": "One row per year, in time order, with two numbers. The rows must stay in order, because R connects them from top to bottom.",
+    "columns": [
+     {
+      "name": "year",
+      "type": "time",
+      "desc": "Sets the order of the path and labels a few points"
+     },
+     {
+      "name": "tuition_thousands",
+      "type": "number",
+      "desc": "Yearly tuition in thousands of dollars: the horizontal axis"
+     },
+     {
+      "name": "enrollment",
+      "type": "number",
+      "desc": "Total students enrolled: the vertical axis"
+     }
+    ],
+    "rows": [
+     [
+      2006,
+      22.0,
+      5200
+     ],
+     [
+      2007,
+      23.7,
+      5310
+     ],
+     [
+      2008,
+      25.1,
+      5480
+     ],
+     [
+      2009,
+      26.1,
+      5650
+     ],
+     [
+      2010,
+      27.1,
+      5790
+     ],
+     [
+      2011,
+      28.4,
+      5930
+     ],
+     [
+      2012,
+      30.0,
+      6100
+     ],
+     [
+      2013,
+      31.7,
+      6020
+     ],
+     [
+      2014,
+      33.2,
+      5850
+     ],
+     [
+      2015,
+      34.3,
+      5700
+     ],
+     [
+      2016,
+      35.3,
+      5600
+     ],
+     [
+      2017,
+      36.5,
+      5680
+     ],
+     [
+      2018,
+      38.0,
+      5800
+     ],
+     [
+      2019,
+      39.7,
+      5910
+     ],
+     [
+      2020,
+      41.3,
+      5880
+     ],
+     [
+      2021,
+      42.5,
+      5300
+     ],
+     [
+      2022,
+      43.5,
+      5420
+     ],
+     [
+      2023,
+      44.6,
+      5560
+     ],
+     [
+      2024,
+      46.0,
+      5690
+     ],
+     [
+      2025,
+      47.7,
+      5810
+     ]
+    ],
+    "code": "# Connected Scatterplot\n# Question: How did tuition and enrollment move together across two decades?\n# Put this script and connectedscatter.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"connectedscatter.csv\", show_col_types = FALSE) |>\n  arrange(year) |>\n  # each arrow runs 80% of the way to the next year, so its head stays visible\n  mutate(next_x = tuition_thousands + 0.8 * (lead(tuition_thousands) - tuition_thousands),\n         next_y = enrollment + 0.8 * (lead(enrollment) - enrollment))\n\n# Label the start, the end, and the turning points. hj and vj move each label\n# so it sits beside its point instead of on the line.\nmarks <- df |>\n  inner_join(tribble(~year, ~hj,   ~vj,\n                     2006,  0.5,   2.0,\n                     2012,  0.5,  -1.1,\n                     2016,  0.5,   2.0,\n                     2019,  0.5,  -1.1,\n                     2021, -0.35,  0.5,\n                     2025,  0.5,  -1.1), by = \"year\")\n\np <- ggplot(df, aes(x = tuition_thousands, y = enrollment)) +\n  # one short arrow from each year to the next shows the direction of time\n  geom_path(color = \"#B79CFF\", linewidth = 0.5, alpha = 0.5) +\n  geom_segment(aes(xend = next_x, yend = next_y), na.rm = TRUE, color = \"#B79CFF\", linewidth = 0.9,\n               arrow = arrow(length = unit(0.09, \"in\"), type = \"closed\")) +\n  geom_point(color = \"#E8EDF4\", size = 2) +\n  geom_point(data = marks, color = \"#B79CFF\", size = 4) +\n  geom_text(data = marks, aes(label = year, hjust = hj, vjust = vj),\n            color = \"#E8EDF4\", family = font, size = 4.4) +\n  scale_x_continuous(labels = scales::dollar_format(suffix = \"K\"), breaks = seq(20, 50, 5),\n                     expand = expansion(mult = 0.06)) +\n  scale_y_continuous(labels = scales::comma, expand = expansion(mult = 0.12)) +\n  labs(x = \"Tuition per year\", y = \"Students enrolled\",\n       caption = \"Follow the arrows from 2006 to 2025. Sample values, not real data.\") +\n  theme_gallery() +\n  theme(plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"connectedscatter.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "How did district enrollment and spending per student move together?",
+    "data": "Expanded List FY13 to FY26, traditional districts combined.",
+    "note": "Both lines move at once for many reasons. The path does not prove that falling enrollment raised spending."
+   },
+   "famous": [
+    {
+     "title": "Driving safety, in fits and starts",
+     "maker": "Hannah Fairfield, The New York Times",
+     "year": "2012",
+     "source": "",
+     "site": "Columbia Journalism Review",
+     "note": "Each dot is one year, placed by miles driven and the traffic death rate, and a winding line joins the years in order. Short notes along the path explain the turns. This article tells how Fairfield made it.",
+     "url": "https://www.cjr.org/data_points/a_timeline_that_isnt_boring.php"
+    }
+   ],
    "stories": []
   },
   {
@@ -348,6 +2225,90 @@ window.GALLERY = {
    "pairs": "Top ten lists and league tables.",
    "question": "Which ten programs award the most degrees?",
    "hint": "It is a bar chart with one extra rule: the order must follow the values.",
+   "lesson": {
+    "question": "Which ten programs award the most degrees?",
+    "shape": "One row per program with one number. The file can hold more than ten programs: R keeps the top ten and sorts them from largest to smallest.",
+    "columns": [
+     {
+      "name": "program",
+      "type": "category",
+      "desc": "One bar. Long names fit because the bars run sideways"
+     },
+     {
+      "name": "degrees",
+      "type": "number",
+      "desc": "Degrees awarded last year"
+     }
+    ],
+    "rows": [
+     [
+      "Business Administration",
+      412
+     ],
+     [
+      "Nursing",
+      365
+     ],
+     [
+      "Psychology",
+      288
+     ],
+     [
+      "Biology",
+      254
+     ],
+     [
+      "Computer Science",
+      241
+     ],
+     [
+      "Elementary Education",
+      198
+     ],
+     [
+      "Communication Studies",
+      176
+     ],
+     [
+      "Exercise Science",
+      151
+     ],
+     [
+      "Criminal Justice",
+      139
+     ],
+     [
+      "Accounting",
+      127
+     ],
+     [
+      "English",
+      88
+     ],
+     [
+      "History",
+      74
+     ],
+     [
+      "Chemistry",
+      61
+     ],
+     [
+      "Philosophy",
+      32
+     ]
+    ],
+    "code": "# Ordered Bar Chart\n# Question: Which ten programs award the most degrees?\n# Put this script and orderedbar.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"orderedbar.csv\", show_col_types = FALSE) |>\n  slice_max(degrees, n = 10) |>                        # keep the top ten\n  mutate(program = fct_reorder(program, degrees))      # largest at the top\n\np <- ggplot(df, aes(x = degrees, y = program)) +\n  geom_col(fill = \"#75AADB\", width = 0.7) +\n  geom_text(aes(label = scales::comma(degrees)), hjust = -0.25,\n            color = \"#E8EDF4\", family = font, size = 4.4) +\n  scale_x_continuous(expand = expansion(mult = c(0, 0.1))) +\n  labs(x = \"Degrees awarded\", y = NULL, caption = \"Top ten of 14 programs. Sample values, not real data.\") +\n  theme_gallery() +\n  theme(panel.grid.major.y = element_blank(), plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"orderedbar.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "Which ten organizations spend the most operating dollars?",
+    "data": "FY25 Expanded List, all sectors.",
+    "note": "Totals reward size. Pair this chart with a per student view."
+   },
+   "famous": [],
    "stories": []
   },
   {
@@ -374,8 +2335,60 @@ window.GALLERY = {
    ],
    "watch": "Long labels turn unreadable underneath vertical columns.",
    "pairs": "Short ranked lists with short names.",
-   "question": "Which five campuses received the most applications?",
+   "question": "Which campuses received the most applications?",
    "hint": "The vertical twin of the ordered bar.",
+   "lesson": {
+    "question": "Which campuses received the most applications?",
+    "shape": "One row per campus with one number. Short names work best, because they sit under each column.",
+    "columns": [
+     {
+      "name": "campus",
+      "type": "category",
+      "desc": "One column. Keep names short"
+     },
+     {
+      "name": "applications",
+      "type": "number",
+      "desc": "Applications received this year"
+     }
+    ],
+    "rows": [
+     [
+      "North",
+      3420
+     ],
+     [
+      "Main",
+      6180
+     ],
+     [
+      "Lakeside",
+      1260
+     ],
+     [
+      "Online",
+      4870
+     ],
+     [
+      "Downtown",
+      2950
+     ],
+     [
+      "East",
+      1890
+     ]
+    ],
+    "code": "# Ordered Column Chart\n# Question: Which campuses received the most applications?\n# Put this script and orderedcol.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"orderedcol.csv\", show_col_types = FALSE) |>\n  mutate(campus = fct_reorder(campus, applications, .desc = TRUE))   # largest on the left\n\np <- ggplot(df, aes(x = campus, y = applications)) +\n  geom_col(fill = \"#75AADB\", width = 0.68) +\n  geom_text(aes(label = scales::comma(applications)), vjust = -0.6,\n            color = \"#E8EDF4\", family = font, size = 4.6) +\n  scale_y_continuous(labels = scales::comma, expand = expansion(mult = c(0, 0.1))) +\n  labs(x = NULL, y = \"Applications\", caption = \"Sample values, not real data.\") +\n  theme_gallery() +\n  theme(panel.grid.major.x = element_blank(), plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"orderedcol.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "Which five counties have the most nonpublic school students?",
+    "data": "FY26 Nonpublic Enrollment file.",
+    "note": "Short county names fit well under vertical columns."
+   },
+   "famous": [],
    "stories": []
   },
   {
@@ -404,6 +2417,82 @@ window.GALLERY = {
    "pairs": "Ranked comparisons where bars feel heavy.",
    "question": "How do departments compare on average course rating?",
    "hint": "A slimmed down bar: a thin stem with a dot on top.",
+   "lesson": {
+    "question": "How do departments compare on average course rating?",
+    "shape": "One row per department with one number. R sorts them, draws a thin stem from the lowest possible rating, and ends it in a dot.",
+    "columns": [
+     {
+      "name": "department",
+      "type": "category",
+      "desc": "One lollipop"
+     },
+     {
+      "name": "avg_rating",
+      "type": "number",
+      "desc": "Average course rating, from 1 to 5"
+     }
+    ],
+    "rows": [
+     [
+      "Music",
+      4.6
+     ],
+     [
+      "Nursing",
+      4.5
+     ],
+     [
+      "History",
+      4.4
+     ],
+     [
+      "Biology",
+      4.3
+     ],
+     [
+      "English",
+      4.2
+     ],
+     [
+      "Psychology",
+      4.2
+     ],
+     [
+      "Economics",
+      4.0
+     ],
+     [
+      "Mathematics",
+      3.9
+     ],
+     [
+      "Business",
+      3.9
+     ],
+     [
+      "Chemistry",
+      3.7
+     ],
+     [
+      "Accounting",
+      3.6
+     ],
+     [
+      "Physics",
+      3.5
+     ]
+    ],
+    "code": "# Lollipop Chart\n# Question: How do departments compare on average course rating?\n# Put this script and lollipop.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"lollipop.csv\", show_col_types = FALSE) |>\n  mutate(department = fct_reorder(department, avg_rating))   # highest at the top\n\np <- ggplot(df, aes(x = avg_rating, y = department)) +\n  # stems start at 1, the lowest rating a course can get\n  geom_segment(aes(x = 1, xend = avg_rating, yend = department), color = \"#4A5462\", linewidth = 1.3) +\n  geom_point(color = \"#75AADB\", size = 5.5) +\n  geom_text(aes(label = sprintf(\"%.1f\", avg_rating)), hjust = -0.7,\n            color = \"#E8EDF4\", family = font, size = 4.2) +\n  scale_x_continuous(limits = c(1, 5.15), breaks = 1:5, expand = c(0, 0)) +\n  labs(x = \"Average course rating (1 to 5)\", y = NULL, caption = \"Sample values, not real data.\") +\n  theme_gallery() +\n  theme(panel.grid.major.y = element_blank(), plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"lollipop.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "How do regions compare on federal dollars per pupil?",
+    "data": "2024-25 District Spend per Pupil report card file, weighted by each district's weighted ADM.",
+    "note": "These are dollars per equivalent (weighted) pupil, a different base than the per student charts."
+   },
+   "famous": [],
    "stories": []
   },
   {
@@ -432,6 +2521,92 @@ window.GALLERY = {
    "pairs": "Rankings, survey scores, and comparisons against a benchmark.",
    "question": "Which programs are above or below the average satisfaction score?",
    "hint": "This chart replaces heavy bars with single dots, often against a reference line.",
+   "lesson": {
+    "question": "Which programs are above or below the average satisfaction score?",
+    "shape": "One row per program with one number. R works out the average and draws it as a reference line.",
+    "columns": [
+     {
+      "name": "program",
+      "type": "category",
+      "desc": "One row of the chart"
+     },
+     {
+      "name": "satisfaction",
+      "type": "number",
+      "desc": "Average student satisfaction, from 1 to 5"
+     }
+    ],
+    "rows": [
+     [
+      "Nursing",
+      4.42
+     ],
+     [
+      "Data Analytics",
+      4.35
+     ],
+     [
+      "Music",
+      4.28
+     ],
+     [
+      "Biology",
+      4.12
+     ],
+     [
+      "Psychology",
+      4.05
+     ],
+     [
+      "Economics",
+      3.98
+     ],
+     [
+      "English",
+      3.94
+     ],
+     [
+      "Business",
+      3.86
+     ],
+     [
+      "Chemistry",
+      3.74
+     ],
+     [
+      "History",
+      3.71
+     ],
+     [
+      "Computer Science",
+      3.62
+     ],
+     [
+      "Accounting",
+      3.55
+     ]
+    ],
+    "code": "# Dot Plot\n# Question: Which programs are above or below the average satisfaction score?\n# Put this script and dot.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"Above average\" = \"#75AADB\", \"Below average\" = \"#F2716F\")\n\ndf <- read_csv(\"dot.csv\", show_col_types = FALSE)\navg <- mean(df$satisfaction)\n\ndf <- df |>\n  mutate(side    = if_else(satisfaction >= avg, \"Above average\", \"Below average\"),\n         program = fct_reorder(program, satisfaction))   # highest at the top\n\np <- ggplot(df, aes(x = satisfaction, y = program)) +\n  geom_vline(xintercept = avg, color = \"#E8EDF4\", linetype = \"dashed\", linewidth = 0.6) +\n  annotate(\"text\", x = avg, y = nlevels(df$program) + 0.9, hjust = -0.05,\n           label = paste0(\"Average: \", sprintf(\"%.2f\", avg)), color = \"#E8EDF4\", family = font, size = 4.2) +\n  geom_point(aes(color = side), size = 5) +\n  scale_color_manual(values = pal, name = NULL) +\n  scale_y_discrete(expand = expansion(add = c(0.6, 1.3))) +\n  labs(x = \"Average satisfaction (1 to 5)\", y = NULL, caption = \"Sample values, not real data.\") +\n  theme_gallery() +\n  theme(panel.grid.major.x = element_blank(), plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"dot.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "Which regions spend above or below the statewide figure?",
+    "data": "FY25 Expanded List, traditional districts by report card region.",
+    "note": "The reference line is the statewide total divided by statewide students."
+   },
+   "famous": [
+    {
+     "title": "What is a dot plot?",
+     "maker": "Cole Nussbaumer Knaflic, Storytelling with Data",
+     "year": "2020",
+     "source": "",
+     "site": "Storytelling with Data",
+     "note": "Walks step by step from a bar chart to a Cleveland dot plot, named for statistician William Cleveland. Because dots mark a position rather than a length, the axis does not have to start at zero.",
+     "url": "https://www.storytellingwithdata.com/blog/2020/12/9/what-is-a-dot-plot"
+    }
+   ],
    "stories": []
   },
   {
@@ -458,6 +2633,66 @@ window.GALLERY = {
    "pairs": "Headlines and posters more than analysis.",
    "question": "Which student organizations have the largest memberships?",
    "hint": "The ranking is carried by circle size instead of bar length.",
+   "lesson": {
+    "question": "Which student organizations have the largest memberships?",
+    "shape": "One row per organization with one number. R sorts them from largest to smallest and sizes each circle by area.",
+    "columns": [
+     {
+      "name": "organization",
+      "type": "category",
+      "desc": "One circle"
+     },
+     {
+      "name": "members",
+      "type": "number",
+      "desc": "Members this year. It sets the circle area"
+     }
+    ],
+    "rows": [
+     [
+      "Intramural Sports",
+      620
+     ],
+     [
+      "Volunteer Corps",
+      310
+     ],
+     [
+      "Outdoors Club",
+      280
+     ],
+     [
+      "Marching Band",
+      240
+     ],
+     [
+      "Data Science Club",
+      150
+     ],
+     [
+      "Debate Team",
+      90
+     ],
+     [
+      "Chess Club",
+      60
+     ],
+     [
+      "Film Society",
+      45
+     ]
+    ],
+    "code": "# Ordered Proportional Symbol\n# Question: Which student organizations have the largest memberships?\n# Put this script and orderedsymbol.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"orderedsymbol.csv\", show_col_types = FALSE) |>\n  arrange(desc(members)) |>\n  mutate(rank = row_number())    # 1 = largest, placed on the left\n\np <- ggplot(df, aes(x = rank, y = 0)) +\n  geom_point(aes(size = members), color = \"#75AADB\", alpha = 0.9) +\n  # people judge circle area poorly, so the exact number is printed under each name\n  geom_text(aes(y = -0.25, label = paste0(str_wrap(organization, 11), \"\\n\", scales::comma(members))),\n            vjust = 1, color = \"#E8EDF4\", family = font, size = 4, lineheight = 0.95) +\n  scale_size_area(max_size = 30, guide = \"none\") +\n  scale_x_continuous(expand = expansion(add = 0.6)) +\n  scale_y_continuous(limits = c(-0.62, 0.3)) +\n  labs(x = NULL, y = NULL, caption = \"Circle area shows members. Sample values, not real data.\") +\n  theme_gallery() +\n  theme(panel.grid = element_blank(), axis.text = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"orderedsymbol.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "Which e-schools enroll the most students?",
+    "data": "FY26 Expanded List, e-schools.",
+    "note": "Circle area, not width, carries the number. People judge area poorly, so the exact values are printed."
+   },
+   "famous": [],
    "stories": []
   },
   {
@@ -486,6 +2721,199 @@ window.GALLERY = {
    "pairs": "Comparing many cases against each other on one measure.",
    "question": "Where does each program's average class size fall on one line?",
    "hint": "Every value becomes a dot on a single strip.",
+   "lesson": {
+    "question": "Where does each program's average class size fall on one line?",
+    "shape": "One row per program with one number, plus an optional group column. Each group gets its own strip, and each program becomes one dot.",
+    "columns": [
+     {
+      "name": "program",
+      "type": "category",
+      "desc": "One dot. Not labeled, but it keeps rows traceable"
+     },
+     {
+      "name": "college",
+      "type": "category",
+      "desc": "Optional group: one strip per college"
+     },
+     {
+      "name": "avg_class_size",
+      "type": "number",
+      "desc": "Average students per class section"
+     }
+    ],
+    "rows": [
+     [
+      "Art",
+      "Arts and Humanities",
+      21.4
+     ],
+     [
+      "Music",
+      "Arts and Humanities",
+      35.5
+     ],
+     [
+      "Theatre",
+      "Arts and Humanities",
+      26.1
+     ],
+     [
+      "English",
+      "Arts and Humanities",
+      26.2
+     ],
+     [
+      "History",
+      "Arts and Humanities",
+      23.2
+     ],
+     [
+      "Philosophy",
+      "Arts and Humanities",
+      21.5
+     ],
+     [
+      "Religion",
+      "Arts and Humanities",
+      23.5
+     ],
+     [
+      "Languages",
+      "Arts and Humanities",
+      19.0
+     ],
+     [
+      "Accounting",
+      "Business",
+      29.5
+     ],
+     [
+      "Finance",
+      "Business",
+      28.4
+     ],
+     [
+      "Marketing",
+      "Business",
+      26.7
+     ],
+     [
+      "Management",
+      "Business",
+      36.2
+     ],
+     [
+      "Economics",
+      "Business",
+      38.3
+     ],
+     [
+      "Supply Chain",
+      "Business",
+      45.4
+     ],
+     [
+      "Analytics",
+      "Business",
+      38.0
+     ],
+     [
+      "Sport Management",
+      "Business",
+      36.5
+     ],
+     [
+      "Nursing",
+      "Health",
+      32.1
+     ],
+     [
+      "Public Health",
+      "Health",
+      27.6
+     ],
+     [
+      "Nutrition",
+      "Health",
+      15.3
+     ],
+     [
+      "Exercise Science",
+      "Health",
+      34.7
+     ],
+     [
+      "Health Admin",
+      "Health",
+      24.7
+     ],
+     [
+      "Athletic Training",
+      "Health",
+      29.2
+     ],
+     [
+      "Pre-Med",
+      "Health",
+      25.9
+     ],
+     [
+      "Social Work",
+      "Health",
+      47.1
+     ],
+     [
+      "Biology",
+      "Sciences",
+      49.3
+     ],
+     [
+      "Chemistry",
+      "Sciences",
+      44.5
+     ],
+     [
+      "Physics",
+      "Sciences",
+      34.1
+     ],
+     [
+      "Mathematics",
+      "Sciences",
+      47.7
+     ],
+     [
+      "Computer Science",
+      "Sciences",
+      35.7
+     ],
+     [
+      "Geology",
+      "Sciences",
+      49.5
+     ],
+     [
+      "Neuroscience",
+      "Sciences",
+      31.6
+     ],
+     [
+      "Data Analytics",
+      "Sciences",
+      41.1
+     ]
+    ],
+    "code": "# Dot Strip Plot\n# Question: Where does each program's average class size fall on one line?\n# Put this script and dotstrip.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"dotstrip.csv\", show_col_types = FALSE) |>\n  mutate(college = fct_reorder(college, avg_class_size, .fun = median))   # biggest classes at the top\n\np <- ggplot(df, aes(x = avg_class_size, y = college)) +\n  # see-through dots, so overlapping programs show up as brighter spots\n  geom_point(color = \"#75AADB\", alpha = 0.7, size = 6, shape = 16) +\n  # a white tick marks each college's median\n  stat_summary(fun = median, geom = \"point\", shape = \"|\", size = 12, color = \"#E8EDF4\") +\n  scale_x_continuous(limits = c(0, NA), expand = expansion(mult = c(0, 0.05))) +\n  labs(x = \"Average class size\", y = NULL,\n       caption = \"Each dot is one program. White ticks mark each college's median. Sample values.\") +\n  theme_gallery() +\n  theme(panel.grid.major.y = element_blank(), plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"dotstrip.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "Where does each JVSD's spending per student fall on one line?",
+    "data": "FY25 Expanded List, joint vocational school districts. Polaris reported $0 and is left out.",
+    "note": "See-through dots show overlap, since darker spots mean several JVSDs sit close together."
+   },
+   "famous": [],
    "stories": []
   },
   {
@@ -514,6 +2942,109 @@ window.GALLERY = {
    "pairs": "Before and after comparisons across groups.",
    "question": "How did each college's retention rate change from 2020 to 2025?",
    "hint": "Two columns of values, and the tilt of each line tells the story.",
+   "lesson": {
+    "question": "How did each college's retention rate change from 2020 to 2025?",
+    "shape": "Long format: one row per college per year, with exactly two years. R connects each college's two points with a line.",
+    "columns": [
+     {
+      "name": "college",
+      "type": "category",
+      "desc": "One line"
+     },
+     {
+      "name": "year",
+      "type": "time",
+      "desc": "One of the two years being compared"
+     },
+     {
+      "name": "retention_rate",
+      "type": "number",
+      "desc": "Percent of first-year students who returned the next fall"
+     }
+    ],
+    "rows": [
+     [
+      "Arts and Sciences",
+      2020,
+      78
+     ],
+     [
+      "Arts and Sciences",
+      2025,
+      83
+     ],
+     [
+      "Business",
+      2020,
+      84
+     ],
+     [
+      "Business",
+      2025,
+      81
+     ],
+     [
+      "Education",
+      2020,
+      81
+     ],
+     [
+      "Education",
+      2025,
+      85
+     ],
+     [
+      "Engineering",
+      2020,
+      86
+     ],
+     [
+      "Engineering",
+      2025,
+      89
+     ],
+     [
+      "Health",
+      2020,
+      75
+     ],
+     [
+      "Health",
+      2025,
+      79
+     ],
+     [
+      "Nursing",
+      2020,
+      88
+     ],
+     [
+      "Nursing",
+      2025,
+      87
+     ]
+    ],
+    "code": "# Slope Chart\n# Question: How did each college's retention rate change from 2020 to 2025?\n# Put this script and slope.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"Rose\" = \"#75AADB\", \"Fell\" = \"#F2716F\")\n\ndf <- read_csv(\"slope.csv\", show_col_types = FALSE) |>\n  group_by(college) |>\n  mutate(direction = if_else(last(retention_rate, order_by = year) >= first(retention_rate, order_by = year),\n                             \"Rose\", \"Fell\")) |>\n  ungroup()\n\nfirst_year <- filter(df, year == min(year))\nlast_year  <- filter(df, year == max(year))\n\np <- ggplot(df, aes(x = factor(year), y = retention_rate, group = college, color = direction)) +\n  geom_line(linewidth = 1.3) +\n  geom_point(size = 3.8) +\n  geom_text(data = first_year, aes(label = paste0(college, \"   \", retention_rate, \"%\")),\n            hjust = 1, nudge_x = -0.06, family = font, size = 4.4, show.legend = FALSE) +\n  geom_text(data = last_year, aes(label = paste0(retention_rate, \"%\")),\n            hjust = 0, nudge_x = 0.06, family = font, size = 4.4, show.legend = FALSE) +\n  scale_color_manual(values = pal, name = NULL) +\n  scale_x_discrete(expand = expansion(add = c(1.1, 0.35))) +   # room for names on the left\n  labs(x = NULL, y = NULL, caption = \"Sample values, not real data.\") +\n  theme_gallery() +\n  theme(panel.grid = element_blank(), axis.text.y = element_blank(),\n        axis.text.x = element_text(size = 15, color = \"#E8EDF4\"), plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"slope.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "How did spending per student change in each sector from FY13 to FY26?",
+    "data": "Expanded List FY13 and FY26.",
+    "note": "E-school totals change sharply when large schools open or close, such as ECOT in 2018."
+   },
+   "famous": [
+    {
+     "title": "Slopegraphs",
+     "maker": "Edward Tufte; article by Charlie Park",
+     "year": "1983",
+     "source": "The Visual Display of Quantitative Information",
+     "site": "kottke.org",
+     "note": "Tufte drew this chart for his 1983 book and later named it the slopegraph. This post points to Charlie Park's well-known article on why such an elegant chart deserves more use.",
+     "url": "https://kottke.org/11/07/slopegraphs"
+    }
+   ],
    "stories": []
   },
   {
@@ -540,6 +3071,289 @@ window.GALLERY = {
    "pairs": "Leaderboards and popularity contests over time.",
    "question": "How did the top five majors trade places over ten years?",
    "hint": "Lines race up and down a leaderboard over time.",
+   "lesson": {
+    "question": "How did the top five majors trade places over ten years?",
+    "shape": "Long format: one row per major per year, with the number of students. R turns the counts into ranks for each year, so 1 means the most students.",
+    "columns": [
+     {
+      "name": "major",
+      "type": "category",
+      "desc": "One line"
+     },
+     {
+      "name": "year",
+      "type": "time",
+      "desc": "The horizontal axis"
+     },
+     {
+      "name": "students",
+      "type": "number",
+      "desc": "Students in the major. R ranks these within each year"
+     }
+    ],
+    "rows": [
+     [
+      "Business",
+      2016,
+      520
+     ],
+     [
+      "Business",
+      2017,
+      511
+     ],
+     [
+      "Business",
+      2018,
+      508
+     ],
+     [
+      "Business",
+      2019,
+      501
+     ],
+     [
+      "Business",
+      2020,
+      496
+     ],
+     [
+      "Business",
+      2021,
+      490
+     ],
+     [
+      "Business",
+      2022,
+      491
+     ],
+     [
+      "Business",
+      2023,
+      474
+     ],
+     [
+      "Business",
+      2024,
+      479
+     ],
+     [
+      "Business",
+      2025,
+      470
+     ],
+     [
+      "Biology",
+      2016,
+      480
+     ],
+     [
+      "Biology",
+      2017,
+      461
+     ],
+     [
+      "Biology",
+      2018,
+      463
+     ],
+     [
+      "Biology",
+      2019,
+      459
+     ],
+     [
+      "Biology",
+      2020,
+      448
+     ],
+     [
+      "Biology",
+      2021,
+      459
+     ],
+     [
+      "Biology",
+      2022,
+      441
+     ],
+     [
+      "Biology",
+      2023,
+      449
+     ],
+     [
+      "Biology",
+      2024,
+      448
+     ],
+     [
+      "Biology",
+      2025,
+      430
+     ],
+     [
+      "Psychology",
+      2016,
+      450
+     ],
+     [
+      "Psychology",
+      2017,
+      444
+     ],
+     [
+      "Psychology",
+      2018,
+      463
+     ],
+     [
+      "Psychology",
+      2019,
+      462
+     ],
+     [
+      "Psychology",
+      2020,
+      459
+     ],
+     [
+      "Psychology",
+      2021,
+      442
+     ],
+     [
+      "Psychology",
+      2022,
+      455
+     ],
+     [
+      "Psychology",
+      2023,
+      461
+     ],
+     [
+      "Psychology",
+      2024,
+      453
+     ],
+     [
+      "Psychology",
+      2025,
+      460
+     ],
+     [
+      "Computer Science",
+      2016,
+      300
+     ],
+     [
+      "Computer Science",
+      2017,
+      321
+     ],
+     [
+      "Computer Science",
+      2018,
+      352
+     ],
+     [
+      "Computer Science",
+      2019,
+      380
+     ],
+     [
+      "Computer Science",
+      2020,
+      424
+     ],
+     [
+      "Computer Science",
+      2021,
+      440
+     ],
+     [
+      "Computer Science",
+      2022,
+      471
+     ],
+     [
+      "Computer Science",
+      2023,
+      506
+     ],
+     [
+      "Computer Science",
+      2024,
+      544
+     ],
+     [
+      "Computer Science",
+      2025,
+      560
+     ],
+     [
+      "Nursing",
+      2016,
+      380
+     ],
+     [
+      "Nursing",
+      2017,
+      388
+     ],
+     [
+      "Nursing",
+      2018,
+      394
+     ],
+     [
+      "Nursing",
+      2019,
+      433
+     ],
+     [
+      "Nursing",
+      2020,
+      443
+     ],
+     [
+      "Nursing",
+      2021,
+      455
+     ],
+     [
+      "Nursing",
+      2022,
+      461
+     ],
+     [
+      "Nursing",
+      2023,
+      466
+     ],
+     [
+      "Nursing",
+      2024,
+      477
+     ],
+     [
+      "Nursing",
+      2025,
+      500
+     ]
+    ],
+    "code": "# Bump Chart\n# Question: How did the top five majors trade places over ten years?\n# Put this script and bump.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"Business\" = \"#F0B95A\", \"Biology\" = \"#7FD18C\", \"Psychology\" = \"#B79CFF\",\n         \"Computer Science\" = \"#75AADB\", \"Nursing\" = \"#F38ABE\")\n\ndf <- read_csv(\"bump.csv\", show_col_types = FALSE) |>\n  group_by(year) |>\n  mutate(rank = rank(-students, ties.method = \"first\")) |>   # 1 = most students that year\n  ungroup()\n\np <- ggplot(df, aes(x = year, y = rank, color = major)) +\n  geom_line(linewidth = 2.2) +\n  geom_point(size = 5) +\n  geom_text(data = filter(df, year == min(year)), aes(label = major),\n            hjust = 1, nudge_x = -0.35, family = font, size = 4.4) +\n  geom_text(data = filter(df, year == max(year)), aes(label = major),\n            hjust = 0, nudge_x = 0.35, family = font, size = 4.4) +\n  scale_y_reverse(breaks = 1:5, labels = paste0(\"#\", 1:5)) +\n  scale_x_continuous(breaks = seq(2016, 2025, 1), expand = expansion(add = c(3.3, 3.0))) +\n  scale_color_manual(values = pal, guide = \"none\") +\n  labs(x = NULL, y = NULL,\n       caption = \"Rank shows order only. A close race and a big lead look the same. Sample values.\") +\n  theme_gallery() +\n  theme(panel.grid.minor = element_blank(), panel.grid.major.x = element_blank(),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"bump.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "How did Ohio's eight big urban districts trade places on spending per student?",
+    "data": "Expanded List FY13 to FY26, the Ohio \"Big 8\" urban districts.",
+    "note": "Rank shows order only. A small dollar gap and a large one look the same here."
+   },
+   "famous": [],
    "stories": []
   },
   {
@@ -566,6 +3380,1634 @@ window.GALLERY = {
    "pairs": "Checking spread and shape before reporting averages.",
    "question": "What is the spread of student ages in a program?",
    "hint": "This chart uses only one numeric variable and shows its overall shape.",
+   "lesson": {
+    "question": "What is the spread of student ages in a program?",
+    "shape": "One row per student with one number. R sorts the values into bins and counts each bin. No groups are needed.",
+    "columns": [
+     {
+      "name": "student",
+      "type": "id",
+      "desc": "Who the row is. Not plotted"
+     },
+     {
+      "name": "age",
+      "type": "number",
+      "desc": "Age in years. R places each value in a bin"
+     }
+    ],
+    "rows": [
+     [
+      "S001",
+      22
+     ],
+     [
+      "S002",
+      29
+     ],
+     [
+      "S003",
+      21
+     ],
+     [
+      "S004",
+      29
+     ],
+     [
+      "S005",
+      20
+     ],
+     [
+      "S006",
+      18
+     ],
+     [
+      "S007",
+      19
+     ],
+     [
+      "S008",
+      41
+     ],
+     [
+      "S009",
+      24
+     ],
+     [
+      "S010",
+      21
+     ],
+     [
+      "S011",
+      20
+     ],
+     [
+      "S012",
+      45
+     ],
+     [
+      "S013",
+      21
+     ],
+     [
+      "S014",
+      23
+     ],
+     [
+      "S015",
+      42
+     ],
+     [
+      "S016",
+      19
+     ],
+     [
+      "S017",
+      28
+     ],
+     [
+      "S018",
+      27
+     ],
+     [
+      "S019",
+      26
+     ],
+     [
+      "S020",
+      25
+     ],
+     [
+      "S021",
+      29
+     ],
+     [
+      "S022",
+      23
+     ],
+     [
+      "S023",
+      20
+     ],
+     [
+      "S024",
+      22
+     ],
+     [
+      "S025",
+      32
+     ],
+     [
+      "S026",
+      24
+     ],
+     [
+      "S027",
+      40
+     ],
+     [
+      "S028",
+      19
+     ],
+     [
+      "S029",
+      22
+     ],
+     [
+      "S030",
+      20
+     ],
+     [
+      "S031",
+      22
+     ],
+     [
+      "S032",
+      25
+     ],
+     [
+      "S033",
+      18
+     ],
+     [
+      "S034",
+      32
+     ],
+     [
+      "S035",
+      42
+     ],
+     [
+      "S036",
+      31
+     ],
+     [
+      "S037",
+      21
+     ],
+     [
+      "S038",
+      19
+     ],
+     [
+      "S039",
+      21
+     ],
+     [
+      "S040",
+      20
+     ],
+     [
+      "S041",
+      20
+     ],
+     [
+      "S042",
+      17
+     ],
+     [
+      "S043",
+      21
+     ],
+     [
+      "S044",
+      19
+     ],
+     [
+      "S045",
+      20
+     ],
+     [
+      "S046",
+      20
+     ],
+     [
+      "S047",
+      20
+     ],
+     [
+      "S048",
+      28
+     ],
+     [
+      "S049",
+      27
+     ],
+     [
+      "S050",
+      51
+     ],
+     [
+      "S051",
+      22
+     ],
+     [
+      "S052",
+      21
+     ],
+     [
+      "S053",
+      21
+     ],
+     [
+      "S054",
+      28
+     ],
+     [
+      "S055",
+      20
+     ],
+     [
+      "S056",
+      20
+     ],
+     [
+      "S057",
+      26
+     ],
+     [
+      "S058",
+      21
+     ],
+     [
+      "S059",
+      20
+     ],
+     [
+      "S060",
+      20
+     ],
+     [
+      "S061",
+      20
+     ],
+     [
+      "S062",
+      23
+     ],
+     [
+      "S063",
+      21
+     ],
+     [
+      "S064",
+      28
+     ],
+     [
+      "S065",
+      32
+     ],
+     [
+      "S066",
+      20
+     ],
+     [
+      "S067",
+      21
+     ],
+     [
+      "S068",
+      20
+     ],
+     [
+      "S069",
+      19
+     ],
+     [
+      "S070",
+      21
+     ],
+     [
+      "S071",
+      24
+     ],
+     [
+      "S072",
+      26
+     ],
+     [
+      "S073",
+      27
+     ],
+     [
+      "S074",
+      20
+     ],
+     [
+      "S075",
+      39
+     ],
+     [
+      "S076",
+      29
+     ],
+     [
+      "S077",
+      18
+     ],
+     [
+      "S078",
+      22
+     ],
+     [
+      "S079",
+      21
+     ],
+     [
+      "S080",
+      30
+     ],
+     [
+      "S081",
+      21
+     ],
+     [
+      "S082",
+      20
+     ],
+     [
+      "S083",
+      23
+     ],
+     [
+      "S084",
+      40
+     ],
+     [
+      "S085",
+      21
+     ],
+     [
+      "S086",
+      21
+     ],
+     [
+      "S087",
+      20
+     ],
+     [
+      "S088",
+      21
+     ],
+     [
+      "S089",
+      21
+     ],
+     [
+      "S090",
+      33
+     ],
+     [
+      "S091",
+      18
+     ],
+     [
+      "S092",
+      22
+     ],
+     [
+      "S093",
+      22
+     ],
+     [
+      "S094",
+      19
+     ],
+     [
+      "S095",
+      20
+     ],
+     [
+      "S096",
+      20
+     ],
+     [
+      "S097",
+      23
+     ],
+     [
+      "S098",
+      20
+     ],
+     [
+      "S099",
+      26
+     ],
+     [
+      "S100",
+      30
+     ],
+     [
+      "S101",
+      21
+     ],
+     [
+      "S102",
+      31
+     ],
+     [
+      "S103",
+      20
+     ],
+     [
+      "S104",
+      37
+     ],
+     [
+      "S105",
+      23
+     ],
+     [
+      "S106",
+      36
+     ],
+     [
+      "S107",
+      21
+     ],
+     [
+      "S108",
+      47
+     ],
+     [
+      "S109",
+      22
+     ],
+     [
+      "S110",
+      21
+     ],
+     [
+      "S111",
+      19
+     ],
+     [
+      "S112",
+      20
+     ],
+     [
+      "S113",
+      21
+     ],
+     [
+      "S114",
+      19
+     ],
+     [
+      "S115",
+      19
+     ],
+     [
+      "S116",
+      20
+     ],
+     [
+      "S117",
+      26
+     ],
+     [
+      "S118",
+      21
+     ],
+     [
+      "S119",
+      31
+     ],
+     [
+      "S120",
+      42
+     ],
+     [
+      "S121",
+      19
+     ],
+     [
+      "S122",
+      44
+     ],
+     [
+      "S123",
+      28
+     ],
+     [
+      "S124",
+      26
+     ],
+     [
+      "S125",
+      18
+     ],
+     [
+      "S126",
+      31
+     ],
+     [
+      "S127",
+      38
+     ],
+     [
+      "S128",
+      17
+     ],
+     [
+      "S129",
+      21
+     ],
+     [
+      "S130",
+      19
+     ],
+     [
+      "S131",
+      23
+     ],
+     [
+      "S132",
+      18
+     ],
+     [
+      "S133",
+      21
+     ],
+     [
+      "S134",
+      45
+     ],
+     [
+      "S135",
+      20
+     ],
+     [
+      "S136",
+      22
+     ],
+     [
+      "S137",
+      26
+     ],
+     [
+      "S138",
+      21
+     ],
+     [
+      "S139",
+      21
+     ],
+     [
+      "S140",
+      26
+     ],
+     [
+      "S141",
+      21
+     ],
+     [
+      "S142",
+      24
+     ],
+     [
+      "S143",
+      21
+     ],
+     [
+      "S144",
+      28
+     ],
+     [
+      "S145",
+      19
+     ],
+     [
+      "S146",
+      27
+     ],
+     [
+      "S147",
+      23
+     ],
+     [
+      "S148",
+      21
+     ],
+     [
+      "S149",
+      21
+     ],
+     [
+      "S150",
+      20
+     ],
+     [
+      "S151",
+      22
+     ],
+     [
+      "S152",
+      30
+     ],
+     [
+      "S153",
+      18
+     ],
+     [
+      "S154",
+      19
+     ],
+     [
+      "S155",
+      21
+     ],
+     [
+      "S156",
+      18
+     ],
+     [
+      "S157",
+      30
+     ],
+     [
+      "S158",
+      20
+     ],
+     [
+      "S159",
+      23
+     ],
+     [
+      "S160",
+      24
+     ],
+     [
+      "S161",
+      22
+     ],
+     [
+      "S162",
+      18
+     ],
+     [
+      "S163",
+      21
+     ],
+     [
+      "S164",
+      22
+     ],
+     [
+      "S165",
+      35
+     ],
+     [
+      "S166",
+      44
+     ],
+     [
+      "S167",
+      25
+     ],
+     [
+      "S168",
+      31
+     ],
+     [
+      "S169",
+      23
+     ],
+     [
+      "S170",
+      23
+     ],
+     [
+      "S171",
+      27
+     ],
+     [
+      "S172",
+      18
+     ],
+     [
+      "S173",
+      27
+     ],
+     [
+      "S174",
+      36
+     ],
+     [
+      "S175",
+      26
+     ],
+     [
+      "S176",
+      21
+     ],
+     [
+      "S177",
+      29
+     ],
+     [
+      "S178",
+      19
+     ],
+     [
+      "S179",
+      19
+     ],
+     [
+      "S180",
+      21
+     ],
+     [
+      "S181",
+      21
+     ],
+     [
+      "S182",
+      20
+     ],
+     [
+      "S183",
+      21
+     ],
+     [
+      "S184",
+      21
+     ],
+     [
+      "S185",
+      24
+     ],
+     [
+      "S186",
+      26
+     ],
+     [
+      "S187",
+      37
+     ],
+     [
+      "S188",
+      29
+     ],
+     [
+      "S189",
+      22
+     ],
+     [
+      "S190",
+      20
+     ],
+     [
+      "S191",
+      29
+     ],
+     [
+      "S192",
+      20
+     ],
+     [
+      "S193",
+      17
+     ],
+     [
+      "S194",
+      19
+     ],
+     [
+      "S195",
+      20
+     ],
+     [
+      "S196",
+      18
+     ],
+     [
+      "S197",
+      35
+     ],
+     [
+      "S198",
+      19
+     ],
+     [
+      "S199",
+      19
+     ],
+     [
+      "S200",
+      21
+     ],
+     [
+      "S201",
+      22
+     ],
+     [
+      "S202",
+      24
+     ],
+     [
+      "S203",
+      20
+     ],
+     [
+      "S204",
+      19
+     ],
+     [
+      "S205",
+      21
+     ],
+     [
+      "S206",
+      20
+     ],
+     [
+      "S207",
+      22
+     ],
+     [
+      "S208",
+      17
+     ],
+     [
+      "S209",
+      19
+     ],
+     [
+      "S210",
+      24
+     ],
+     [
+      "S211",
+      23
+     ],
+     [
+      "S212",
+      28
+     ],
+     [
+      "S213",
+      21
+     ],
+     [
+      "S214",
+      50
+     ],
+     [
+      "S215",
+      35
+     ],
+     [
+      "S216",
+      25
+     ],
+     [
+      "S217",
+      22
+     ],
+     [
+      "S218",
+      22
+     ],
+     [
+      "S219",
+      29
+     ],
+     [
+      "S220",
+      27
+     ],
+     [
+      "S221",
+      20
+     ],
+     [
+      "S222",
+      41
+     ],
+     [
+      "S223",
+      26
+     ],
+     [
+      "S224",
+      37
+     ],
+     [
+      "S225",
+      19
+     ],
+     [
+      "S226",
+      21
+     ],
+     [
+      "S227",
+      29
+     ],
+     [
+      "S228",
+      28
+     ],
+     [
+      "S229",
+      42
+     ],
+     [
+      "S230",
+      45
+     ],
+     [
+      "S231",
+      18
+     ],
+     [
+      "S232",
+      23
+     ],
+     [
+      "S233",
+      23
+     ],
+     [
+      "S234",
+      22
+     ],
+     [
+      "S235",
+      19
+     ],
+     [
+      "S236",
+      28
+     ],
+     [
+      "S237",
+      22
+     ],
+     [
+      "S238",
+      23
+     ],
+     [
+      "S239",
+      21
+     ],
+     [
+      "S240",
+      21
+     ],
+     [
+      "S241",
+      21
+     ],
+     [
+      "S242",
+      21
+     ],
+     [
+      "S243",
+      27
+     ],
+     [
+      "S244",
+      29
+     ],
+     [
+      "S245",
+      28
+     ],
+     [
+      "S246",
+      20
+     ],
+     [
+      "S247",
+      22
+     ],
+     [
+      "S248",
+      39
+     ],
+     [
+      "S249",
+      18
+     ],
+     [
+      "S250",
+      21
+     ],
+     [
+      "S251",
+      22
+     ],
+     [
+      "S252",
+      21
+     ],
+     [
+      "S253",
+      32
+     ],
+     [
+      "S254",
+      20
+     ],
+     [
+      "S255",
+      24
+     ],
+     [
+      "S256",
+      22
+     ],
+     [
+      "S257",
+      22
+     ],
+     [
+      "S258",
+      19
+     ],
+     [
+      "S259",
+      22
+     ],
+     [
+      "S260",
+      21
+     ],
+     [
+      "S261",
+      24
+     ],
+     [
+      "S262",
+      19
+     ],
+     [
+      "S263",
+      20
+     ],
+     [
+      "S264",
+      21
+     ],
+     [
+      "S265",
+      41
+     ],
+     [
+      "S266",
+      19
+     ],
+     [
+      "S267",
+      28
+     ],
+     [
+      "S268",
+      22
+     ],
+     [
+      "S269",
+      21
+     ],
+     [
+      "S270",
+      38
+     ],
+     [
+      "S271",
+      25
+     ],
+     [
+      "S272",
+      29
+     ],
+     [
+      "S273",
+      28
+     ],
+     [
+      "S274",
+      22
+     ],
+     [
+      "S275",
+      24
+     ],
+     [
+      "S276",
+      28
+     ],
+     [
+      "S277",
+      22
+     ],
+     [
+      "S278",
+      49
+     ],
+     [
+      "S279",
+      22
+     ],
+     [
+      "S280",
+      25
+     ],
+     [
+      "S281",
+      20
+     ],
+     [
+      "S282",
+      30
+     ],
+     [
+      "S283",
+      21
+     ],
+     [
+      "S284",
+      34
+     ],
+     [
+      "S285",
+      19
+     ],
+     [
+      "S286",
+      24
+     ],
+     [
+      "S287",
+      21
+     ],
+     [
+      "S288",
+      22
+     ],
+     [
+      "S289",
+      21
+     ],
+     [
+      "S290",
+      34
+     ],
+     [
+      "S291",
+      23
+     ],
+     [
+      "S292",
+      20
+     ],
+     [
+      "S293",
+      28
+     ],
+     [
+      "S294",
+      21
+     ],
+     [
+      "S295",
+      18
+     ],
+     [
+      "S296",
+      22
+     ],
+     [
+      "S297",
+      20
+     ],
+     [
+      "S298",
+      17
+     ],
+     [
+      "S299",
+      27
+     ],
+     [
+      "S300",
+      19
+     ],
+     [
+      "S301",
+      22
+     ],
+     [
+      "S302",
+      44
+     ],
+     [
+      "S303",
+      20
+     ],
+     [
+      "S304",
+      43
+     ],
+     [
+      "S305",
+      21
+     ],
+     [
+      "S306",
+      24
+     ],
+     [
+      "S307",
+      34
+     ],
+     [
+      "S308",
+      20
+     ],
+     [
+      "S309",
+      21
+     ],
+     [
+      "S310",
+      24
+     ],
+     [
+      "S311",
+      24
+     ],
+     [
+      "S312",
+      29
+     ],
+     [
+      "S313",
+      25
+     ],
+     [
+      "S314",
+      21
+     ],
+     [
+      "S315",
+      19
+     ],
+     [
+      "S316",
+      23
+     ],
+     [
+      "S317",
+      20
+     ],
+     [
+      "S318",
+      23
+     ],
+     [
+      "S319",
+      19
+     ],
+     [
+      "S320",
+      19
+     ],
+     [
+      "S321",
+      22
+     ],
+     [
+      "S322",
+      18
+     ],
+     [
+      "S323",
+      44
+     ],
+     [
+      "S324",
+      23
+     ],
+     [
+      "S325",
+      21
+     ],
+     [
+      "S326",
+      21
+     ],
+     [
+      "S327",
+      26
+     ],
+     [
+      "S328",
+      21
+     ],
+     [
+      "S329",
+      40
+     ],
+     [
+      "S330",
+      19
+     ],
+     [
+      "S331",
+      21
+     ],
+     [
+      "S332",
+      23
+     ],
+     [
+      "S333",
+      23
+     ],
+     [
+      "S334",
+      24
+     ],
+     [
+      "S335",
+      30
+     ],
+     [
+      "S336",
+      37
+     ],
+     [
+      "S337",
+      35
+     ],
+     [
+      "S338",
+      21
+     ],
+     [
+      "S339",
+      22
+     ],
+     [
+      "S340",
+      27
+     ],
+     [
+      "S341",
+      25
+     ],
+     [
+      "S342",
+      36
+     ],
+     [
+      "S343",
+      23
+     ],
+     [
+      "S344",
+      18
+     ],
+     [
+      "S345",
+      20
+     ],
+     [
+      "S346",
+      21
+     ],
+     [
+      "S347",
+      18
+     ],
+     [
+      "S348",
+      19
+     ],
+     [
+      "S349",
+      31
+     ],
+     [
+      "S350",
+      22
+     ],
+     [
+      "S351",
+      23
+     ],
+     [
+      "S352",
+      19
+     ],
+     [
+      "S353",
+      21
+     ],
+     [
+      "S354",
+      20
+     ],
+     [
+      "S355",
+      20
+     ],
+     [
+      "S356",
+      22
+     ],
+     [
+      "S357",
+      23
+     ],
+     [
+      "S358",
+      20
+     ],
+     [
+      "S359",
+      22
+     ],
+     [
+      "S360",
+      22
+     ],
+     [
+      "S361",
+      22
+     ],
+     [
+      "S362",
+      20
+     ],
+     [
+      "S363",
+      30
+     ],
+     [
+      "S364",
+      20
+     ],
+     [
+      "S365",
+      17
+     ],
+     [
+      "S366",
+      42
+     ],
+     [
+      "S367",
+      24
+     ],
+     [
+      "S368",
+      17
+     ],
+     [
+      "S369",
+      25
+     ],
+     [
+      "S370",
+      57
+     ],
+     [
+      "S371",
+      30
+     ],
+     [
+      "S372",
+      30
+     ],
+     [
+      "S373",
+      23
+     ],
+     [
+      "S374",
+      29
+     ],
+     [
+      "S375",
+      34
+     ],
+     [
+      "S376",
+      22
+     ],
+     [
+      "S377",
+      19
+     ],
+     [
+      "S378",
+      20
+     ],
+     [
+      "S379",
+      32
+     ],
+     [
+      "S380",
+      42
+     ],
+     [
+      "S381",
+      30
+     ],
+     [
+      "S382",
+      21
+     ],
+     [
+      "S383",
+      21
+     ],
+     [
+      "S384",
+      22
+     ],
+     [
+      "S385",
+      21
+     ],
+     [
+      "S386",
+      22
+     ],
+     [
+      "S387",
+      19
+     ],
+     [
+      "S388",
+      20
+     ],
+     [
+      "S389",
+      20
+     ],
+     [
+      "S390",
+      20
+     ],
+     [
+      "S391",
+      24
+     ],
+     [
+      "S392",
+      34
+     ],
+     [
+      "S393",
+      23
+     ],
+     [
+      "S394",
+      38
+     ],
+     [
+      "S395",
+      19
+     ],
+     [
+      "S396",
+      26
+     ],
+     [
+      "S397",
+      43
+     ],
+     [
+      "S398",
+      19
+     ],
+     [
+      "S399",
+      43
+     ],
+     [
+      "S400",
+      23
+     ]
+    ],
+    "code": "# Histogram\n# Question: What is the spread of student ages in a program?\n# Put this script and histogram.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"histogram.csv\", show_col_types = FALSE)\n\np <- ggplot(df, aes(x = age)) +\n  # binwidth is a choice: try 1 or 5 and watch the shape change\n  geom_histogram(binwidth = 2, boundary = 16, fill = \"#7FD18C\", color = \"#161B23\", linewidth = 0.6) +\n  scale_x_continuous(breaks = seq(16, 64, 4)) +\n  scale_y_continuous(expand = expansion(mult = c(0, 0.06))) +\n  labs(x = \"Age\", y = \"Students\", caption = \"Each bar covers two years of age. Sample values, not real data.\") +\n  theme_gallery() +\n  theme(panel.grid.major.x = element_blank(), plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"histogram.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "What is the spread of spending per student across Ohio districts?",
+    "data": "FY25 Expanded List, the 607 traditional districts.",
+    "note": "The bin width of $1,000 is a choice. Wider or narrower bins can change the shape you see."
+   },
+   "famous": [],
    "stories": []
   },
   {
@@ -592,6 +5034,949 @@ window.GALLERY = {
    "pairs": "Group comparisons and the results of t-tests or ANOVA.",
    "question": "How do salaries vary across job families?",
    "hint": "This chart summarizes a spread with a box, whiskers, and a median line.",
+   "lesson": {
+    "question": "How do salaries vary across job families?",
+    "shape": "One row per employee with one number and a group. Each group needs enough rows (about 20 or more) for its box to mean much.",
+    "columns": [
+     {
+      "name": "employee",
+      "type": "id",
+      "desc": "Who the row is. Not plotted"
+     },
+     {
+      "name": "job_family",
+      "type": "category",
+      "desc": "One box per group"
+     },
+     {
+      "name": "salary",
+      "type": "number",
+      "desc": "Yearly salary in dollars"
+     }
+    ],
+    "rows": [
+     [
+      "E001",
+      "Administrative",
+      44300
+     ],
+     [
+      "E002",
+      "Administrative",
+      51400
+     ],
+     [
+      "E003",
+      "Administrative",
+      55800
+     ],
+     [
+      "E004",
+      "Administrative",
+      61400
+     ],
+     [
+      "E005",
+      "Administrative",
+      38500
+     ],
+     [
+      "E006",
+      "Administrative",
+      92000
+     ],
+     [
+      "E007",
+      "Administrative",
+      41500
+     ],
+     [
+      "E008",
+      "Administrative",
+      45700
+     ],
+     [
+      "E009",
+      "Administrative",
+      46900
+     ],
+     [
+      "E010",
+      "Administrative",
+      38900
+     ],
+     [
+      "E011",
+      "Administrative",
+      50000
+     ],
+     [
+      "E012",
+      "Administrative",
+      37900
+     ],
+     [
+      "E013",
+      "Administrative",
+      52000
+     ],
+     [
+      "E014",
+      "Administrative",
+      41600
+     ],
+     [
+      "E015",
+      "Administrative",
+      50200
+     ],
+     [
+      "E016",
+      "Administrative",
+      51300
+     ],
+     [
+      "E017",
+      "Administrative",
+      47300
+     ],
+     [
+      "E018",
+      "Administrative",
+      43800
+     ],
+     [
+      "E019",
+      "Administrative",
+      42500
+     ],
+     [
+      "E020",
+      "Administrative",
+      39900
+     ],
+     [
+      "E021",
+      "Administrative",
+      59400
+     ],
+     [
+      "E022",
+      "Administrative",
+      52500
+     ],
+     [
+      "E023",
+      "Administrative",
+      61800
+     ],
+     [
+      "E024",
+      "Administrative",
+      50900
+     ],
+     [
+      "E025",
+      "Administrative",
+      50600
+     ],
+     [
+      "E026",
+      "Administrative",
+      43900
+     ],
+     [
+      "E027",
+      "Administrative",
+      46300
+     ],
+     [
+      "E028",
+      "Administrative",
+      36800
+     ],
+     [
+      "E029",
+      "Administrative",
+      55400
+     ],
+     [
+      "E030",
+      "Administrative",
+      55400
+     ],
+     [
+      "E031",
+      "Administrative",
+      59000
+     ],
+     [
+      "E032",
+      "Administrative",
+      58900
+     ],
+     [
+      "E033",
+      "Administrative",
+      40700
+     ],
+     [
+      "E034",
+      "Administrative",
+      29800
+     ],
+     [
+      "E035",
+      "Administrative",
+      53800
+     ],
+     [
+      "E036",
+      "Administrative",
+      50000
+     ],
+     [
+      "E037",
+      "Administrative",
+      41000
+     ],
+     [
+      "E038",
+      "Administrative",
+      41400
+     ],
+     [
+      "E039",
+      "Facilities",
+      49200
+     ],
+     [
+      "E040",
+      "Facilities",
+      55400
+     ],
+     [
+      "E041",
+      "Facilities",
+      46900
+     ],
+     [
+      "E042",
+      "Facilities",
+      39800
+     ],
+     [
+      "E043",
+      "Facilities",
+      49400
+     ],
+     [
+      "E044",
+      "Facilities",
+      51100
+     ],
+     [
+      "E045",
+      "Facilities",
+      36600
+     ],
+     [
+      "E046",
+      "Facilities",
+      48900
+     ],
+     [
+      "E047",
+      "Facilities",
+      38000
+     ],
+     [
+      "E048",
+      "Facilities",
+      44300
+     ],
+     [
+      "E049",
+      "Facilities",
+      47200
+     ],
+     [
+      "E050",
+      "Facilities",
+      44400
+     ],
+     [
+      "E051",
+      "Facilities",
+      74000
+     ],
+     [
+      "E052",
+      "Facilities",
+      46500
+     ],
+     [
+      "E053",
+      "Facilities",
+      35200
+     ],
+     [
+      "E054",
+      "Facilities",
+      48500
+     ],
+     [
+      "E055",
+      "Facilities",
+      32000
+     ],
+     [
+      "E056",
+      "Facilities",
+      40900
+     ],
+     [
+      "E057",
+      "Facilities",
+      41000
+     ],
+     [
+      "E058",
+      "Facilities",
+      39600
+     ],
+     [
+      "E059",
+      "Facilities",
+      45400
+     ],
+     [
+      "E060",
+      "Facilities",
+      45700
+     ],
+     [
+      "E061",
+      "Facilities",
+      55600
+     ],
+     [
+      "E062",
+      "Facilities",
+      46900
+     ],
+     [
+      "E063",
+      "Facilities",
+      51100
+     ],
+     [
+      "E064",
+      "Facilities",
+      36900
+     ],
+     [
+      "E065",
+      "Facilities",
+      50800
+     ],
+     [
+      "E066",
+      "Facilities",
+      49600
+     ],
+     [
+      "E067",
+      "Facilities",
+      52700
+     ],
+     [
+      "E068",
+      "Facilities",
+      53000
+     ],
+     [
+      "E069",
+      "Facilities",
+      38400
+     ],
+     [
+      "E070",
+      "Facilities",
+      35700
+     ],
+     [
+      "E071",
+      "Facilities",
+      39200
+     ],
+     [
+      "E072",
+      "Facilities",
+      40000
+     ],
+     [
+      "E073",
+      "Information Technology",
+      95800
+     ],
+     [
+      "E074",
+      "Information Technology",
+      53000
+     ],
+     [
+      "E075",
+      "Information Technology",
+      78700
+     ],
+     [
+      "E076",
+      "Information Technology",
+      90900
+     ],
+     [
+      "E077",
+      "Information Technology",
+      76100
+     ],
+     [
+      "E078",
+      "Information Technology",
+      60000
+     ],
+     [
+      "E079",
+      "Information Technology",
+      66900
+     ],
+     [
+      "E080",
+      "Information Technology",
+      85000
+     ],
+     [
+      "E081",
+      "Information Technology",
+      87400
+     ],
+     [
+      "E082",
+      "Information Technology",
+      76100
+     ],
+     [
+      "E083",
+      "Information Technology",
+      82400
+     ],
+     [
+      "E084",
+      "Information Technology",
+      95700
+     ],
+     [
+      "E085",
+      "Information Technology",
+      73700
+     ],
+     [
+      "E086",
+      "Information Technology",
+      103200
+     ],
+     [
+      "E087",
+      "Information Technology",
+      65500
+     ],
+     [
+      "E088",
+      "Information Technology",
+      102300
+     ],
+     [
+      "E089",
+      "Information Technology",
+      59800
+     ],
+     [
+      "E090",
+      "Information Technology",
+      95100
+     ],
+     [
+      "E091",
+      "Information Technology",
+      78100
+     ],
+     [
+      "E092",
+      "Information Technology",
+      58500
+     ],
+     [
+      "E093",
+      "Information Technology",
+      79600
+     ],
+     [
+      "E094",
+      "Information Technology",
+      85000
+     ],
+     [
+      "E095",
+      "Information Technology",
+      85400
+     ],
+     [
+      "E096",
+      "Information Technology",
+      79500
+     ],
+     [
+      "E097",
+      "Information Technology",
+      75800
+     ],
+     [
+      "E098",
+      "Information Technology",
+      74200
+     ],
+     [
+      "E099",
+      "Information Technology",
+      79200
+     ],
+     [
+      "E100",
+      "Information Technology",
+      93500
+     ],
+     [
+      "E101",
+      "Information Technology",
+      84000
+     ],
+     [
+      "E102",
+      "Information Technology",
+      86900
+     ],
+     [
+      "E103",
+      "Information Technology",
+      80400
+     ],
+     [
+      "E104",
+      "Information Technology",
+      95900
+     ],
+     [
+      "E105",
+      "Information Technology",
+      108600
+     ],
+     [
+      "E106",
+      "Information Technology",
+      106200
+     ],
+     [
+      "E107",
+      "Information Technology",
+      62600
+     ],
+     [
+      "E108",
+      "Information Technology",
+      67000
+     ],
+     [
+      "E109",
+      "Student Services",
+      43100
+     ],
+     [
+      "E110",
+      "Student Services",
+      49000
+     ],
+     [
+      "E111",
+      "Student Services",
+      68700
+     ],
+     [
+      "E112",
+      "Student Services",
+      48900
+     ],
+     [
+      "E113",
+      "Student Services",
+      52900
+     ],
+     [
+      "E114",
+      "Student Services",
+      50200
+     ],
+     [
+      "E115",
+      "Student Services",
+      35900
+     ],
+     [
+      "E116",
+      "Student Services",
+      41800
+     ],
+     [
+      "E117",
+      "Student Services",
+      45800
+     ],
+     [
+      "E118",
+      "Student Services",
+      44700
+     ],
+     [
+      "E119",
+      "Student Services",
+      49100
+     ],
+     [
+      "E120",
+      "Student Services",
+      48000
+     ],
+     [
+      "E121",
+      "Student Services",
+      131000
+     ],
+     [
+      "E122",
+      "Student Services",
+      38100
+     ],
+     [
+      "E123",
+      "Student Services",
+      60600
+     ],
+     [
+      "E124",
+      "Student Services",
+      56200
+     ],
+     [
+      "E125",
+      "Student Services",
+      45800
+     ],
+     [
+      "E126",
+      "Student Services",
+      47800
+     ],
+     [
+      "E127",
+      "Student Services",
+      44500
+     ],
+     [
+      "E128",
+      "Student Services",
+      35600
+     ],
+     [
+      "E129",
+      "Student Services",
+      57700
+     ],
+     [
+      "E130",
+      "Student Services",
+      48200
+     ],
+     [
+      "E131",
+      "Student Services",
+      61100
+     ],
+     [
+      "E132",
+      "Student Services",
+      64800
+     ],
+     [
+      "E133",
+      "Student Services",
+      40500
+     ],
+     [
+      "E134",
+      "Student Services",
+      42300
+     ],
+     [
+      "E135",
+      "Student Services",
+      56400
+     ],
+     [
+      "E136",
+      "Student Services",
+      47200
+     ],
+     [
+      "E137",
+      "Student Services",
+      46200
+     ],
+     [
+      "E138",
+      "Student Services",
+      48500
+     ],
+     [
+      "E139",
+      "Student Services",
+      55600
+     ],
+     [
+      "E140",
+      "Student Services",
+      40300
+     ],
+     [
+      "E141",
+      "Student Services",
+      52600
+     ],
+     [
+      "E142",
+      "Student Services",
+      61400
+     ],
+     [
+      "E143",
+      "Student Services",
+      47200
+     ],
+     [
+      "E144",
+      "Student Services",
+      48800
+     ],
+     [
+      "E145",
+      "Student Services",
+      55700
+     ],
+     [
+      "E146",
+      "Student Services",
+      60300
+     ],
+     [
+      "E147",
+      "Student Services",
+      60400
+     ],
+     [
+      "E148",
+      "Student Services",
+      56100
+     ],
+     [
+      "E149",
+      "Finance",
+      89100
+     ],
+     [
+      "E150",
+      "Finance",
+      62400
+     ],
+     [
+      "E151",
+      "Finance",
+      89400
+     ],
+     [
+      "E152",
+      "Finance",
+      76900
+     ],
+     [
+      "E153",
+      "Finance",
+      66400
+     ],
+     [
+      "E154",
+      "Finance",
+      53100
+     ],
+     [
+      "E155",
+      "Finance",
+      88300
+     ],
+     [
+      "E156",
+      "Finance",
+      73100
+     ],
+     [
+      "E157",
+      "Finance",
+      76700
+     ],
+     [
+      "E158",
+      "Finance",
+      88700
+     ],
+     [
+      "E159",
+      "Finance",
+      65400
+     ],
+     [
+      "E160",
+      "Finance",
+      79400
+     ],
+     [
+      "E161",
+      "Finance",
+      80400
+     ],
+     [
+      "E162",
+      "Finance",
+      89500
+     ],
+     [
+      "E163",
+      "Finance",
+      73900
+     ],
+     [
+      "E164",
+      "Finance",
+      92000
+     ],
+     [
+      "E165",
+      "Finance",
+      63800
+     ],
+     [
+      "E166",
+      "Finance",
+      69500
+     ],
+     [
+      "E167",
+      "Finance",
+      62400
+     ],
+     [
+      "E168",
+      "Finance",
+      58800
+     ],
+     [
+      "E169",
+      "Finance",
+      90200
+     ],
+     [
+      "E170",
+      "Finance",
+      73500
+     ],
+     [
+      "E171",
+      "Finance",
+      69700
+     ],
+     [
+      "E172",
+      "Finance",
+      72400
+     ],
+     [
+      "E173",
+      "Finance",
+      71800
+     ],
+     [
+      "E174",
+      "Finance",
+      52400
+     ],
+     [
+      "E175",
+      "Finance",
+      64700
+     ],
+     [
+      "E176",
+      "Finance",
+      74600
+     ],
+     [
+      "E177",
+      "Finance",
+      55600
+     ],
+     [
+      "E178",
+      "Finance",
+      67500
+     ],
+     [
+      "E179",
+      "Finance",
+      65300
+     ],
+     [
+      "E180",
+      "Finance",
+      58200
+     ]
+    ],
+    "code": "# Box Plot\n# Question: How do salaries vary across job families?\n# Put this script and box.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"box.csv\", show_col_types = FALSE) |>\n  mutate(job_family = fct_reorder(job_family, salary, .fun = median))   # highest median on the right\n\np <- ggplot(df, aes(x = job_family, y = salary)) +\n  geom_boxplot(fill = \"#7FD18C\", color = \"#E8EDF4\", alpha = 0.85, width = 0.55,\n               outlier.color = \"#F0B95A\", outlier.size = 3) +\n  scale_x_discrete(labels = function(x) str_wrap(x, 12)) +\n  scale_y_continuous(labels = scales::dollar_format(scale = 1 / 1000, suffix = \"K\")) +\n  labs(x = NULL, y = \"Yearly salary\",\n       caption = \"Box: middle half. Line: median. Whiskers: typical range. Gold dots: unusual. Sample values.\") +\n  theme_gallery() +\n  theme(panel.grid.major.x = element_blank(), plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"box.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "How does spending per student vary within each sector?",
+    "data": "FY25 Expanded List, all sectors.",
+    "note": "STEM has only eight schools, so its box rests on few values."
+   },
+   "famous": [
+    {
+     "title": "40 years of boxplots",
+     "maker": "Hadley Wickham and Lisa Stryjewski",
+     "year": "2012",
+     "source": "",
+     "site": "had.co.nz",
+     "note": "Traces the box plot from John Tukey's 1970 \"schematic plot\" through the many versions that followed, including ones that show more of the data's shape.",
+     "url": "https://vita.had.co.nz/papers/boxplots.html"
+    }
+   ],
    "stories": []
   },
   {
@@ -616,8 +6001,131 @@ window.GALLERY = {
    ],
    "watch": "Different scales on the two sides break the comparison.",
    "pairs": "Demographic comparisons between two groups.",
-   "question": "How do age bands compare between online and on campus students?",
+   "question": "How do age bands compare between online and on-campus students?",
    "hint": "Two histograms standing back to back.",
+   "lesson": {
+    "question": "How do age bands compare between online and on-campus students?",
+    "shape": "Long format: one row per age band per group, with a count. The age bands must be in order. R turns counts into shares of each group, so groups of different sizes can be compared.",
+    "columns": [
+     {
+      "name": "age_band",
+      "type": "category",
+      "desc": "One row of bars, youngest at the bottom"
+     },
+     {
+      "name": "format",
+      "type": "category",
+      "desc": "Which side of the pyramid: On campus or Online"
+     },
+     {
+      "name": "students",
+      "type": "number",
+      "desc": "Students in that band and group"
+     }
+    ],
+    "rows": [
+     [
+      "18-19",
+      "On campus",
+      1420
+     ],
+     [
+      "18-19",
+      "Online",
+      80
+     ],
+     [
+      "20-21",
+      "On campus",
+      1610
+     ],
+     [
+      "20-21",
+      "Online",
+      160
+     ],
+     [
+      "22-24",
+      "On campus",
+      690
+     ],
+     [
+      "22-24",
+      "Online",
+      240
+     ],
+     [
+      "25-29",
+      "On campus",
+      210
+     ],
+     [
+      "25-29",
+      "Online",
+      420
+     ],
+     [
+      "30-34",
+      "On campus",
+      90
+     ],
+     [
+      "30-34",
+      "Online",
+      460
+     ],
+     [
+      "35-44",
+      "On campus",
+      60
+     ],
+     [
+      "35-44",
+      "Online",
+      610
+     ],
+     [
+      "45-54",
+      "On campus",
+      30
+     ],
+     [
+      "45-54",
+      "Online",
+      380
+     ],
+     [
+      "55+",
+      "On campus",
+      10
+     ],
+     [
+      "55+",
+      "Online",
+      150
+     ]
+    ],
+    "code": "# Population Pyramid\n# Question: How do age bands compare between online and on-campus students?\n# Put this script and poppyramid.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"On campus\" = \"#7FD18C\", \"Online\" = \"#B79CFF\")\n\ndf <- read_csv(\"poppyramid.csv\", show_col_types = FALSE) |>\n  mutate(age_band = fct_inorder(age_band)) |>          # keep the order from the file\n  group_by(format) |>\n  mutate(share = students / sum(students)) |>          # share of each group, not raw counts\n  ungroup() |>\n  mutate(plot_share = if_else(format == \"On campus\", -share, share))   # on campus to the left\n\nwidest <- max(df$share) * 1.05   # the same reach on both sides keeps one shared scale\n\np <- ggplot(df, aes(x = plot_share, y = age_band, fill = format)) +\n  geom_col(width = 0.82) +\n  geom_vline(xintercept = 0, color = \"#161B23\", linewidth = 1) +\n  # both sides use one scale, so equal bar lengths mean equal shares\n  scale_x_continuous(labels = function(x) scales::percent(abs(x)), limits = c(-widest, widest),\n                     breaks = seq(-0.4, 0.4, 0.1)) +\n  scale_fill_manual(values = pal, name = NULL) +\n  labs(x = \"Share of each group's students\", y = \"Age\",\n       caption = \"On campus left, online right. Both sides add to 100%. Sample values, not real data.\") +\n  theme_gallery() +\n  theme(panel.grid.major.y = element_blank(), plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"poppyramid.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "How do district and community school sizes compare?",
+    "data": "FY25 Expanded List, traditional districts and brick and mortar community schools.",
+    "note": "Shares are used because there are different numbers of each. Both sides share one scale."
+   },
+   "famous": [
+    {
+     "title": "Distribution by age and sex, Statistical Atlas of the United States",
+     "maker": "Francis Amasa Walker, U.S. Census Office",
+     "year": "1874",
+     "source": "Statistical Atlas of the United States",
+     "site": "David Rumsey Map Collection",
+     "note": "Charts of the 1870 population by age and sex, with figures for 1850 and 1860 added. An early example of the chart now called a population pyramid.",
+     "url": "https://davidrumsey.com/maps1130257-29197.html"
+    }
+   ],
    "stories": []
   },
   {
@@ -644,6 +6152,1314 @@ window.GALLERY = {
    "pairs": "Small datasets where every case deserves to be visible.",
    "question": "Where does every course's enrollment fall along one axis?",
    "hint": "Each value is one thin stripe, like the lines on a barcode.",
+   "lesson": {
+    "question": "Where does every course's enrollment fall along one axis?",
+    "shape": "One row per course with one number, plus an optional group column. Each value becomes one thin line.",
+    "columns": [
+     {
+      "name": "course",
+      "type": "id",
+      "desc": "Who the row is. Not plotted"
+     },
+     {
+      "name": "level",
+      "type": "category",
+      "desc": "Optional group: one row of lines per course level"
+     },
+     {
+      "name": "enrollment",
+      "type": "number",
+      "desc": "Students enrolled in the course"
+     }
+    ],
+    "rows": [
+     [
+      "101",
+      "100 level",
+      50
+     ],
+     [
+      "102",
+      "100 level",
+      84
+     ],
+     [
+      "103",
+      "100 level",
+      38
+     ],
+     [
+      "104",
+      "100 level",
+      26
+     ],
+     [
+      "105",
+      "100 level",
+      88
+     ],
+     [
+      "106",
+      "100 level",
+      72
+     ],
+     [
+      "107",
+      "100 level",
+      34
+     ],
+     [
+      "108",
+      "100 level",
+      34
+     ],
+     [
+      "109",
+      "100 level",
+      46
+     ],
+     [
+      "110",
+      "100 level",
+      52
+     ],
+     [
+      "111",
+      "100 level",
+      45
+     ],
+     [
+      "112",
+      "100 level",
+      118
+     ],
+     [
+      "113",
+      "100 level",
+      131
+     ],
+     [
+      "114",
+      "100 level",
+      46
+     ],
+     [
+      "115",
+      "100 level",
+      46
+     ],
+     [
+      "116",
+      "100 level",
+      47
+     ],
+     [
+      "117",
+      "100 level",
+      65
+     ],
+     [
+      "118",
+      "100 level",
+      41
+     ],
+     [
+      "119",
+      "100 level",
+      47
+     ],
+     [
+      "120",
+      "100 level",
+      45
+     ],
+     [
+      "121",
+      "100 level",
+      42
+     ],
+     [
+      "122",
+      "100 level",
+      45
+     ],
+     [
+      "123",
+      "100 level",
+      76
+     ],
+     [
+      "124",
+      "100 level",
+      64
+     ],
+     [
+      "125",
+      "100 level",
+      41
+     ],
+     [
+      "126",
+      "100 level",
+      32
+     ],
+     [
+      "127",
+      "100 level",
+      38
+     ],
+     [
+      "128",
+      "100 level",
+      30
+     ],
+     [
+      "129",
+      "100 level",
+      52
+     ],
+     [
+      "130",
+      "100 level",
+      58
+     ],
+     [
+      "131",
+      "100 level",
+      25
+     ],
+     [
+      "132",
+      "100 level",
+      55
+     ],
+     [
+      "133",
+      "100 level",
+      54
+     ],
+     [
+      "134",
+      "100 level",
+      51
+     ],
+     [
+      "135",
+      "100 level",
+      28
+     ],
+     [
+      "136",
+      "100 level",
+      51
+     ],
+     [
+      "137",
+      "100 level",
+      86
+     ],
+     [
+      "138",
+      "100 level",
+      27
+     ],
+     [
+      "139",
+      "100 level",
+      49
+     ],
+     [
+      "140",
+      "100 level",
+      55
+     ],
+     [
+      "141",
+      "100 level",
+      73
+     ],
+     [
+      "142",
+      "100 level",
+      46
+     ],
+     [
+      "143",
+      "100 level",
+      50
+     ],
+     [
+      "144",
+      "100 level",
+      70
+     ],
+     [
+      "145",
+      "100 level",
+      56
+     ],
+     [
+      "146",
+      "100 level",
+      75
+     ],
+     [
+      "147",
+      "100 level",
+      65
+     ],
+     [
+      "148",
+      "100 level",
+      40
+     ],
+     [
+      "149",
+      "100 level",
+      41
+     ],
+     [
+      "150",
+      "100 level",
+      52
+     ],
+     [
+      "151",
+      "100 level",
+      43
+     ],
+     [
+      "152",
+      "100 level",
+      27
+     ],
+     [
+      "153",
+      "100 level",
+      43
+     ],
+     [
+      "154",
+      "100 level",
+      75
+     ],
+     [
+      "155",
+      "100 level",
+      39
+     ],
+     [
+      "156",
+      "100 level",
+      49
+     ],
+     [
+      "157",
+      "100 level",
+      55
+     ],
+     [
+      "158",
+      "100 level",
+      64
+     ],
+     [
+      "159",
+      "100 level",
+      40
+     ],
+     [
+      "160",
+      "100 level",
+      67
+     ],
+     [
+      "161",
+      "100 level",
+      62
+     ],
+     [
+      "162",
+      "100 level",
+      45
+     ],
+     [
+      "163",
+      "100 level",
+      65
+     ],
+     [
+      "164",
+      "100 level",
+      63
+     ],
+     [
+      "165",
+      "100 level",
+      42
+     ],
+     [
+      "166",
+      "100 level",
+      38
+     ],
+     [
+      "167",
+      "100 level",
+      88
+     ],
+     [
+      "168",
+      "100 level",
+      33
+     ],
+     [
+      "169",
+      "100 level",
+      57
+     ],
+     [
+      "170",
+      "100 level",
+      57
+     ],
+     [
+      "171",
+      "100 level",
+      48
+     ],
+     [
+      "172",
+      "100 level",
+      75
+     ],
+     [
+      "173",
+      "100 level",
+      45
+     ],
+     [
+      "174",
+      "100 level",
+      75
+     ],
+     [
+      "175",
+      "100 level",
+      45
+     ],
+     [
+      "176",
+      "100 level",
+      53
+     ],
+     [
+      "177",
+      "100 level",
+      66
+     ],
+     [
+      "178",
+      "100 level",
+      36
+     ],
+     [
+      "179",
+      "100 level",
+      52
+     ],
+     [
+      "180",
+      "100 level",
+      57
+     ],
+     [
+      "201",
+      "200 level",
+      33
+     ],
+     [
+      "202",
+      "200 level",
+      40
+     ],
+     [
+      "203",
+      "200 level",
+      24
+     ],
+     [
+      "204",
+      "200 level",
+      50
+     ],
+     [
+      "205",
+      "200 level",
+      41
+     ],
+     [
+      "206",
+      "200 level",
+      25
+     ],
+     [
+      "207",
+      "200 level",
+      28
+     ],
+     [
+      "208",
+      "200 level",
+      43
+     ],
+     [
+      "209",
+      "200 level",
+      25
+     ],
+     [
+      "210",
+      "200 level",
+      31
+     ],
+     [
+      "211",
+      "200 level",
+      12
+     ],
+     [
+      "212",
+      "200 level",
+      32
+     ],
+     [
+      "213",
+      "200 level",
+      43
+     ],
+     [
+      "214",
+      "200 level",
+      49
+     ],
+     [
+      "215",
+      "200 level",
+      32
+     ],
+     [
+      "216",
+      "200 level",
+      42
+     ],
+     [
+      "217",
+      "200 level",
+      19
+     ],
+     [
+      "218",
+      "200 level",
+      42
+     ],
+     [
+      "219",
+      "200 level",
+      24
+     ],
+     [
+      "220",
+      "200 level",
+      40
+     ],
+     [
+      "221",
+      "200 level",
+      24
+     ],
+     [
+      "222",
+      "200 level",
+      24
+     ],
+     [
+      "223",
+      "200 level",
+      49
+     ],
+     [
+      "224",
+      "200 level",
+      5
+     ],
+     [
+      "225",
+      "200 level",
+      49
+     ],
+     [
+      "226",
+      "200 level",
+      25
+     ],
+     [
+      "227",
+      "200 level",
+      41
+     ],
+     [
+      "228",
+      "200 level",
+      45
+     ],
+     [
+      "229",
+      "200 level",
+      30
+     ],
+     [
+      "230",
+      "200 level",
+      48
+     ],
+     [
+      "231",
+      "200 level",
+      56
+     ],
+     [
+      "232",
+      "200 level",
+      51
+     ],
+     [
+      "233",
+      "200 level",
+      34
+     ],
+     [
+      "234",
+      "200 level",
+      43
+     ],
+     [
+      "235",
+      "200 level",
+      43
+     ],
+     [
+      "236",
+      "200 level",
+      26
+     ],
+     [
+      "237",
+      "200 level",
+      40
+     ],
+     [
+      "238",
+      "200 level",
+      35
+     ],
+     [
+      "239",
+      "200 level",
+      33
+     ],
+     [
+      "240",
+      "200 level",
+      33
+     ],
+     [
+      "241",
+      "200 level",
+      33
+     ],
+     [
+      "242",
+      "200 level",
+      28
+     ],
+     [
+      "243",
+      "200 level",
+      47
+     ],
+     [
+      "244",
+      "200 level",
+      41
+     ],
+     [
+      "245",
+      "200 level",
+      35
+     ],
+     [
+      "246",
+      "200 level",
+      36
+     ],
+     [
+      "247",
+      "200 level",
+      27
+     ],
+     [
+      "248",
+      "200 level",
+      32
+     ],
+     [
+      "249",
+      "200 level",
+      7
+     ],
+     [
+      "250",
+      "200 level",
+      47
+     ],
+     [
+      "251",
+      "200 level",
+      49
+     ],
+     [
+      "252",
+      "200 level",
+      14
+     ],
+     [
+      "253",
+      "200 level",
+      17
+     ],
+     [
+      "254",
+      "200 level",
+      35
+     ],
+     [
+      "255",
+      "200 level",
+      17
+     ],
+     [
+      "256",
+      "200 level",
+      44
+     ],
+     [
+      "257",
+      "200 level",
+      38
+     ],
+     [
+      "258",
+      "200 level",
+      33
+     ],
+     [
+      "259",
+      "200 level",
+      47
+     ],
+     [
+      "260",
+      "200 level",
+      35
+     ],
+     [
+      "261",
+      "200 level",
+      20
+     ],
+     [
+      "262",
+      "200 level",
+      25
+     ],
+     [
+      "263",
+      "200 level",
+      36
+     ],
+     [
+      "264",
+      "200 level",
+      41
+     ],
+     [
+      "265",
+      "200 level",
+      16
+     ],
+     [
+      "266",
+      "200 level",
+      46
+     ],
+     [
+      "267",
+      "200 level",
+      17
+     ],
+     [
+      "268",
+      "200 level",
+      45
+     ],
+     [
+      "269",
+      "200 level",
+      12
+     ],
+     [
+      "270",
+      "200 level",
+      39
+     ],
+     [
+      "301",
+      "300 level",
+      31
+     ],
+     [
+      "302",
+      "300 level",
+      30
+     ],
+     [
+      "303",
+      "300 level",
+      22
+     ],
+     [
+      "304",
+      "300 level",
+      30
+     ],
+     [
+      "305",
+      "300 level",
+      33
+     ],
+     [
+      "306",
+      "300 level",
+      27
+     ],
+     [
+      "307",
+      "300 level",
+      11
+     ],
+     [
+      "308",
+      "300 level",
+      24
+     ],
+     [
+      "309",
+      "300 level",
+      19
+     ],
+     [
+      "310",
+      "300 level",
+      23
+     ],
+     [
+      "311",
+      "300 level",
+      22
+     ],
+     [
+      "312",
+      "300 level",
+      21
+     ],
+     [
+      "313",
+      "300 level",
+      25
+     ],
+     [
+      "314",
+      "300 level",
+      30
+     ],
+     [
+      "315",
+      "300 level",
+      24
+     ],
+     [
+      "316",
+      "300 level",
+      13
+     ],
+     [
+      "317",
+      "300 level",
+      11
+     ],
+     [
+      "318",
+      "300 level",
+      9
+     ],
+     [
+      "319",
+      "300 level",
+      25
+     ],
+     [
+      "320",
+      "300 level",
+      18
+     ],
+     [
+      "321",
+      "300 level",
+      19
+     ],
+     [
+      "322",
+      "300 level",
+      25
+     ],
+     [
+      "323",
+      "300 level",
+      27
+     ],
+     [
+      "324",
+      "300 level",
+      13
+     ],
+     [
+      "325",
+      "300 level",
+      18
+     ],
+     [
+      "326",
+      "300 level",
+      20
+     ],
+     [
+      "327",
+      "300 level",
+      16
+     ],
+     [
+      "328",
+      "300 level",
+      26
+     ],
+     [
+      "329",
+      "300 level",
+      29
+     ],
+     [
+      "330",
+      "300 level",
+      21
+     ],
+     [
+      "331",
+      "300 level",
+      27
+     ],
+     [
+      "332",
+      "300 level",
+      20
+     ],
+     [
+      "333",
+      "300 level",
+      20
+     ],
+     [
+      "334",
+      "300 level",
+      16
+     ],
+     [
+      "335",
+      "300 level",
+      21
+     ],
+     [
+      "336",
+      "300 level",
+      29
+     ],
+     [
+      "337",
+      "300 level",
+      32
+     ],
+     [
+      "338",
+      "300 level",
+      19
+     ],
+     [
+      "339",
+      "300 level",
+      22
+     ],
+     [
+      "340",
+      "300 level",
+      30
+     ],
+     [
+      "341",
+      "300 level",
+      15
+     ],
+     [
+      "342",
+      "300 level",
+      16
+     ],
+     [
+      "343",
+      "300 level",
+      20
+     ],
+     [
+      "344",
+      "300 level",
+      20
+     ],
+     [
+      "345",
+      "300 level",
+      18
+     ],
+     [
+      "346",
+      "300 level",
+      26
+     ],
+     [
+      "347",
+      "300 level",
+      17
+     ],
+     [
+      "348",
+      "300 level",
+      7
+     ],
+     [
+      "349",
+      "300 level",
+      29
+     ],
+     [
+      "350",
+      "300 level",
+      25
+     ],
+     [
+      "351",
+      "300 level",
+      39
+     ],
+     [
+      "352",
+      "300 level",
+      21
+     ],
+     [
+      "353",
+      "300 level",
+      31
+     ],
+     [
+      "354",
+      "300 level",
+      25
+     ],
+     [
+      "355",
+      "300 level",
+      16
+     ],
+     [
+      "356",
+      "300 level",
+      16
+     ],
+     [
+      "357",
+      "300 level",
+      17
+     ],
+     [
+      "358",
+      "300 level",
+      13
+     ],
+     [
+      "359",
+      "300 level",
+      15
+     ],
+     [
+      "360",
+      "300 level",
+      25
+     ],
+     [
+      "401",
+      "400 level",
+      22
+     ],
+     [
+      "402",
+      "400 level",
+      21
+     ],
+     [
+      "403",
+      "400 level",
+      13
+     ],
+     [
+      "404",
+      "400 level",
+      17
+     ],
+     [
+      "405",
+      "400 level",
+      13
+     ],
+     [
+      "406",
+      "400 level",
+      12
+     ],
+     [
+      "407",
+      "400 level",
+      9
+     ],
+     [
+      "408",
+      "400 level",
+      8
+     ],
+     [
+      "409",
+      "400 level",
+      16
+     ],
+     [
+      "410",
+      "400 level",
+      22
+     ],
+     [
+      "411",
+      "400 level",
+      18
+     ],
+     [
+      "412",
+      "400 level",
+      11
+     ],
+     [
+      "413",
+      "400 level",
+      8
+     ],
+     [
+      "414",
+      "400 level",
+      20
+     ],
+     [
+      "415",
+      "400 level",
+      9
+     ],
+     [
+      "416",
+      "400 level",
+      4
+     ],
+     [
+      "417",
+      "400 level",
+      4
+     ],
+     [
+      "418",
+      "400 level",
+      20
+     ],
+     [
+      "419",
+      "400 level",
+      7
+     ],
+     [
+      "420",
+      "400 level",
+      19
+     ],
+     [
+      "421",
+      "400 level",
+      13
+     ],
+     [
+      "422",
+      "400 level",
+      17
+     ],
+     [
+      "423",
+      "400 level",
+      20
+     ],
+     [
+      "424",
+      "400 level",
+      24
+     ],
+     [
+      "425",
+      "400 level",
+      14
+     ],
+     [
+      "426",
+      "400 level",
+      4
+     ],
+     [
+      "427",
+      "400 level",
+      13
+     ],
+     [
+      "428",
+      "400 level",
+      13
+     ],
+     [
+      "429",
+      "400 level",
+      8
+     ],
+     [
+      "430",
+      "400 level",
+      12
+     ],
+     [
+      "431",
+      "400 level",
+      10
+     ],
+     [
+      "432",
+      "400 level",
+      21
+     ],
+     [
+      "433",
+      "400 level",
+      20
+     ],
+     [
+      "434",
+      "400 level",
+      13
+     ],
+     [
+      "435",
+      "400 level",
+      13
+     ],
+     [
+      "436",
+      "400 level",
+      15
+     ],
+     [
+      "437",
+      "400 level",
+      20
+     ],
+     [
+      "438",
+      "400 level",
+      10
+     ],
+     [
+      "439",
+      "400 level",
+      14
+     ],
+     [
+      "440",
+      "400 level",
+      23
+     ],
+     [
+      "441",
+      "400 level",
+      14
+     ],
+     [
+      "442",
+      "400 level",
+      19
+     ],
+     [
+      "443",
+      "400 level",
+      4
+     ],
+     [
+      "444",
+      "400 level",
+      11
+     ],
+     [
+      "445",
+      "400 level",
+      17
+     ]
+    ],
+    "code": "# Barcode Plot\n# Question: Where does every course's enrollment fall along one axis?\n# Put this script and barcode.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"barcode.csv\", show_col_types = FALSE) |>\n  mutate(level = fct_rev(fct_inorder(level)))   # 100 level at the top\n\np <- ggplot(df, aes(x = enrollment, y = level)) +\n  # each course is one thin, see-through line; dense spots look solid\n  geom_point(shape = \"|\", size = 16, color = \"#7FD18C\", alpha = 0.55) +\n  scale_x_continuous(breaks = seq(0, 240, 40)) +\n  labs(x = \"Students enrolled\", y = NULL,\n       caption = \"Each line is one course. Where lines merge, many courses share a size. Sample values.\") +\n  theme_gallery() +\n  theme(panel.grid.major.y = element_blank(), plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"barcode.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "Where does every organization's spending per student fall within its sector?",
+    "data": "FY25 Expanded List, all sectors.",
+    "note": "In dense spots lines merge into a solid band, so a barcode cannot show exact counts there."
+   },
+   "famous": [],
    "stories": []
   },
   {
@@ -670,6 +7486,730 @@ window.GALLERY = {
    "pairs": "Medium sized datasets where individuals matter.",
    "question": "How is every section's average grade spread within each department?",
    "hint": "Dots crowd around common values like bees around a hive.",
+   "lesson": {
+    "question": "How is every section's average grade spread within each department?",
+    "shape": "One row per class section with one number and a group. Each row becomes one dot, nudged sideways so no two dots overlap.",
+    "columns": [
+     {
+      "name": "section",
+      "type": "id",
+      "desc": "Who the dot is. Not plotted"
+     },
+     {
+      "name": "department",
+      "type": "category",
+      "desc": "One lane of dots per group"
+     },
+     {
+      "name": "avg_grade",
+      "type": "number",
+      "desc": "Average grade in the section, on a 4.0 scale"
+     }
+    ],
+    "rows": [
+     [
+      "MAT-01",
+      "Mathematics",
+      2.99
+     ],
+     [
+      "MAT-02",
+      "Mathematics",
+      3.27
+     ],
+     [
+      "MAT-03",
+      "Mathematics",
+      3.39
+     ],
+     [
+      "MAT-04",
+      "Mathematics",
+      3.28
+     ],
+     [
+      "MAT-05",
+      "Mathematics",
+      2.98
+     ],
+     [
+      "MAT-06",
+      "Mathematics",
+      3.18
+     ],
+     [
+      "MAT-07",
+      "Mathematics",
+      2.94
+     ],
+     [
+      "MAT-08",
+      "Mathematics",
+      2.16
+     ],
+     [
+      "MAT-09",
+      "Mathematics",
+      2.43
+     ],
+     [
+      "MAT-10",
+      "Mathematics",
+      2.61
+     ],
+     [
+      "MAT-11",
+      "Mathematics",
+      2.25
+     ],
+     [
+      "MAT-12",
+      "Mathematics",
+      2.71
+     ],
+     [
+      "MAT-13",
+      "Mathematics",
+      2.93
+     ],
+     [
+      "MAT-14",
+      "Mathematics",
+      3.33
+     ],
+     [
+      "MAT-15",
+      "Mathematics",
+      2.56
+     ],
+     [
+      "MAT-16",
+      "Mathematics",
+      2.64
+     ],
+     [
+      "MAT-17",
+      "Mathematics",
+      2.82
+     ],
+     [
+      "MAT-18",
+      "Mathematics",
+      2.86
+     ],
+     [
+      "MAT-19",
+      "Mathematics",
+      2.54
+     ],
+     [
+      "MAT-20",
+      "Mathematics",
+      2.72
+     ],
+     [
+      "MAT-21",
+      "Mathematics",
+      2.59
+     ],
+     [
+      "MAT-22",
+      "Mathematics",
+      2.61
+     ],
+     [
+      "MAT-23",
+      "Mathematics",
+      3.28
+     ],
+     [
+      "MAT-24",
+      "Mathematics",
+      2.62
+     ],
+     [
+      "MAT-25",
+      "Mathematics",
+      2.71
+     ],
+     [
+      "MAT-26",
+      "Mathematics",
+      2.67
+     ],
+     [
+      "MAT-27",
+      "Mathematics",
+      2.18
+     ],
+     [
+      "MAT-28",
+      "Mathematics",
+      3.24
+     ],
+     [
+      "MAT-29",
+      "Mathematics",
+      2.74
+     ],
+     [
+      "MAT-30",
+      "Mathematics",
+      3.0
+     ],
+     [
+      "CHE-01",
+      "Chemistry",
+      2.83
+     ],
+     [
+      "CHE-02",
+      "Chemistry",
+      3.06
+     ],
+     [
+      "CHE-03",
+      "Chemistry",
+      3.15
+     ],
+     [
+      "CHE-04",
+      "Chemistry",
+      2.58
+     ],
+     [
+      "CHE-05",
+      "Chemistry",
+      3.04
+     ],
+     [
+      "CHE-06",
+      "Chemistry",
+      3.62
+     ],
+     [
+      "CHE-07",
+      "Chemistry",
+      2.71
+     ],
+     [
+      "CHE-08",
+      "Chemistry",
+      3.02
+     ],
+     [
+      "CHE-09",
+      "Chemistry",
+      3.07
+     ],
+     [
+      "CHE-10",
+      "Chemistry",
+      2.84
+     ],
+     [
+      "CHE-11",
+      "Chemistry",
+      2.93
+     ],
+     [
+      "CHE-12",
+      "Chemistry",
+      3.24
+     ],
+     [
+      "CHE-13",
+      "Chemistry",
+      3.12
+     ],
+     [
+      "CHE-14",
+      "Chemistry",
+      2.75
+     ],
+     [
+      "CHE-15",
+      "Chemistry",
+      2.79
+     ],
+     [
+      "CHE-16",
+      "Chemistry",
+      2.89
+     ],
+     [
+      "CHE-17",
+      "Chemistry",
+      2.95
+     ],
+     [
+      "CHE-18",
+      "Chemistry",
+      3.22
+     ],
+     [
+      "CHE-19",
+      "Chemistry",
+      2.84
+     ],
+     [
+      "CHE-20",
+      "Chemistry",
+      2.45
+     ],
+     [
+      "CHE-21",
+      "Chemistry",
+      2.98
+     ],
+     [
+      "CHE-22",
+      "Chemistry",
+      2.79
+     ],
+     [
+      "CHE-23",
+      "Chemistry",
+      2.79
+     ],
+     [
+      "CHE-24",
+      "Chemistry",
+      3.0
+     ],
+     [
+      "CHE-25",
+      "Chemistry",
+      2.93
+     ],
+     [
+      "CHE-26",
+      "Chemistry",
+      2.71
+     ],
+     [
+      "CHE-27",
+      "Chemistry",
+      3.46
+     ],
+     [
+      "CHE-28",
+      "Chemistry",
+      2.85
+     ],
+     [
+      "HIS-01",
+      "History",
+      3.45
+     ],
+     [
+      "HIS-02",
+      "History",
+      3.16
+     ],
+     [
+      "HIS-03",
+      "History",
+      3.66
+     ],
+     [
+      "HIS-04",
+      "History",
+      3.19
+     ],
+     [
+      "HIS-05",
+      "History",
+      3.67
+     ],
+     [
+      "HIS-06",
+      "History",
+      3.74
+     ],
+     [
+      "HIS-07",
+      "History",
+      3.77
+     ],
+     [
+      "HIS-08",
+      "History",
+      3.79
+     ],
+     [
+      "HIS-09",
+      "History",
+      3.25
+     ],
+     [
+      "HIS-10",
+      "History",
+      3.46
+     ],
+     [
+      "HIS-11",
+      "History",
+      3.24
+     ],
+     [
+      "HIS-12",
+      "History",
+      3.29
+     ],
+     [
+      "HIS-13",
+      "History",
+      3.28
+     ],
+     [
+      "HIS-14",
+      "History",
+      2.94
+     ],
+     [
+      "HIS-15",
+      "History",
+      3.63
+     ],
+     [
+      "HIS-16",
+      "History",
+      3.47
+     ],
+     [
+      "HIS-17",
+      "History",
+      3.04
+     ],
+     [
+      "HIS-18",
+      "History",
+      3.29
+     ],
+     [
+      "HIS-19",
+      "History",
+      2.95
+     ],
+     [
+      "HIS-20",
+      "History",
+      3.22
+     ],
+     [
+      "HIS-21",
+      "History",
+      3.6
+     ],
+     [
+      "HIS-22",
+      "History",
+      3.28
+     ],
+     [
+      "HIS-23",
+      "History",
+      3.35
+     ],
+     [
+      "HIS-24",
+      "History",
+      3.65
+     ],
+     [
+      "HIS-25",
+      "History",
+      3.08
+     ],
+     [
+      "HIS-26",
+      "History",
+      3.4
+     ],
+     [
+      "EDU-01",
+      "Education",
+      3.41
+     ],
+     [
+      "EDU-02",
+      "Education",
+      3.76
+     ],
+     [
+      "EDU-03",
+      "Education",
+      3.55
+     ],
+     [
+      "EDU-04",
+      "Education",
+      3.88
+     ],
+     [
+      "EDU-05",
+      "Education",
+      3.32
+     ],
+     [
+      "EDU-06",
+      "Education",
+      3.68
+     ],
+     [
+      "EDU-07",
+      "Education",
+      3.51
+     ],
+     [
+      "EDU-08",
+      "Education",
+      3.7
+     ],
+     [
+      "EDU-09",
+      "Education",
+      3.48
+     ],
+     [
+      "EDU-10",
+      "Education",
+      3.4
+     ],
+     [
+      "EDU-11",
+      "Education",
+      3.45
+     ],
+     [
+      "EDU-12",
+      "Education",
+      3.55
+     ],
+     [
+      "EDU-13",
+      "Education",
+      3.46
+     ],
+     [
+      "EDU-14",
+      "Education",
+      3.37
+     ],
+     [
+      "EDU-15",
+      "Education",
+      3.66
+     ],
+     [
+      "EDU-16",
+      "Education",
+      3.73
+     ],
+     [
+      "EDU-17",
+      "Education",
+      3.57
+     ],
+     [
+      "EDU-18",
+      "Education",
+      3.61
+     ],
+     [
+      "EDU-19",
+      "Education",
+      3.56
+     ],
+     [
+      "EDU-20",
+      "Education",
+      3.67
+     ],
+     [
+      "EDU-21",
+      "Education",
+      3.53
+     ],
+     [
+      "EDU-22",
+      "Education",
+      3.6
+     ],
+     [
+      "EDU-23",
+      "Education",
+      3.85
+     ],
+     [
+      "EDU-24",
+      "Education",
+      3.41
+     ],
+     [
+      "EDU-25",
+      "Education",
+      3.41
+     ],
+     [
+      "EDU-26",
+      "Education",
+      3.27
+     ],
+     [
+      "EDU-27",
+      "Education",
+      3.48
+     ],
+     [
+      "EDU-28",
+      "Education",
+      3.59
+     ],
+     [
+      "EDU-29",
+      "Education",
+      3.73
+     ],
+     [
+      "EDU-30",
+      "Education",
+      3.58
+     ],
+     [
+      "MUS-01",
+      "Music",
+      3.81
+     ],
+     [
+      "MUS-02",
+      "Music",
+      3.58
+     ],
+     [
+      "MUS-03",
+      "Music",
+      3.6
+     ],
+     [
+      "MUS-04",
+      "Music",
+      3.39
+     ],
+     [
+      "MUS-05",
+      "Music",
+      3.87
+     ],
+     [
+      "MUS-06",
+      "Music",
+      3.99
+     ],
+     [
+      "MUS-07",
+      "Music",
+      3.74
+     ],
+     [
+      "MUS-08",
+      "Music",
+      3.57
+     ],
+     [
+      "MUS-09",
+      "Music",
+      3.98
+     ],
+     [
+      "MUS-10",
+      "Music",
+      3.77
+     ],
+     [
+      "MUS-11",
+      "Music",
+      3.73
+     ],
+     [
+      "MUS-12",
+      "Music",
+      3.6
+     ],
+     [
+      "MUS-13",
+      "Music",
+      3.61
+     ],
+     [
+      "MUS-14",
+      "Music",
+      3.72
+     ],
+     [
+      "MUS-15",
+      "Music",
+      3.83
+     ],
+     [
+      "MUS-16",
+      "Music",
+      3.79
+     ],
+     [
+      "MUS-17",
+      "Music",
+      3.88
+     ],
+     [
+      "MUS-18",
+      "Music",
+      3.77
+     ],
+     [
+      "MUS-19",
+      "Music",
+      3.77
+     ],
+     [
+      "MUS-20",
+      "Music",
+      4.0
+     ],
+     [
+      "MUS-21",
+      "Music",
+      3.85
+     ],
+     [
+      "MUS-22",
+      "Music",
+      3.43
+     ],
+     [
+      "MUS-23",
+      "Music",
+      3.74
+     ],
+     [
+      "MUS-24",
+      "Music",
+      3.81
+     ]
+    ],
+    "code": "# Beeswarm Plot\n# Question: How is every section's average grade spread within each department?\n# Put this script and beeswarm.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n# Also needs: ggbeeswarm. Run install.packages(\"ggbeeswarm\") once.\n\nlibrary(tidyverse)\nlibrary(ggbeeswarm)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"beeswarm.csv\", show_col_types = FALSE) |>\n  mutate(department = fct_reorder(department, avg_grade, .fun = median))\n\np <- ggplot(df, aes(x = department, y = avg_grade)) +\n  # geom_beeswarm() nudges dots sideways just enough that none overlap\n  geom_beeswarm(color = \"#7FD18C\", size = 3, cex = 2.6) +\n  stat_summary(fun = median, geom = \"crossbar\", width = 0.5, color = \"#E8EDF4\", linewidth = 0.4) +\n  scale_y_continuous(limits = c(1.8, 4.0)) +\n  labs(x = NULL, y = \"Average section grade\",\n       caption = \"Each dot is one class section. White bars mark each department's median. Sample values.\") +\n  theme_gallery() +\n  theme(panel.grid.major.x = element_blank(), plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"beeswarm.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse",
+     "ggbeeswarm"
+    ]
+   },
+   "ohio": {
+    "question": "How is every school's spending spread within Ohio's six largest city districts?",
+    "data": "2024-25 Building Spend per Pupil report card file.",
+    "note": "Virtual programs and very small buildings can produce extreme values."
+   },
+   "famous": [],
    "stories": []
   },
   {
@@ -696,6 +8236,949 @@ window.GALLERY = {
    "pairs": "Box plot questions where the shape itself matters.",
    "question": "How are exam scores shaped in each section of a course?",
    "hint": "A box plot that grew curves showing where values bunch up.",
+   "lesson": {
+    "question": "How are exam scores shaped in each section of a course?",
+    "shape": "One row per student with one number and a group. Each group needs enough rows (about 30 or more) for its smooth shape to be trusted.",
+    "columns": [
+     {
+      "name": "student",
+      "type": "id",
+      "desc": "Who the row is. Not plotted"
+     },
+     {
+      "name": "section",
+      "type": "category",
+      "desc": "One violin per group"
+     },
+     {
+      "name": "score",
+      "type": "number",
+      "desc": "Exam score out of 100"
+     }
+    ],
+    "rows": [
+     [
+      "S001",
+      "Section 1",
+      80
+     ],
+     [
+      "S002",
+      "Section 1",
+      78
+     ],
+     [
+      "S003",
+      "Section 1",
+      77
+     ],
+     [
+      "S004",
+      "Section 1",
+      70
+     ],
+     [
+      "S005",
+      "Section 1",
+      85
+     ],
+     [
+      "S006",
+      "Section 1",
+      75
+     ],
+     [
+      "S007",
+      "Section 1",
+      82
+     ],
+     [
+      "S008",
+      "Section 1",
+      76
+     ],
+     [
+      "S009",
+      "Section 1",
+      85
+     ],
+     [
+      "S010",
+      "Section 1",
+      78
+     ],
+     [
+      "S011",
+      "Section 1",
+      81
+     ],
+     [
+      "S012",
+      "Section 1",
+      84
+     ],
+     [
+      "S013",
+      "Section 1",
+      77
+     ],
+     [
+      "S014",
+      "Section 1",
+      77
+     ],
+     [
+      "S015",
+      "Section 1",
+      77
+     ],
+     [
+      "S016",
+      "Section 1",
+      79
+     ],
+     [
+      "S017",
+      "Section 1",
+      82
+     ],
+     [
+      "S018",
+      "Section 1",
+      80
+     ],
+     [
+      "S019",
+      "Section 1",
+      79
+     ],
+     [
+      "S020",
+      "Section 1",
+      84
+     ],
+     [
+      "S021",
+      "Section 1",
+      79
+     ],
+     [
+      "S022",
+      "Section 1",
+      71
+     ],
+     [
+      "S023",
+      "Section 1",
+      87
+     ],
+     [
+      "S024",
+      "Section 1",
+      66
+     ],
+     [
+      "S025",
+      "Section 1",
+      91
+     ],
+     [
+      "S026",
+      "Section 1",
+      68
+     ],
+     [
+      "S027",
+      "Section 1",
+      69
+     ],
+     [
+      "S028",
+      "Section 1",
+      73
+     ],
+     [
+      "S029",
+      "Section 1",
+      84
+     ],
+     [
+      "S030",
+      "Section 1",
+      72
+     ],
+     [
+      "S031",
+      "Section 1",
+      83
+     ],
+     [
+      "S032",
+      "Section 1",
+      85
+     ],
+     [
+      "S033",
+      "Section 1",
+      74
+     ],
+     [
+      "S034",
+      "Section 1",
+      77
+     ],
+     [
+      "S035",
+      "Section 1",
+      82
+     ],
+     [
+      "S036",
+      "Section 1",
+      80
+     ],
+     [
+      "S037",
+      "Section 1",
+      74
+     ],
+     [
+      "S038",
+      "Section 1",
+      66
+     ],
+     [
+      "S039",
+      "Section 1",
+      74
+     ],
+     [
+      "S040",
+      "Section 1",
+      72
+     ],
+     [
+      "S041",
+      "Section 1",
+      79
+     ],
+     [
+      "S042",
+      "Section 1",
+      78
+     ],
+     [
+      "S043",
+      "Section 1",
+      73
+     ],
+     [
+      "S044",
+      "Section 1",
+      71
+     ],
+     [
+      "S045",
+      "Section 1",
+      74
+     ],
+     [
+      "S046",
+      "Section 2",
+      65
+     ],
+     [
+      "S047",
+      "Section 2",
+      70
+     ],
+     [
+      "S048",
+      "Section 2",
+      70
+     ],
+     [
+      "S049",
+      "Section 2",
+      81
+     ],
+     [
+      "S050",
+      "Section 2",
+      90
+     ],
+     [
+      "S051",
+      "Section 2",
+      94
+     ],
+     [
+      "S052",
+      "Section 2",
+      97
+     ],
+     [
+      "S053",
+      "Section 2",
+      75
+     ],
+     [
+      "S054",
+      "Section 2",
+      91
+     ],
+     [
+      "S055",
+      "Section 2",
+      59
+     ],
+     [
+      "S056",
+      "Section 2",
+      78
+     ],
+     [
+      "S057",
+      "Section 2",
+      80
+     ],
+     [
+      "S058",
+      "Section 2",
+      62
+     ],
+     [
+      "S059",
+      "Section 2",
+      92
+     ],
+     [
+      "S060",
+      "Section 2",
+      93
+     ],
+     [
+      "S061",
+      "Section 2",
+      66
+     ],
+     [
+      "S062",
+      "Section 2",
+      88
+     ],
+     [
+      "S063",
+      "Section 2",
+      63
+     ],
+     [
+      "S064",
+      "Section 2",
+      80
+     ],
+     [
+      "S065",
+      "Section 2",
+      90
+     ],
+     [
+      "S066",
+      "Section 2",
+      69
+     ],
+     [
+      "S067",
+      "Section 2",
+      88
+     ],
+     [
+      "S068",
+      "Section 2",
+      84
+     ],
+     [
+      "S069",
+      "Section 2",
+      85
+     ],
+     [
+      "S070",
+      "Section 2",
+      68
+     ],
+     [
+      "S071",
+      "Section 2",
+      95
+     ],
+     [
+      "S072",
+      "Section 2",
+      69
+     ],
+     [
+      "S073",
+      "Section 2",
+      94
+     ],
+     [
+      "S074",
+      "Section 2",
+      56
+     ],
+     [
+      "S075",
+      "Section 2",
+      83
+     ],
+     [
+      "S076",
+      "Section 2",
+      75
+     ],
+     [
+      "S077",
+      "Section 2",
+      62
+     ],
+     [
+      "S078",
+      "Section 2",
+      65
+     ],
+     [
+      "S079",
+      "Section 2",
+      86
+     ],
+     [
+      "S080",
+      "Section 2",
+      90
+     ],
+     [
+      "S081",
+      "Section 2",
+      67
+     ],
+     [
+      "S082",
+      "Section 2",
+      80
+     ],
+     [
+      "S083",
+      "Section 2",
+      79
+     ],
+     [
+      "S084",
+      "Section 2",
+      82
+     ],
+     [
+      "S085",
+      "Section 2",
+      60
+     ],
+     [
+      "S086",
+      "Section 2",
+      82
+     ],
+     [
+      "S087",
+      "Section 2",
+      49
+     ],
+     [
+      "S088",
+      "Section 2",
+      69
+     ],
+     [
+      "S089",
+      "Section 2",
+      93
+     ],
+     [
+      "S090",
+      "Section 2",
+      59
+     ],
+     [
+      "S091",
+      "Section 3",
+      71
+     ],
+     [
+      "S092",
+      "Section 3",
+      83
+     ],
+     [
+      "S093",
+      "Section 3",
+      88
+     ],
+     [
+      "S094",
+      "Section 3",
+      92
+     ],
+     [
+      "S095",
+      "Section 3",
+      93
+     ],
+     [
+      "S096",
+      "Section 3",
+      83
+     ],
+     [
+      "S097",
+      "Section 3",
+      71
+     ],
+     [
+      "S098",
+      "Section 3",
+      83
+     ],
+     [
+      "S099",
+      "Section 3",
+      83
+     ],
+     [
+      "S100",
+      "Section 3",
+      50
+     ],
+     [
+      "S101",
+      "Section 3",
+      81
+     ],
+     [
+      "S102",
+      "Section 3",
+      89
+     ],
+     [
+      "S103",
+      "Section 3",
+      71
+     ],
+     [
+      "S104",
+      "Section 3",
+      75
+     ],
+     [
+      "S105",
+      "Section 3",
+      92
+     ],
+     [
+      "S106",
+      "Section 3",
+      88
+     ],
+     [
+      "S107",
+      "Section 3",
+      86
+     ],
+     [
+      "S108",
+      "Section 3",
+      79
+     ],
+     [
+      "S109",
+      "Section 3",
+      93
+     ],
+     [
+      "S110",
+      "Section 3",
+      56
+     ],
+     [
+      "S111",
+      "Section 3",
+      69
+     ],
+     [
+      "S112",
+      "Section 3",
+      92
+     ],
+     [
+      "S113",
+      "Section 3",
+      89
+     ],
+     [
+      "S114",
+      "Section 3",
+      84
+     ],
+     [
+      "S115",
+      "Section 3",
+      72
+     ],
+     [
+      "S116",
+      "Section 3",
+      79
+     ],
+     [
+      "S117",
+      "Section 3",
+      79
+     ],
+     [
+      "S118",
+      "Section 3",
+      73
+     ],
+     [
+      "S119",
+      "Section 3",
+      70
+     ],
+     [
+      "S120",
+      "Section 3",
+      91
+     ],
+     [
+      "S121",
+      "Section 3",
+      84
+     ],
+     [
+      "S122",
+      "Section 3",
+      88
+     ],
+     [
+      "S123",
+      "Section 3",
+      69
+     ],
+     [
+      "S124",
+      "Section 3",
+      85
+     ],
+     [
+      "S125",
+      "Section 3",
+      85
+     ],
+     [
+      "S126",
+      "Section 3",
+      94
+     ],
+     [
+      "S127",
+      "Section 3",
+      89
+     ],
+     [
+      "S128",
+      "Section 3",
+      91
+     ],
+     [
+      "S129",
+      "Section 3",
+      93
+     ],
+     [
+      "S130",
+      "Section 3",
+      87
+     ],
+     [
+      "S131",
+      "Section 3",
+      88
+     ],
+     [
+      "S132",
+      "Section 3",
+      92
+     ],
+     [
+      "S133",
+      "Section 3",
+      94
+     ],
+     [
+      "S134",
+      "Section 3",
+      77
+     ],
+     [
+      "S135",
+      "Section 3",
+      76
+     ],
+     [
+      "S136",
+      "Section 4",
+      65
+     ],
+     [
+      "S137",
+      "Section 4",
+      71
+     ],
+     [
+      "S138",
+      "Section 4",
+      76
+     ],
+     [
+      "S139",
+      "Section 4",
+      54
+     ],
+     [
+      "S140",
+      "Section 4",
+      66
+     ],
+     [
+      "S141",
+      "Section 4",
+      84
+     ],
+     [
+      "S142",
+      "Section 4",
+      74
+     ],
+     [
+      "S143",
+      "Section 4",
+      69
+     ],
+     [
+      "S144",
+      "Section 4",
+      75
+     ],
+     [
+      "S145",
+      "Section 4",
+      90
+     ],
+     [
+      "S146",
+      "Section 4",
+      76
+     ],
+     [
+      "S147",
+      "Section 4",
+      56
+     ],
+     [
+      "S148",
+      "Section 4",
+      71
+     ],
+     [
+      "S149",
+      "Section 4",
+      71
+     ],
+     [
+      "S150",
+      "Section 4",
+      57
+     ],
+     [
+      "S151",
+      "Section 4",
+      65
+     ],
+     [
+      "S152",
+      "Section 4",
+      86
+     ],
+     [
+      "S153",
+      "Section 4",
+      79
+     ],
+     [
+      "S154",
+      "Section 4",
+      72
+     ],
+     [
+      "S155",
+      "Section 4",
+      84
+     ],
+     [
+      "S156",
+      "Section 4",
+      78
+     ],
+     [
+      "S157",
+      "Section 4",
+      48
+     ],
+     [
+      "S158",
+      "Section 4",
+      78
+     ],
+     [
+      "S159",
+      "Section 4",
+      72
+     ],
+     [
+      "S160",
+      "Section 4",
+      53
+     ],
+     [
+      "S161",
+      "Section 4",
+      50
+     ],
+     [
+      "S162",
+      "Section 4",
+      64
+     ],
+     [
+      "S163",
+      "Section 4",
+      63
+     ],
+     [
+      "S164",
+      "Section 4",
+      71
+     ],
+     [
+      "S165",
+      "Section 4",
+      43
+     ],
+     [
+      "S166",
+      "Section 4",
+      75
+     ],
+     [
+      "S167",
+      "Section 4",
+      73
+     ],
+     [
+      "S168",
+      "Section 4",
+      53
+     ],
+     [
+      "S169",
+      "Section 4",
+      80
+     ],
+     [
+      "S170",
+      "Section 4",
+      57
+     ],
+     [
+      "S171",
+      "Section 4",
+      70
+     ],
+     [
+      "S172",
+      "Section 4",
+      76
+     ],
+     [
+      "S173",
+      "Section 4",
+      79
+     ],
+     [
+      "S174",
+      "Section 4",
+      86
+     ],
+     [
+      "S175",
+      "Section 4",
+      76
+     ],
+     [
+      "S176",
+      "Section 4",
+      71
+     ],
+     [
+      "S177",
+      "Section 4",
+      89
+     ],
+     [
+      "S178",
+      "Section 4",
+      61
+     ],
+     [
+      "S179",
+      "Section 4",
+      74
+     ],
+     [
+      "S180",
+      "Section 4",
+      73
+     ]
+    ],
+    "code": "# Violin Plot\n# Question: How are exam scores shaped in each section of a course?\n# Put this script and violin.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"violin.csv\", show_col_types = FALSE)\n\np <- ggplot(df, aes(x = section, y = score)) +\n  # the width at each height shows how many students scored near that value\n  geom_violin(fill = \"#7FD18C\", color = NA, alpha = 0.85, adjust = 0.9, scale = \"area\") +\n  geom_jitter(width = 0.06, height = 0, size = 1.1, alpha = 0.45, color = \"#161B23\") +\n  stat_summary(fun = median, geom = \"point\", size = 4, color = \"#E8EDF4\") +\n  scale_y_continuous(limits = c(30, 100)) +\n  labs(x = NULL, y = \"Exam score\",\n       caption = \"White dots: medians. Section 2 has two clusters that a box plot would hide. Sample values.\") +\n  theme_gallery() +\n  theme(panel.grid.major.x = element_blank(), plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"violin.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "How is spending per student shaped within each district size group?",
+    "data": "FY25 Expanded List, traditional districts grouped by number of students.",
+    "note": "The \"10,000 or more\" group has the fewest districts, so its shape rests on fewer values."
+   },
+   "famous": [
+    {
+     "title": "Violin plots: a box plot-density trace synergism",
+     "maker": "Jerry Hintze and Ray Nelson",
+     "year": "1998",
+     "source": "The American Statistician",
+     "site": "University of Utah",
+     "note": "The paper that introduced the violin plot. As its title says, it joins a box plot with a smooth curve that traces the shape of the data.",
+     "url": "https://sci.utah.edu/~kpotter/Library/Papers/hintze:1998:VPDT/index.html"
+    }
+   ],
    "stories": []
   },
   {
@@ -720,8 +9203,1236 @@ window.GALLERY = {
    ],
    "watch": "Readers unfamiliar with it mistake it for a trend over time.",
    "pairs": "Threshold questions, like time to degree.",
-   "question": "What share of students complete the degree within four, five, or six years?",
+   "question": "What share of graduates finish their degree within four, five, or six years?",
    "hint": "The line always rises, and its height tells you the share below.",
+   "lesson": {
+    "question": "What share of graduates finish their degree within four, five, or six years?",
+    "shape": "One row per graduate with one number. R sorts the values from low to high and counts the running share, so the line can only rise.",
+    "columns": [
+     {
+      "name": "graduate",
+      "type": "id",
+      "desc": "Who the row is. Not plotted"
+     },
+     {
+      "name": "years_to_degree",
+      "type": "number",
+      "desc": "Years from the first day of classes to graduation"
+     }
+    ],
+    "rows": [
+     [
+      "G001",
+      5.4
+     ],
+     [
+      "G002",
+      3.9
+     ],
+     [
+      "G003",
+      4.1
+     ],
+     [
+      "G004",
+      3.8
+     ],
+     [
+      "G005",
+      3.7
+     ],
+     [
+      "G006",
+      4.0
+     ],
+     [
+      "G007",
+      3.9
+     ],
+     [
+      "G008",
+      3.9
+     ],
+     [
+      "G009",
+      4.0
+     ],
+     [
+      "G010",
+      7.1
+     ],
+     [
+      "G011",
+      3.8
+     ],
+     [
+      "G012",
+      8.2
+     ],
+     [
+      "G013",
+      4.2
+     ],
+     [
+      "G014",
+      5.4
+     ],
+     [
+      "G015",
+      3.9
+     ],
+     [
+      "G016",
+      3.8
+     ],
+     [
+      "G017",
+      3.8
+     ],
+     [
+      "G018",
+      3.7
+     ],
+     [
+      "G019",
+      4.3
+     ],
+     [
+      "G020",
+      4.6
+     ],
+     [
+      "G021",
+      4.7
+     ],
+     [
+      "G022",
+      3.8
+     ],
+     [
+      "G023",
+      4.7
+     ],
+     [
+      "G024",
+      4.2
+     ],
+     [
+      "G025",
+      5.6
+     ],
+     [
+      "G026",
+      7.7
+     ],
+     [
+      "G027",
+      4.0
+     ],
+     [
+      "G028",
+      4.4
+     ],
+     [
+      "G029",
+      4.1
+     ],
+     [
+      "G030",
+      4.1
+     ],
+     [
+      "G031",
+      4.0
+     ],
+     [
+      "G032",
+      3.8
+     ],
+     [
+      "G033",
+      4.0
+     ],
+     [
+      "G034",
+      5.1
+     ],
+     [
+      "G035",
+      4.1
+     ],
+     [
+      "G036",
+      4.1
+     ],
+     [
+      "G037",
+      4.1
+     ],
+     [
+      "G038",
+      3.9
+     ],
+     [
+      "G039",
+      4.1
+     ],
+     [
+      "G040",
+      4.3
+     ],
+     [
+      "G041",
+      3.7
+     ],
+     [
+      "G042",
+      4.1
+     ],
+     [
+      "G043",
+      4.5
+     ],
+     [
+      "G044",
+      5.7
+     ],
+     [
+      "G045",
+      4.1
+     ],
+     [
+      "G046",
+      7.6
+     ],
+     [
+      "G047",
+      4.1
+     ],
+     [
+      "G048",
+      3.8
+     ],
+     [
+      "G049",
+      4.6
+     ],
+     [
+      "G050",
+      4.1
+     ],
+     [
+      "G051",
+      4.1
+     ],
+     [
+      "G052",
+      4.0
+     ],
+     [
+      "G053",
+      5.0
+     ],
+     [
+      "G054",
+      3.8
+     ],
+     [
+      "G055",
+      4.7
+     ],
+     [
+      "G056",
+      4.7
+     ],
+     [
+      "G057",
+      4.0
+     ],
+     [
+      "G058",
+      4.7
+     ],
+     [
+      "G059",
+      6.4
+     ],
+     [
+      "G060",
+      4.0
+     ],
+     [
+      "G061",
+      4.1
+     ],
+     [
+      "G062",
+      4.1
+     ],
+     [
+      "G063",
+      3.8
+     ],
+     [
+      "G064",
+      5.7
+     ],
+     [
+      "G065",
+      4.8
+     ],
+     [
+      "G066",
+      5.7
+     ],
+     [
+      "G067",
+      3.9
+     ],
+     [
+      "G068",
+      4.6
+     ],
+     [
+      "G069",
+      4.1
+     ],
+     [
+      "G070",
+      4.1
+     ],
+     [
+      "G071",
+      3.8
+     ],
+     [
+      "G072",
+      5.0
+     ],
+     [
+      "G073",
+      4.0
+     ],
+     [
+      "G074",
+      5.3
+     ],
+     [
+      "G075",
+      4.1
+     ],
+     [
+      "G076",
+      4.1
+     ],
+     [
+      "G077",
+      4.0
+     ],
+     [
+      "G078",
+      4.0
+     ],
+     [
+      "G079",
+      5.4
+     ],
+     [
+      "G080",
+      4.1
+     ],
+     [
+      "G081",
+      6.0
+     ],
+     [
+      "G082",
+      4.3
+     ],
+     [
+      "G083",
+      4.1
+     ],
+     [
+      "G084",
+      3.8
+     ],
+     [
+      "G085",
+      3.8
+     ],
+     [
+      "G086",
+      4.8
+     ],
+     [
+      "G087",
+      3.8
+     ],
+     [
+      "G088",
+      4.0
+     ],
+     [
+      "G089",
+      4.0
+     ],
+     [
+      "G090",
+      4.3
+     ],
+     [
+      "G091",
+      4.6
+     ],
+     [
+      "G092",
+      4.4
+     ],
+     [
+      "G093",
+      3.7
+     ],
+     [
+      "G094",
+      3.6
+     ],
+     [
+      "G095",
+      4.1
+     ],
+     [
+      "G096",
+      4.2
+     ],
+     [
+      "G097",
+      3.9
+     ],
+     [
+      "G098",
+      4.6
+     ],
+     [
+      "G099",
+      4.6
+     ],
+     [
+      "G100",
+      4.0
+     ],
+     [
+      "G101",
+      4.8
+     ],
+     [
+      "G102",
+      4.1
+     ],
+     [
+      "G103",
+      3.9
+     ],
+     [
+      "G104",
+      4.6
+     ],
+     [
+      "G105",
+      4.1
+     ],
+     [
+      "G106",
+      3.8
+     ],
+     [
+      "G107",
+      4.1
+     ],
+     [
+      "G108",
+      3.7
+     ],
+     [
+      "G109",
+      4.6
+     ],
+     [
+      "G110",
+      3.6
+     ],
+     [
+      "G111",
+      4.0
+     ],
+     [
+      "G112",
+      5.6
+     ],
+     [
+      "G113",
+      4.0
+     ],
+     [
+      "G114",
+      4.0
+     ],
+     [
+      "G115",
+      4.2
+     ],
+     [
+      "G116",
+      3.9
+     ],
+     [
+      "G117",
+      5.1
+     ],
+     [
+      "G118",
+      4.0
+     ],
+     [
+      "G119",
+      4.0
+     ],
+     [
+      "G120",
+      6.5
+     ],
+     [
+      "G121",
+      4.0
+     ],
+     [
+      "G122",
+      4.1
+     ],
+     [
+      "G123",
+      4.1
+     ],
+     [
+      "G124",
+      5.5
+     ],
+     [
+      "G125",
+      5.4
+     ],
+     [
+      "G126",
+      4.3
+     ],
+     [
+      "G127",
+      4.0
+     ],
+     [
+      "G128",
+      3.7
+     ],
+     [
+      "G129",
+      3.8
+     ],
+     [
+      "G130",
+      4.1
+     ],
+     [
+      "G131",
+      4.7
+     ],
+     [
+      "G132",
+      3.8
+     ],
+     [
+      "G133",
+      4.5
+     ],
+     [
+      "G134",
+      3.8
+     ],
+     [
+      "G135",
+      7.6
+     ],
+     [
+      "G136",
+      4.7
+     ],
+     [
+      "G137",
+      4.1
+     ],
+     [
+      "G138",
+      3.9
+     ],
+     [
+      "G139",
+      4.1
+     ],
+     [
+      "G140",
+      4.0
+     ],
+     [
+      "G141",
+      5.2
+     ],
+     [
+      "G142",
+      4.0
+     ],
+     [
+      "G143",
+      3.8
+     ],
+     [
+      "G144",
+      7.7
+     ],
+     [
+      "G145",
+      4.0
+     ],
+     [
+      "G146",
+      4.7
+     ],
+     [
+      "G147",
+      4.1
+     ],
+     [
+      "G148",
+      5.8
+     ],
+     [
+      "G149",
+      3.9
+     ],
+     [
+      "G150",
+      4.7
+     ],
+     [
+      "G151",
+      3.9
+     ],
+     [
+      "G152",
+      3.8
+     ],
+     [
+      "G153",
+      4.0
+     ],
+     [
+      "G154",
+      4.0
+     ],
+     [
+      "G155",
+      4.1
+     ],
+     [
+      "G156",
+      4.7
+     ],
+     [
+      "G157",
+      4.8
+     ],
+     [
+      "G158",
+      4.6
+     ],
+     [
+      "G159",
+      4.9
+     ],
+     [
+      "G160",
+      3.9
+     ],
+     [
+      "G161",
+      4.0
+     ],
+     [
+      "G162",
+      3.9
+     ],
+     [
+      "G163",
+      4.0
+     ],
+     [
+      "G164",
+      3.8
+     ],
+     [
+      "G165",
+      6.5
+     ],
+     [
+      "G166",
+      3.7
+     ],
+     [
+      "G167",
+      3.9
+     ],
+     [
+      "G168",
+      6.6
+     ],
+     [
+      "G169",
+      3.8
+     ],
+     [
+      "G170",
+      4.9
+     ],
+     [
+      "G171",
+      5.5
+     ],
+     [
+      "G172",
+      4.0
+     ],
+     [
+      "G173",
+      8.1
+     ],
+     [
+      "G174",
+      4.3
+     ],
+     [
+      "G175",
+      7.8
+     ],
+     [
+      "G176",
+      4.0
+     ],
+     [
+      "G177",
+      6.7
+     ],
+     [
+      "G178",
+      4.1
+     ],
+     [
+      "G179",
+      3.9
+     ],
+     [
+      "G180",
+      4.0
+     ],
+     [
+      "G181",
+      4.1
+     ],
+     [
+      "G182",
+      4.0
+     ],
+     [
+      "G183",
+      3.8
+     ],
+     [
+      "G184",
+      4.2
+     ],
+     [
+      "G185",
+      6.4
+     ],
+     [
+      "G186",
+      4.4
+     ],
+     [
+      "G187",
+      3.9
+     ],
+     [
+      "G188",
+      6.8
+     ],
+     [
+      "G189",
+      7.2
+     ],
+     [
+      "G190",
+      3.8
+     ],
+     [
+      "G191",
+      3.9
+     ],
+     [
+      "G192",
+      4.8
+     ],
+     [
+      "G193",
+      3.8
+     ],
+     [
+      "G194",
+      3.9
+     ],
+     [
+      "G195",
+      4.0
+     ],
+     [
+      "G196",
+      3.9
+     ],
+     [
+      "G197",
+      4.8
+     ],
+     [
+      "G198",
+      4.3
+     ],
+     [
+      "G199",
+      4.3
+     ],
+     [
+      "G200",
+      5.3
+     ],
+     [
+      "G201",
+      5.2
+     ],
+     [
+      "G202",
+      3.9
+     ],
+     [
+      "G203",
+      4.0
+     ],
+     [
+      "G204",
+      4.1
+     ],
+     [
+      "G205",
+      4.1
+     ],
+     [
+      "G206",
+      3.7
+     ],
+     [
+      "G207",
+      4.0
+     ],
+     [
+      "G208",
+      4.1
+     ],
+     [
+      "G209",
+      6.1
+     ],
+     [
+      "G210",
+      4.4
+     ],
+     [
+      "G211",
+      4.0
+     ],
+     [
+      "G212",
+      3.8
+     ],
+     [
+      "G213",
+      4.1
+     ],
+     [
+      "G214",
+      3.9
+     ],
+     [
+      "G215",
+      4.0
+     ],
+     [
+      "G216",
+      3.7
+     ],
+     [
+      "G217",
+      4.0
+     ],
+     [
+      "G218",
+      4.6
+     ],
+     [
+      "G219",
+      3.7
+     ],
+     [
+      "G220",
+      4.0
+     ],
+     [
+      "G221",
+      4.8
+     ],
+     [
+      "G222",
+      3.9
+     ],
+     [
+      "G223",
+      4.0
+     ],
+     [
+      "G224",
+      3.9
+     ],
+     [
+      "G225",
+      5.7
+     ],
+     [
+      "G226",
+      4.5
+     ],
+     [
+      "G227",
+      4.1
+     ],
+     [
+      "G228",
+      4.6
+     ],
+     [
+      "G229",
+      4.2
+     ],
+     [
+      "G230",
+      4.0
+     ],
+     [
+      "G231",
+      6.5
+     ],
+     [
+      "G232",
+      5.7
+     ],
+     [
+      "G233",
+      3.9
+     ],
+     [
+      "G234",
+      4.1
+     ],
+     [
+      "G235",
+      3.9
+     ],
+     [
+      "G236",
+      5.0
+     ],
+     [
+      "G237",
+      4.5
+     ],
+     [
+      "G238",
+      4.0
+     ],
+     [
+      "G239",
+      4.3
+     ],
+     [
+      "G240",
+      4.4
+     ],
+     [
+      "G241",
+      3.9
+     ],
+     [
+      "G242",
+      3.8
+     ],
+     [
+      "G243",
+      3.7
+     ],
+     [
+      "G244",
+      4.9
+     ],
+     [
+      "G245",
+      3.9
+     ],
+     [
+      "G246",
+      3.9
+     ],
+     [
+      "G247",
+      4.0
+     ],
+     [
+      "G248",
+      5.1
+     ],
+     [
+      "G249",
+      4.1
+     ],
+     [
+      "G250",
+      5.0
+     ],
+     [
+      "G251",
+      4.0
+     ],
+     [
+      "G252",
+      4.3
+     ],
+     [
+      "G253",
+      4.0
+     ],
+     [
+      "G254",
+      3.9
+     ],
+     [
+      "G255",
+      7.1
+     ],
+     [
+      "G256",
+      4.5
+     ],
+     [
+      "G257",
+      4.6
+     ],
+     [
+      "G258",
+      3.8
+     ],
+     [
+      "G259",
+      4.6
+     ],
+     [
+      "G260",
+      4.1
+     ],
+     [
+      "G261",
+      4.5
+     ],
+     [
+      "G262",
+      5.7
+     ],
+     [
+      "G263",
+      4.2
+     ],
+     [
+      "G264",
+      4.0
+     ],
+     [
+      "G265",
+      6.3
+     ],
+     [
+      "G266",
+      4.1
+     ],
+     [
+      "G267",
+      3.8
+     ],
+     [
+      "G268",
+      4.1
+     ],
+     [
+      "G269",
+      3.9
+     ],
+     [
+      "G270",
+      4.0
+     ],
+     [
+      "G271",
+      3.8
+     ],
+     [
+      "G272",
+      4.7
+     ],
+     [
+      "G273",
+      3.9
+     ],
+     [
+      "G274",
+      4.0
+     ],
+     [
+      "G275",
+      4.8
+     ],
+     [
+      "G276",
+      4.8
+     ],
+     [
+      "G277",
+      3.9
+     ],
+     [
+      "G278",
+      6.3
+     ],
+     [
+      "G279",
+      4.0
+     ],
+     [
+      "G280",
+      3.9
+     ],
+     [
+      "G281",
+      3.9
+     ],
+     [
+      "G282",
+      3.8
+     ],
+     [
+      "G283",
+      4.1
+     ],
+     [
+      "G284",
+      3.9
+     ],
+     [
+      "G285",
+      4.1
+     ],
+     [
+      "G286",
+      5.6
+     ],
+     [
+      "G287",
+      3.8
+     ],
+     [
+      "G288",
+      3.8
+     ],
+     [
+      "G289",
+      4.5
+     ],
+     [
+      "G290",
+      8.4
+     ],
+     [
+      "G291",
+      5.2
+     ],
+     [
+      "G292",
+      4.0
+     ],
+     [
+      "G293",
+      5.6
+     ],
+     [
+      "G294",
+      3.9
+     ],
+     [
+      "G295",
+      3.9
+     ],
+     [
+      "G296",
+      5.1
+     ],
+     [
+      "G297",
+      4.0
+     ],
+     [
+      "G298",
+      4.1
+     ],
+     [
+      "G299",
+      5.2
+     ],
+     [
+      "G300",
+      3.9
+     ]
+    ],
+    "code": "# Cumulative Curve\n# Question: What share of graduates finish their degree within four, five, or six years?\n# Put this script and cumcurve.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"cumcurve.csv\", show_col_types = FALSE)\n\n# The share of graduates finished by each milestone\nmarks <- tibble(years = c(4, 5, 6)) |>\n  mutate(share = map_dbl(years, ~ mean(df$years_to_degree <= .x)))\n\np <- ggplot(df, aes(x = years_to_degree)) +\n  stat_ecdf(geom = \"step\", color = \"#7FD18C\", linewidth = 1.3) +\n  geom_segment(data = marks, aes(x = years, xend = years, y = 0, yend = share),\n               linetype = \"dotted\", color = ink) +\n  geom_point(data = marks, aes(x = years, y = share), color = \"#E8EDF4\", size = 3.5) +\n  geom_text(data = marks, aes(x = years, y = share,\n                              label = paste0(scales::percent(share, accuracy = 1), \" by year \", years)),\n            hjust = -0.12, vjust = 1.4, color = \"#E8EDF4\", family = font, size = 4.4) +\n  scale_x_continuous(breaks = 3:9) +\n  scale_y_continuous(labels = scales::percent, limits = c(0, 1)) +\n  labs(x = \"Years to degree\", y = \"Share of graduates finished\",\n       caption = \"The horizontal axis is years to finish, not calendar time. Sample values, not real data.\") +\n  theme_gallery() +\n  theme(plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"cumcurve.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "What share of districts and community schools spend below any given amount?",
+    "data": "FY25 Expanded List, traditional districts and brick and mortar community schools.",
+    "note": "This is not a trend over time. The horizontal axis is dollars, and the line always rises."
+   },
+   "famous": [],
    "stories": []
   },
   {
@@ -746,8 +10457,161 @@ window.GALLERY = {
    ],
    "watch": "Using a line chart for categories that have no natural order.",
    "pairs": "Trend questions, enrollment over years, and before and after stories.",
-   "question": "How did enrollment change from 2018 to 2025?",
+   "question": "How did enrollment change from 2015 to 2025?",
    "hint": "This chart needs time on one axis. It shows movement, not a snapshot.",
+   "lesson": {
+    "question": "How did enrollment change from 2015 to 2025?",
+    "shape": "Long format: one row per year per group, with one number. Years must be evenly spaced. One group makes one line, and a second group adds a second line.",
+    "columns": [
+     {
+      "name": "year",
+      "type": "time",
+      "desc": "The horizontal axis, in order"
+     },
+     {
+      "name": "level",
+      "type": "category",
+      "desc": "Optional: one line per group"
+     },
+     {
+      "name": "students",
+      "type": "number",
+      "desc": "Students enrolled that fall"
+     }
+    ],
+    "rows": [
+     [
+      2015,
+      "Undergraduate",
+      5210
+     ],
+     [
+      2015,
+      "Graduate",
+      1080
+     ],
+     [
+      2016,
+      "Undergraduate",
+      5290
+     ],
+     [
+      2016,
+      "Graduate",
+      1120
+     ],
+     [
+      2017,
+      "Undergraduate",
+      5380
+     ],
+     [
+      2017,
+      "Graduate",
+      1170
+     ],
+     [
+      2018,
+      "Undergraduate",
+      5460
+     ],
+     [
+      2018,
+      "Graduate",
+      1230
+     ],
+     [
+      2019,
+      "Undergraduate",
+      5520
+     ],
+     [
+      2019,
+      "Graduate",
+      1290
+     ],
+     [
+      2020,
+      "Undergraduate",
+      5310
+     ],
+     [
+      2020,
+      "Graduate",
+      1340
+     ],
+     [
+      2021,
+      "Undergraduate",
+      5240
+     ],
+     [
+      2021,
+      "Graduate",
+      1420
+     ],
+     [
+      2022,
+      "Undergraduate",
+      5390
+     ],
+     [
+      2022,
+      "Graduate",
+      1470
+     ],
+     [
+      2023,
+      "Undergraduate",
+      5560
+     ],
+     [
+      2023,
+      "Graduate",
+      1530
+     ],
+     [
+      2024,
+      "Undergraduate",
+      5710
+     ],
+     [
+      2024,
+      "Graduate",
+      1590
+     ],
+     [
+      2025,
+      "Undergraduate",
+      5880
+     ],
+     [
+      2025,
+      "Graduate",
+      1650
+     ]
+    ],
+    "code": "# Line Chart\n# Question: How did enrollment change from 2015 to 2025?\n# Put this script and line.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"Undergraduate\" = \"#F0B95A\", \"Graduate\" = \"#75AADB\")\n\ndf <- read_csv(\"line.csv\", show_col_types = FALSE)\n\np <- ggplot(df, aes(x = year, y = students, color = level)) +\n  geom_line(linewidth = 1.4) +\n  geom_point(size = 2.6) +\n  # label each line at its right end instead of using a legend\n  geom_text(data = filter(df, year == max(year)), aes(label = level),\n            hjust = 0, nudge_x = 0.3, family = font, size = 4.6) +\n  scale_x_continuous(breaks = seq(2015, 2025, 2), expand = expansion(add = c(0.4, 2.4))) +\n  scale_y_continuous(labels = scales::comma, limits = c(0, NA)) +\n  scale_color_manual(values = pal, guide = \"none\") +\n  labs(x = NULL, y = \"Students enrolled\", caption = \"Sample values, not real data.\") +\n  theme_gallery() +\n  theme(plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"line.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "How did spending per student change from FY13 to FY26?",
+    "data": "Expanded List FY13 to FY26, traditional districts and brick and mortar community schools.",
+    "note": "Dollars are not adjusted for inflation, so part of this rise is rising prices."
+   },
+   "famous": [
+    {
+     "title": "The Keeling Curve",
+     "maker": "Charles David Keeling, Scripps Institution of Oceanography",
+     "year": "1958",
+     "source": "",
+     "site": "Britannica",
+     "note": "Carbon dioxide measured at Mauna Loa, Hawaii, since 1958: the longest unbroken record of its kind. The line climbs year after year, with a small seasonal wiggle as plants grow and rest.",
+     "url": "https://www.britannica.com/science/Keeling-Curve"
+    }
+   ],
    "stories": []
   },
   {
@@ -774,6 +10638,379 @@ window.GALLERY = {
    "pairs": "Line charts over time and comparisons across many groups.",
    "question": "How did each college's enrollment change over time?",
    "hint": "The same chart repeated once per group, arranged in one tidy grid.",
+   "lesson": {
+    "question": "How did each college's enrollment change over time?",
+    "shape": "Long format: one row per college per year, with one number. R draws one small panel per college, all on the same scale.",
+    "columns": [
+     {
+      "name": "college",
+      "type": "category",
+      "desc": "One panel per group"
+     },
+     {
+      "name": "year",
+      "type": "time",
+      "desc": "The horizontal axis in every panel"
+     },
+     {
+      "name": "students",
+      "type": "number",
+      "desc": "Students enrolled that fall"
+     }
+    ],
+    "rows": [
+     [
+      "Arts and Sciences",
+      2015,
+      2100
+     ],
+     [
+      "Arts and Sciences",
+      2016,
+      2053
+     ],
+     [
+      "Arts and Sciences",
+      2017,
+      2058
+     ],
+     [
+      "Arts and Sciences",
+      2018,
+      2027
+     ],
+     [
+      "Arts and Sciences",
+      2019,
+      2034
+     ],
+     [
+      "Arts and Sciences",
+      2020,
+      2038
+     ],
+     [
+      "Arts and Sciences",
+      2021,
+      2024
+     ],
+     [
+      "Arts and Sciences",
+      2022,
+      2008
+     ],
+     [
+      "Arts and Sciences",
+      2023,
+      1951
+     ],
+     [
+      "Arts and Sciences",
+      2024,
+      1962
+     ],
+     [
+      "Arts and Sciences",
+      2025,
+      1967
+     ],
+     [
+      "Business",
+      2015,
+      1400
+     ],
+     [
+      "Business",
+      2016,
+      1409
+     ],
+     [
+      "Business",
+      2017,
+      1402
+     ],
+     [
+      "Business",
+      2018,
+      1415
+     ],
+     [
+      "Business",
+      2019,
+      1442
+     ],
+     [
+      "Business",
+      2020,
+      1478
+     ],
+     [
+      "Business",
+      2021,
+      1481
+     ],
+     [
+      "Business",
+      2022,
+      1487
+     ],
+     [
+      "Business",
+      2023,
+      1490
+     ],
+     [
+      "Business",
+      2024,
+      1503
+     ],
+     [
+      "Business",
+      2025,
+      1502
+     ],
+     [
+      "Education",
+      2015,
+      900
+     ],
+     [
+      "Education",
+      2016,
+      891
+     ],
+     [
+      "Education",
+      2017,
+      859
+     ],
+     [
+      "Education",
+      2018,
+      839
+     ],
+     [
+      "Education",
+      2019,
+      803
+     ],
+     [
+      "Education",
+      2020,
+      791
+     ],
+     [
+      "Education",
+      2021,
+      759
+     ],
+     [
+      "Education",
+      2022,
+      727
+     ],
+     [
+      "Education",
+      2023,
+      710
+     ],
+     [
+      "Education",
+      2024,
+      703
+     ],
+     [
+      "Education",
+      2025,
+      689
+     ],
+     [
+      "Engineering",
+      2015,
+      800
+     ],
+     [
+      "Engineering",
+      2016,
+      840
+     ],
+     [
+      "Engineering",
+      2017,
+      872
+     ],
+     [
+      "Engineering",
+      2018,
+      923
+     ],
+     [
+      "Engineering",
+      2019,
+      951
+     ],
+     [
+      "Engineering",
+      2020,
+      970
+     ],
+     [
+      "Engineering",
+      2021,
+      1012
+     ],
+     [
+      "Engineering",
+      2022,
+      1053
+     ],
+     [
+      "Engineering",
+      2023,
+      1083
+     ],
+     [
+      "Engineering",
+      2024,
+      1108
+     ],
+     [
+      "Engineering",
+      2025,
+      1156
+     ],
+     [
+      "Health",
+      2015,
+      1100
+     ],
+     [
+      "Health",
+      2016,
+      1127
+     ],
+     [
+      "Health",
+      2017,
+      1150
+     ],
+     [
+      "Health",
+      2018,
+      1213
+     ],
+     [
+      "Health",
+      2019,
+      1278
+     ],
+     [
+      "Health",
+      2020,
+      1305
+     ],
+     [
+      "Health",
+      2021,
+      1326
+     ],
+     [
+      "Health",
+      2022,
+      1385
+     ],
+     [
+      "Health",
+      2023,
+      1431
+     ],
+     [
+      "Health",
+      2024,
+      1496
+     ],
+     [
+      "Health",
+      2025,
+      1521
+     ],
+     [
+      "Fine Arts",
+      2015,
+      450
+     ],
+     [
+      "Fine Arts",
+      2016,
+      450
+     ],
+     [
+      "Fine Arts",
+      2017,
+      446
+     ],
+     [
+      "Fine Arts",
+      2018,
+      445
+     ],
+     [
+      "Fine Arts",
+      2019,
+      428
+     ],
+     [
+      "Fine Arts",
+      2020,
+      421
+     ],
+     [
+      "Fine Arts",
+      2021,
+      419
+     ],
+     [
+      "Fine Arts",
+      2022,
+      404
+     ],
+     [
+      "Fine Arts",
+      2023,
+      400
+     ],
+     [
+      "Fine Arts",
+      2024,
+      393
+     ],
+     [
+      "Fine Arts",
+      2025,
+      387
+     ]
+    ],
+    "code": "# Small Multiples\n# Question: How did each college's enrollment change over time?\n# Put this script and smallmult.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"smallmult.csv\", show_col_types = FALSE)\n\n# A copy without the college column draws every college in gray behind each panel,\n# so each highlighted line can be compared with the rest\nbackground <- rename(df, other = college)\n\np <- ggplot(df, aes(x = year, y = students)) +\n  geom_line(data = background, aes(group = other), color = \"#2E3845\", linewidth = 0.8) +\n  geom_line(color = \"#F0B95A\", linewidth = 1.5) +\n  facet_wrap(~ college, nrow = 2) +          # every panel shares one scale\n  scale_x_continuous(breaks = c(2015, 2020, 2025)) +\n  scale_y_continuous(labels = scales::comma, limits = c(0, NA)) +\n  labs(x = NULL, y = \"Students enrolled\",\n       caption = \"Every panel uses the same scale. Gray lines show the other colleges. Sample values.\") +\n  theme_gallery() +\n  theme(strip.text = element_text(color = \"#E8EDF4\", size = 13, hjust = 0),\n        panel.spacing = unit(1.2, \"lines\"), plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"smallmult.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "How did spending per student change in each region?",
+    "data": "Expanded List FY13 to FY26, traditional districts by report card region.",
+    "note": "Every panel shares one scale, so heights can be compared across panels."
+   },
+   "famous": [
+    {
+     "title": "The Horse in Motion",
+     "maker": "Eadweard Muybridge",
+     "year": "1878",
+     "source": "",
+     "site": "National Gallery of Art",
+     "note": "A row of photos of one galloping stride, each the same size and taken a split second apart. Comparing frames side by side is the idea behind every set of small multiples.",
+     "url": "https://www.nga.gov/artworks/206147-horse-motion"
+    }
+   ],
    "stories": []
   },
   {
@@ -798,8 +11035,221 @@ window.GALLERY = {
    ],
    "watch": "Stacked area charts can hide smaller categories.",
    "pairs": "Cumulative totals and volume over time.",
-   "question": "How did total registrations grow across the year?",
+   "question": "How did registrations grow across the year?",
    "hint": "This chart is a line chart with the space below filled in, so volume becomes visible.",
+   "lesson": {
+    "question": "How did registrations grow across the year?",
+    "shape": "Long format: one row per month per type, with a count. Use the first day of each month as the date. R stacks the types, so the top edge shows the total.",
+    "columns": [
+     {
+      "name": "month",
+      "type": "time",
+      "desc": "The first day of each month"
+     },
+     {
+      "name": "type",
+      "type": "category",
+      "desc": "Optional: one colored layer per type"
+     },
+     {
+      "name": "registrations",
+      "type": "number",
+      "desc": "Registrations that month"
+     }
+    ],
+    "rows": [
+     [
+      "2025-01-01",
+      "Workshops",
+      120
+     ],
+     [
+      "2025-01-01",
+      "Webinars",
+      60
+     ],
+     [
+      "2025-01-01",
+      "Bootcamps",
+      0
+     ],
+     [
+      "2025-02-01",
+      "Workshops",
+      160
+     ],
+     [
+      "2025-02-01",
+      "Webinars",
+      70
+     ],
+     [
+      "2025-02-01",
+      "Bootcamps",
+      0
+     ],
+     [
+      "2025-03-01",
+      "Workshops",
+      210
+     ],
+     [
+      "2025-03-01",
+      "Webinars",
+      90
+     ],
+     [
+      "2025-03-01",
+      "Bootcamps",
+      0
+     ],
+     [
+      "2025-04-01",
+      "Workshops",
+      180
+     ],
+     [
+      "2025-04-01",
+      "Webinars",
+      85
+     ],
+     [
+      "2025-04-01",
+      "Bootcamps",
+      0
+     ],
+     [
+      "2025-05-01",
+      "Workshops",
+      90
+     ],
+     [
+      "2025-05-01",
+      "Webinars",
+      60
+     ],
+     [
+      "2025-05-01",
+      "Bootcamps",
+      45
+     ],
+     [
+      "2025-06-01",
+      "Workshops",
+      40
+     ],
+     [
+      "2025-06-01",
+      "Webinars",
+      55
+     ],
+     [
+      "2025-06-01",
+      "Bootcamps",
+      60
+     ],
+     [
+      "2025-07-01",
+      "Workshops",
+      30
+     ],
+     [
+      "2025-07-01",
+      "Webinars",
+      50
+     ],
+     [
+      "2025-07-01",
+      "Bootcamps",
+      55
+     ],
+     [
+      "2025-08-01",
+      "Workshops",
+      140
+     ],
+     [
+      "2025-08-01",
+      "Webinars",
+      70
+     ],
+     [
+      "2025-08-01",
+      "Bootcamps",
+      30
+     ],
+     [
+      "2025-09-01",
+      "Workshops",
+      260
+     ],
+     [
+      "2025-09-01",
+      "Webinars",
+      110
+     ],
+     [
+      "2025-09-01",
+      "Bootcamps",
+      0
+     ],
+     [
+      "2025-10-01",
+      "Workshops",
+      230
+     ],
+     [
+      "2025-10-01",
+      "Webinars",
+      120
+     ],
+     [
+      "2025-10-01",
+      "Bootcamps",
+      0
+     ],
+     [
+      "2025-11-01",
+      "Workshops",
+      190
+     ],
+     [
+      "2025-11-01",
+      "Webinars",
+      100
+     ],
+     [
+      "2025-11-01",
+      "Bootcamps",
+      0
+     ],
+     [
+      "2025-12-01",
+      "Workshops",
+      80
+     ],
+     [
+      "2025-12-01",
+      "Webinars",
+      60
+     ],
+     [
+      "2025-12-01",
+      "Bootcamps",
+      0
+     ]
+    ],
+    "code": "# Area Chart\n# Question: How did registrations grow across the year?\n# Put this script and area.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"Workshops\" = \"#F0B95A\", \"Webinars\" = \"#75AADB\", \"Bootcamps\" = \"#B79CFF\")\n\ndf <- read_csv(\"area.csv\", show_col_types = FALSE) |>\n  mutate(type = fct_relevel(type, \"Bootcamps\", \"Webinars\", \"Workshops\"))   # largest layer at the bottom\n\np <- ggplot(df, aes(x = month, y = registrations, fill = type)) +\n  geom_area(alpha = 0.9, color = \"#161B23\", linewidth = 0.4) +\n  scale_x_date(date_breaks = \"1 month\", date_labels = \"%b\", expand = c(0, 0)) +\n  scale_y_continuous(expand = expansion(mult = c(0, 0.08))) +\n  scale_fill_manual(values = pal, breaks = c(\"Workshops\", \"Webinars\", \"Bootcamps\"), name = NULL) +\n  labs(x = NULL, y = \"Registrations per month\",\n       caption = \"Layers are stacked, so the top edge is the total. Bootcamps run only in summer. Sample values.\") +\n  theme_gallery() +\n  theme(panel.grid.major.x = element_blank(), plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"area.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "How did total operating spending grow, and who holds it?",
+    "data": "Expanded List FY13 to FY26, all sectors.",
+    "note": "The small sectors look thin here on purpose. Their real size is small next to districts."
+   },
+   "famous": [],
    "stories": []
   },
   {
@@ -826,6 +11276,1504 @@ window.GALLERY = {
    "pairs": "Traffic, attendance, and usage rhythms.",
    "question": "Which days of the year saw the heaviest library traffic?",
    "hint": "A year of squares, one per day, colored by value.",
+   "lesson": {
+    "question": "Which days of the year saw the heaviest library traffic?",
+    "shape": "One row per day for a whole year, with one number. Write dates as year-month-day. R works out each day's week and weekday to build the calendar grid.",
+    "columns": [
+     {
+      "name": "date",
+      "type": "time",
+      "desc": "One day. Every day of the year gets a row"
+     },
+     {
+      "name": "visits",
+      "type": "number",
+      "desc": "People who came into the library that day"
+     }
+    ],
+    "rows": [
+     [
+      "2025-01-01",
+      5
+     ],
+     [
+      "2025-01-02",
+      345
+     ],
+     [
+      "2025-01-03",
+      281
+     ],
+     [
+      "2025-01-04",
+      118
+     ],
+     [
+      "2025-01-05",
+      194
+     ],
+     [
+      "2025-01-06",
+      371
+     ],
+     [
+      "2025-01-07",
+      366
+     ],
+     [
+      "2025-01-08",
+      337
+     ],
+     [
+      "2025-01-09",
+      364
+     ],
+     [
+      "2025-01-10",
+      288
+     ],
+     [
+      "2025-01-11",
+      130
+     ],
+     [
+      "2025-01-12",
+      165
+     ],
+     [
+      "2025-01-13",
+      1238
+     ],
+     [
+      "2025-01-14",
+      1076
+     ],
+     [
+      "2025-01-15",
+      1177
+     ],
+     [
+      "2025-01-16",
+      1122
+     ],
+     [
+      "2025-01-17",
+      766
+     ],
+     [
+      "2025-01-18",
+      369
+     ],
+     [
+      "2025-01-19",
+      592
+     ],
+     [
+      "2025-01-20",
+      1205
+     ],
+     [
+      "2025-01-21",
+      1111
+     ],
+     [
+      "2025-01-22",
+      1048
+     ],
+     [
+      "2025-01-23",
+      1010
+     ],
+     [
+      "2025-01-24",
+      897
+     ],
+     [
+      "2025-01-25",
+      381
+     ],
+     [
+      "2025-01-26",
+      564
+     ],
+     [
+      "2025-01-27",
+      1133
+     ],
+     [
+      "2025-01-28",
+      1043
+     ],
+     [
+      "2025-01-29",
+      1073
+     ],
+     [
+      "2025-01-30",
+      1274
+     ],
+     [
+      "2025-01-31",
+      794
+     ],
+     [
+      "2025-02-01",
+      387
+     ],
+     [
+      "2025-02-02",
+      625
+     ],
+     [
+      "2025-02-03",
+      1180
+     ],
+     [
+      "2025-02-04",
+      1060
+     ],
+     [
+      "2025-02-05",
+      1023
+     ],
+     [
+      "2025-02-06",
+      1055
+     ],
+     [
+      "2025-02-07",
+      745
+     ],
+     [
+      "2025-02-08",
+      356
+     ],
+     [
+      "2025-02-09",
+      519
+     ],
+     [
+      "2025-02-10",
+      1101
+     ],
+     [
+      "2025-02-11",
+      1136
+     ],
+     [
+      "2025-02-12",
+      1113
+     ],
+     [
+      "2025-02-13",
+      1114
+     ],
+     [
+      "2025-02-14",
+      829
+     ],
+     [
+      "2025-02-15",
+      361
+     ],
+     [
+      "2025-02-16",
+      623
+     ],
+     [
+      "2025-02-17",
+      1073
+     ],
+     [
+      "2025-02-18",
+      1181
+     ],
+     [
+      "2025-02-19",
+      1118
+     ],
+     [
+      "2025-02-20",
+      1165
+     ],
+     [
+      "2025-02-21",
+      728
+     ],
+     [
+      "2025-02-22",
+      427
+     ],
+     [
+      "2025-02-23",
+      607
+     ],
+     [
+      "2025-02-24",
+      1014
+     ],
+     [
+      "2025-02-25",
+      1083
+     ],
+     [
+      "2025-02-26",
+      1269
+     ],
+     [
+      "2025-02-27",
+      1229
+     ],
+     [
+      "2025-02-28",
+      837
+     ],
+     [
+      "2025-03-01",
+      408
+     ],
+     [
+      "2025-03-02",
+      503
+     ],
+     [
+      "2025-03-03",
+      1212
+     ],
+     [
+      "2025-03-04",
+      1059
+     ],
+     [
+      "2025-03-05",
+      1095
+     ],
+     [
+      "2025-03-06",
+      1277
+     ],
+     [
+      "2025-03-07",
+      790
+     ],
+     [
+      "2025-03-08",
+      380
+     ],
+     [
+      "2025-03-09",
+      575
+     ],
+     [
+      "2025-03-10",
+      339
+     ],
+     [
+      "2025-03-11",
+      375
+     ],
+     [
+      "2025-03-12",
+      388
+     ],
+     [
+      "2025-03-13",
+      353
+     ],
+     [
+      "2025-03-14",
+      234
+     ],
+     [
+      "2025-03-15",
+      117
+     ],
+     [
+      "2025-03-16",
+      156
+     ],
+     [
+      "2025-03-17",
+      1027
+     ],
+     [
+      "2025-03-18",
+      1261
+     ],
+     [
+      "2025-03-19",
+      1082
+     ],
+     [
+      "2025-03-20",
+      1027
+     ],
+     [
+      "2025-03-21",
+      849
+     ],
+     [
+      "2025-03-22",
+      333
+     ],
+     [
+      "2025-03-23",
+      590
+     ],
+     [
+      "2025-03-24",
+      1246
+     ],
+     [
+      "2025-03-25",
+      1075
+     ],
+     [
+      "2025-03-26",
+      1238
+     ],
+     [
+      "2025-03-27",
+      1172
+     ],
+     [
+      "2025-03-28",
+      758
+     ],
+     [
+      "2025-03-29",
+      348
+     ],
+     [
+      "2025-03-30",
+      514
+     ],
+     [
+      "2025-03-31",
+      1154
+     ],
+     [
+      "2025-04-01",
+      1263
+     ],
+     [
+      "2025-04-02",
+      1133
+     ],
+     [
+      "2025-04-03",
+      1133
+     ],
+     [
+      "2025-04-04",
+      788
+     ],
+     [
+      "2025-04-05",
+      392
+     ],
+     [
+      "2025-04-06",
+      582
+     ],
+     [
+      "2025-04-07",
+      1082
+     ],
+     [
+      "2025-04-08",
+      1060
+     ],
+     [
+      "2025-04-09",
+      1017
+     ],
+     [
+      "2025-04-10",
+      1204
+     ],
+     [
+      "2025-04-11",
+      839
+     ],
+     [
+      "2025-04-12",
+      350
+     ],
+     [
+      "2025-04-13",
+      614
+     ],
+     [
+      "2025-04-14",
+      1204
+     ],
+     [
+      "2025-04-15",
+      1012
+     ],
+     [
+      "2025-04-16",
+      1193
+     ],
+     [
+      "2025-04-17",
+      1023
+     ],
+     [
+      "2025-04-18",
+      820
+     ],
+     [
+      "2025-04-19",
+      423
+     ],
+     [
+      "2025-04-20",
+      577
+     ],
+     [
+      "2025-04-21",
+      1050
+     ],
+     [
+      "2025-04-22",
+      1037
+     ],
+     [
+      "2025-04-23",
+      1270
+     ],
+     [
+      "2025-04-24",
+      1017
+     ],
+     [
+      "2025-04-25",
+      778
+     ],
+     [
+      "2025-04-26",
+      350
+     ],
+     [
+      "2025-04-27",
+      527
+     ],
+     [
+      "2025-04-28",
+      1771
+     ],
+     [
+      "2025-04-29",
+      1980
+     ],
+     [
+      "2025-04-30",
+      1789
+     ],
+     [
+      "2025-05-01",
+      1838
+     ],
+     [
+      "2025-05-02",
+      1408
+     ],
+     [
+      "2025-05-03",
+      603
+     ],
+     [
+      "2025-05-04",
+      812
+     ],
+     [
+      "2025-05-05",
+      1997
+     ],
+     [
+      "2025-05-06",
+      1939
+     ],
+     [
+      "2025-05-07",
+      1677
+     ],
+     [
+      "2025-05-08",
+      1856
+     ],
+     [
+      "2025-05-09",
+      1460
+     ],
+     [
+      "2025-05-10",
+      104
+     ],
+     [
+      "2025-05-11",
+      187
+     ],
+     [
+      "2025-05-12",
+      401
+     ],
+     [
+      "2025-05-13",
+      369
+     ],
+     [
+      "2025-05-14",
+      406
+     ],
+     [
+      "2025-05-15",
+      399
+     ],
+     [
+      "2025-05-16",
+      261
+     ],
+     [
+      "2025-05-17",
+      128
+     ],
+     [
+      "2025-05-18",
+      171
+     ],
+     [
+      "2025-05-19",
+      370
+     ],
+     [
+      "2025-05-20",
+      332
+     ],
+     [
+      "2025-05-21",
+      380
+     ],
+     [
+      "2025-05-22",
+      356
+     ],
+     [
+      "2025-05-23",
+      236
+     ],
+     [
+      "2025-05-24",
+      120
+     ],
+     [
+      "2025-05-25",
+      171
+     ],
+     [
+      "2025-05-26",
+      368
+     ],
+     [
+      "2025-05-27",
+      331
+     ],
+     [
+      "2025-05-28",
+      357
+     ],
+     [
+      "2025-05-29",
+      324
+     ],
+     [
+      "2025-05-30",
+      255
+     ],
+     [
+      "2025-05-31",
+      124
+     ],
+     [
+      "2025-06-01",
+      183
+     ],
+     [
+      "2025-06-02",
+      379
+     ],
+     [
+      "2025-06-03",
+      402
+     ],
+     [
+      "2025-06-04",
+      351
+     ],
+     [
+      "2025-06-05",
+      394
+     ],
+     [
+      "2025-06-06",
+      286
+     ],
+     [
+      "2025-06-07",
+      122
+     ],
+     [
+      "2025-06-08",
+      169
+     ],
+     [
+      "2025-06-09",
+      397
+     ],
+     [
+      "2025-06-10",
+      405
+     ],
+     [
+      "2025-06-11",
+      379
+     ],
+     [
+      "2025-06-12",
+      332
+     ],
+     [
+      "2025-06-13",
+      275
+     ],
+     [
+      "2025-06-14",
+      128
+     ],
+     [
+      "2025-06-15",
+      178
+     ],
+     [
+      "2025-06-16",
+      356
+     ],
+     [
+      "2025-06-17",
+      357
+     ],
+     [
+      "2025-06-18",
+      384
+     ],
+     [
+      "2025-06-19",
+      398
+     ],
+     [
+      "2025-06-20",
+      242
+     ],
+     [
+      "2025-06-21",
+      124
+     ],
+     [
+      "2025-06-22",
+      182
+     ],
+     [
+      "2025-06-23",
+      383
+     ],
+     [
+      "2025-06-24",
+      397
+     ],
+     [
+      "2025-06-25",
+      369
+     ],
+     [
+      "2025-06-26",
+      396
+     ],
+     [
+      "2025-06-27",
+      236
+     ],
+     [
+      "2025-06-28",
+      136
+     ],
+     [
+      "2025-06-29",
+      191
+     ],
+     [
+      "2025-06-30",
+      358
+     ],
+     [
+      "2025-07-01",
+      387
+     ],
+     [
+      "2025-07-02",
+      346
+     ],
+     [
+      "2025-07-03",
+      362
+     ],
+     [
+      "2025-07-04",
+      2
+     ],
+     [
+      "2025-07-05",
+      126
+     ],
+     [
+      "2025-07-06",
+      189
+     ],
+     [
+      "2025-07-07",
+      379
+     ],
+     [
+      "2025-07-08",
+      372
+     ],
+     [
+      "2025-07-09",
+      400
+     ],
+     [
+      "2025-07-10",
+      410
+     ],
+     [
+      "2025-07-11",
+      279
+     ],
+     [
+      "2025-07-12",
+      109
+     ],
+     [
+      "2025-07-13",
+      194
+     ],
+     [
+      "2025-07-14",
+      403
+     ],
+     [
+      "2025-07-15",
+      357
+     ],
+     [
+      "2025-07-16",
+      412
+     ],
+     [
+      "2025-07-17",
+      331
+     ],
+     [
+      "2025-07-18",
+      286
+     ],
+     [
+      "2025-07-19",
+      104
+     ],
+     [
+      "2025-07-20",
+      171
+     ],
+     [
+      "2025-07-21",
+      397
+     ],
+     [
+      "2025-07-22",
+      348
+     ],
+     [
+      "2025-07-23",
+      327
+     ],
+     [
+      "2025-07-24",
+      330
+     ],
+     [
+      "2025-07-25",
+      286
+     ],
+     [
+      "2025-07-26",
+      110
+     ],
+     [
+      "2025-07-27",
+      201
+     ],
+     [
+      "2025-07-28",
+      375
+     ],
+     [
+      "2025-07-29",
+      391
+     ],
+     [
+      "2025-07-30",
+      365
+     ],
+     [
+      "2025-07-31",
+      339
+     ],
+     [
+      "2025-08-01",
+      244
+     ],
+     [
+      "2025-08-02",
+      112
+     ],
+     [
+      "2025-08-03",
+      180
+     ],
+     [
+      "2025-08-04",
+      410
+     ],
+     [
+      "2025-08-05",
+      377
+     ],
+     [
+      "2025-08-06",
+      340
+     ],
+     [
+      "2025-08-07",
+      345
+     ],
+     [
+      "2025-08-08",
+      254
+     ],
+     [
+      "2025-08-09",
+      133
+     ],
+     [
+      "2025-08-10",
+      200
+     ],
+     [
+      "2025-08-11",
+      411
+     ],
+     [
+      "2025-08-12",
+      327
+     ],
+     [
+      "2025-08-13",
+      330
+     ],
+     [
+      "2025-08-14",
+      357
+     ],
+     [
+      "2025-08-15",
+      263
+     ],
+     [
+      "2025-08-16",
+      120
+     ],
+     [
+      "2025-08-17",
+      193
+     ],
+     [
+      "2025-08-18",
+      345
+     ],
+     [
+      "2025-08-19",
+      390
+     ],
+     [
+      "2025-08-20",
+      359
+     ],
+     [
+      "2025-08-21",
+      345
+     ],
+     [
+      "2025-08-22",
+      237
+     ],
+     [
+      "2025-08-23",
+      122
+     ],
+     [
+      "2025-08-24",
+      169
+     ],
+     [
+      "2025-08-25",
+      1208
+     ],
+     [
+      "2025-08-26",
+      1204
+     ],
+     [
+      "2025-08-27",
+      1149
+     ],
+     [
+      "2025-08-28",
+      1164
+     ],
+     [
+      "2025-08-29",
+      913
+     ],
+     [
+      "2025-08-30",
+      339
+     ],
+     [
+      "2025-08-31",
+      492
+     ],
+     [
+      "2025-09-01",
+      1220
+     ],
+     [
+      "2025-09-02",
+      1081
+     ],
+     [
+      "2025-09-03",
+      1199
+     ],
+     [
+      "2025-09-04",
+      1245
+     ],
+     [
+      "2025-09-05",
+      728
+     ],
+     [
+      "2025-09-06",
+      412
+     ],
+     [
+      "2025-09-07",
+      592
+     ],
+     [
+      "2025-09-08",
+      1189
+     ],
+     [
+      "2025-09-09",
+      1279
+     ],
+     [
+      "2025-09-10",
+      1079
+     ],
+     [
+      "2025-09-11",
+      1104
+     ],
+     [
+      "2025-09-12",
+      839
+     ],
+     [
+      "2025-09-13",
+      410
+     ],
+     [
+      "2025-09-14",
+      575
+     ],
+     [
+      "2025-09-15",
+      1241
+     ],
+     [
+      "2025-09-16",
+      1254
+     ],
+     [
+      "2025-09-17",
+      1195
+     ],
+     [
+      "2025-09-18",
+      1150
+     ],
+     [
+      "2025-09-19",
+      804
+     ],
+     [
+      "2025-09-20",
+      346
+     ],
+     [
+      "2025-09-21",
+      620
+     ],
+     [
+      "2025-09-22",
+      1100
+     ],
+     [
+      "2025-09-23",
+      1169
+     ],
+     [
+      "2025-09-24",
+      1124
+     ],
+     [
+      "2025-09-25",
+      1278
+     ],
+     [
+      "2025-09-26",
+      778
+     ],
+     [
+      "2025-09-27",
+      412
+     ],
+     [
+      "2025-09-28",
+      516
+     ],
+     [
+      "2025-09-29",
+      1168
+     ],
+     [
+      "2025-09-30",
+      1067
+     ],
+     [
+      "2025-10-01",
+      1276
+     ],
+     [
+      "2025-10-02",
+      1127
+     ],
+     [
+      "2025-10-03",
+      775
+     ],
+     [
+      "2025-10-04",
+      371
+     ],
+     [
+      "2025-10-05",
+      542
+     ],
+     [
+      "2025-10-06",
+      1059
+     ],
+     [
+      "2025-10-07",
+      1261
+     ],
+     [
+      "2025-10-08",
+      1159
+     ],
+     [
+      "2025-10-09",
+      1252
+     ],
+     [
+      "2025-10-10",
+      805
+     ],
+     [
+      "2025-10-11",
+      400
+     ],
+     [
+      "2025-10-12",
+      502
+     ],
+     [
+      "2025-10-13",
+      1121
+     ],
+     [
+      "2025-10-14",
+      1237
+     ],
+     [
+      "2025-10-15",
+      1103
+     ],
+     [
+      "2025-10-16",
+      1088
+     ],
+     [
+      "2025-10-17",
+      804
+     ],
+     [
+      "2025-10-18",
+      356
+     ],
+     [
+      "2025-10-19",
+      548
+     ],
+     [
+      "2025-10-20",
+      1168
+     ],
+     [
+      "2025-10-21",
+      1137
+     ],
+     [
+      "2025-10-22",
+      1063
+     ],
+     [
+      "2025-10-23",
+      1114
+     ],
+     [
+      "2025-10-24",
+      921
+     ],
+     [
+      "2025-10-25",
+      351
+     ],
+     [
+      "2025-10-26",
+      622
+     ],
+     [
+      "2025-10-27",
+      1154
+     ],
+     [
+      "2025-10-28",
+      1183
+     ],
+     [
+      "2025-10-29",
+      1047
+     ],
+     [
+      "2025-10-30",
+      1290
+     ],
+     [
+      "2025-10-31",
+      804
+     ],
+     [
+      "2025-11-01",
+      337
+     ],
+     [
+      "2025-11-02",
+      585
+     ],
+     [
+      "2025-11-03",
+      1026
+     ],
+     [
+      "2025-11-04",
+      1015
+     ],
+     [
+      "2025-11-05",
+      1192
+     ],
+     [
+      "2025-11-06",
+      1240
+     ],
+     [
+      "2025-11-07",
+      799
+     ],
+     [
+      "2025-11-08",
+      333
+     ],
+     [
+      "2025-11-09",
+      503
+     ],
+     [
+      "2025-11-10",
+      1026
+     ],
+     [
+      "2025-11-11",
+      1186
+     ],
+     [
+      "2025-11-12",
+      1092
+     ],
+     [
+      "2025-11-13",
+      1245
+     ],
+     [
+      "2025-11-14",
+      877
+     ],
+     [
+      "2025-11-15",
+      371
+     ],
+     [
+      "2025-11-16",
+      614
+     ],
+     [
+      "2025-11-17",
+      1130
+     ],
+     [
+      "2025-11-18",
+      1162
+     ],
+     [
+      "2025-11-19",
+      1029
+     ],
+     [
+      "2025-11-20",
+      1277
+     ],
+     [
+      "2025-11-21",
+      870
+     ],
+     [
+      "2025-11-22",
+      412
+     ],
+     [
+      "2025-11-23",
+      595
+     ],
+     [
+      "2025-11-24",
+      1242
+     ],
+     [
+      "2025-11-25",
+      1171
+     ],
+     [
+      "2025-11-26",
+      310
+     ],
+     [
+      "2025-11-27",
+      310
+     ],
+     [
+      "2025-11-28",
+      250
+     ],
+     [
+      "2025-11-29",
+      120
+     ],
+     [
+      "2025-11-30",
+      187
+     ],
+     [
+      "2025-12-01",
+      1963
+     ],
+     [
+      "2025-12-02",
+      1826
+     ],
+     [
+      "2025-12-03",
+      1627
+     ],
+     [
+      "2025-12-04",
+      1872
+     ],
+     [
+      "2025-12-05",
+      1179
+     ],
+     [
+      "2025-12-06",
+      596
+     ],
+     [
+      "2025-12-07",
+      959
+     ],
+     [
+      "2025-12-08",
+      1833
+     ],
+     [
+      "2025-12-09",
+      1965
+     ],
+     [
+      "2025-12-10",
+      1875
+     ],
+     [
+      "2025-12-11",
+      1894
+     ],
+     [
+      "2025-12-12",
+      1246
+     ],
+     [
+      "2025-12-13",
+      137
+     ],
+     [
+      "2025-12-14",
+      191
+     ],
+     [
+      "2025-12-15",
+      343
+     ],
+     [
+      "2025-12-16",
+      337
+     ],
+     [
+      "2025-12-17",
+      373
+     ],
+     [
+      "2025-12-18",
+      332
+     ],
+     [
+      "2025-12-19",
+      282
+     ],
+     [
+      "2025-12-20",
+      136
+     ],
+     [
+      "2025-12-21",
+      187
+     ],
+     [
+      "2025-12-22",
+      357
+     ],
+     [
+      "2025-12-23",
+      385
+     ],
+     [
+      "2025-12-24",
+      331
+     ],
+     [
+      "2025-12-25",
+      5
+     ],
+     [
+      "2025-12-26",
+      237
+     ],
+     [
+      "2025-12-27",
+      125
+     ],
+     [
+      "2025-12-28",
+      155
+     ],
+     [
+      "2025-12-29",
+      345
+     ],
+     [
+      "2025-12-30",
+      378
+     ],
+     [
+      "2025-12-31",
+      353
+     ]
+    ],
+    "code": "# Calendar Heat Map\n# Question: Which days of the year saw the heaviest library traffic?\n# Put this script and calheatmap.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"calheatmap.csv\", show_col_types = FALSE)\n\n# Place each day in a grid: columns are weeks (starting on Mondays), rows are weekdays.\n# The year is split into two halves so the squares are big enough to read.\nfirst_monday <- floor_date(min(df$date), \"week\", week_start = 1)\ncal <- df |>\n  mutate(week    = as.integer((floor_date(date, \"week\", week_start = 1) - first_monday) / 7) + 1,\n         weekday = fct_rev(wday(date, label = TRUE, week_start = 1)),   # Monday at the top\n         half    = if_else(month(date) <= 6, \"January to June\", \"July to December\"))\n\n# Month names go above the week that holds the 1st of each month\nmonth_marks <- cal |> filter(day(date) == 1) |> transmute(week, label = month(date, label = TRUE))\n\np <- ggplot(cal, aes(x = week, y = weekday, fill = visits)) +\n  geom_tile(color = \"#161B23\", linewidth = 0.8) +\n  scale_fill_gradient(low = \"#222A34\", high = \"#F0B95A\", labels = scales::comma, name = \"Visits\") +\n  scale_x_continuous(breaks = month_marks$week, labels = month_marks$label, expand = c(0, 0)) +\n  facet_wrap(~ half, ncol = 1, scales = \"free_x\") +\n  labs(x = NULL, y = NULL, caption = \"Each square is one day of 2025. Brighter means busier. Sample values.\") +\n  theme_gallery() +\n  theme(panel.grid = element_blank(), legend.position = \"right\", aspect.ratio = 7 / 27,\n        strip.text = element_text(color = \"#E8EDF4\", size = 13, hjust = 0),\n        legend.key.height = unit(1.2, \"cm\"), legend.title = element_text(color = ink, size = 12),\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"calheatmap.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "Which months of which years carried the most school ballot issues?",
+    "data": "School Election Results, February 2003 to May 2026.",
+    "note": "Adapted. The file dates every election to the first of the month, so this grid shows months and years, not single days."
+   },
+   "famous": [
+    {
+     "title": "The GitHub contribution graph",
+     "maker": "GitHub",
+     "year": "",
+     "source": "",
+     "site": "GitHub Docs",
+     "note": "Every GitHub profile shows a graph of the past year of contributions, making it one of the most widely seen calendar heat maps. This page explains what it counts.",
+     "url": "https://docs.github.com/en/enterprise-server@3.21/account-and-profile/concepts/contributions-on-your-profile"
+    }
+   ],
    "stories": []
   },
   {
@@ -852,6 +12800,231 @@ window.GALLERY = {
    "pairs": "Financial values and anything with within period swings.",
    "question": "How did the endowment fund move within each week?",
    "hint": "Each period gets a box for open and close, and wicks for high and low.",
+   "lesson": {
+    "question": "How did the endowment fund move within each week?",
+    "shape": "One row per week with four numbers: where the week opened, its highest value, its lowest value, and where it closed. Each row becomes one candle.",
+    "columns": [
+     {
+      "name": "week",
+      "type": "time",
+      "desc": "The Monday that starts each week"
+     },
+     {
+      "name": "open",
+      "type": "number",
+      "desc": "Value at the start of the week, in millions of dollars"
+     },
+     {
+      "name": "high",
+      "type": "number",
+      "desc": "Highest value during the week"
+     },
+     {
+      "name": "low",
+      "type": "number",
+      "desc": "Lowest value during the week"
+     },
+     {
+      "name": "close",
+      "type": "number",
+      "desc": "Value at the end of the week"
+     }
+    ],
+    "rows": [
+     [
+      "2025-01-06",
+      412.0,
+      425.2,
+      411.3,
+      423.1
+     ],
+     [
+      "2025-01-13",
+      423.4,
+      444.5,
+      422.5,
+      443.4
+     ],
+     [
+      "2025-01-20",
+      443.8,
+      448.3,
+      441.8,
+      442.1
+     ],
+     [
+      "2025-01-27",
+      440.7,
+      441.0,
+      430.0,
+      432.7
+     ],
+     [
+      "2025-02-03",
+      431.8,
+      441.3,
+      429.4,
+      437.6
+     ],
+     [
+      "2025-02-10",
+      438.7,
+      444.4,
+      437.4,
+      441.6
+     ],
+     [
+      "2025-02-17",
+      441.1,
+      452.3,
+      439.9,
+      447.5
+     ],
+     [
+      "2025-02-24",
+      448.6,
+      453.3,
+      439.9,
+      452.1
+     ],
+     [
+      "2025-03-03",
+      451.8,
+      453.5,
+      445.0,
+      449.3
+     ],
+     [
+      "2025-03-10",
+      450.0,
+      462.8,
+      448.8,
+      462.5
+     ],
+     [
+      "2025-03-17",
+      462.6,
+      471.8,
+      461.9,
+      471.4
+     ],
+     [
+      "2025-03-24",
+      471.6,
+      484.2,
+      470.5,
+      483.3
+     ],
+     [
+      "2025-03-31",
+      483.6,
+      492.1,
+      483.1,
+      491.5
+     ],
+     [
+      "2025-04-07",
+      491.2,
+      501.8,
+      490.8,
+      497.5
+     ],
+     [
+      "2025-04-14",
+      497.2,
+      505.5,
+      492.2,
+      504.8
+     ],
+     [
+      "2025-04-21",
+      505.2,
+      507.5,
+      498.3,
+      506.0
+     ],
+     [
+      "2025-04-28",
+      506.0,
+      518.1,
+      504.5,
+      518.0
+     ],
+     [
+      "2025-05-05",
+      517.5,
+      532.6,
+      516.7,
+      532.2
+     ],
+     [
+      "2025-05-12",
+      533.5,
+      550.6,
+      532.9,
+      550.2
+     ],
+     [
+      "2025-05-19",
+      549.9,
+      556.8,
+      543.4,
+      543.9
+     ],
+     [
+      "2025-05-26",
+      543.1,
+      546.9,
+      540.1,
+      544.4
+     ],
+     [
+      "2025-06-02",
+      544.3,
+      552.9,
+      542.2,
+      551.8
+     ],
+     [
+      "2025-06-09",
+      553.2,
+      567.4,
+      549.8,
+      566.1
+     ],
+     [
+      "2025-06-16",
+      566.8,
+      568.3,
+      557.6,
+      563.9
+     ],
+     [
+      "2025-06-23",
+      564.5,
+      567.5,
+      561.9,
+      566.2
+     ],
+     [
+      "2025-06-30",
+      566.0,
+      575.4,
+      564.9,
+      574.6
+     ]
+    ],
+    "code": "# Candlestick Chart\n# Question: How did the endowment fund move within each week?\n# Put this script and candlestick.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"Rose\" = \"#7FD18C\", \"Fell\" = \"#F2716F\")\n\ndf <- read_csv(\"candlestick.csv\", show_col_types = FALSE) |>\n  mutate(direction = if_else(close >= open, \"Rose\", \"Fell\"))\n\np <- ggplot(df, aes(x = week)) +\n  # the thin wick runs from the week's low to its high\n  geom_segment(aes(xend = week, y = low, yend = high, color = direction), linewidth = 0.7) +\n  # the thick body runs from the open to the close\n  geom_segment(aes(xend = week, y = open, yend = close, color = direction), linewidth = 4.2) +\n  scale_color_manual(values = pal, name = NULL) +\n  scale_x_date(date_breaks = \"1 month\", date_labels = \"%b\") +\n  scale_y_continuous(labels = scales::dollar_format(suffix = \"M\")) +\n  labs(x = NULL, y = \"Fund value\",\n       caption = \"Thick body: open to close. Thin wick: the week's high and low. Sample values, not real data.\") +\n  theme_gallery() +\n  theme(panel.grid.major.x = element_blank(), plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"candlestick.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "How did school levy pass rates move within each year?",
+    "data": "School Election Results, 2004 to 2025. Each election date with at least 15 issues counts as one reading.",
+    "note": "Adapted from finance. Open is the year's first election, close is its last, and the wick shows the highest and lowest. No August elections appear after 2022."
+   },
+   "famous": [],
    "stories": []
   },
   {
@@ -876,8 +13049,110 @@ window.GALLERY = {
    ],
    "watch": "Readers treat the central line as a promise instead of a middle guess.",
    "pairs": "Projections, budgets, and enrollment planning.",
-   "question": "What is projected enrollment for the next five years, with uncertainty?",
+   "question": "What might enrollment be over the next five years, and how sure can we be?",
    "hint": "The future spreads out like an opening fan.",
+   "lesson": {
+    "question": "What might enrollment be over the next five years, and how sure can we be?",
+    "shape": "One row per past year with one number. The file holds only real history: R builds the forecast and its bands from how much the past years changed.",
+    "columns": [
+     {
+      "name": "year",
+      "type": "time",
+      "desc": "Past years, in order"
+     },
+     {
+      "name": "students",
+      "type": "number",
+      "desc": "Students enrolled that fall"
+     }
+    ],
+    "rows": [
+     [
+      2010,
+      10420
+     ],
+     [
+      2011,
+      10610
+     ],
+     [
+      2012,
+      10830
+     ],
+     [
+      2013,
+      10790
+     ],
+     [
+      2014,
+      11020
+     ],
+     [
+      2015,
+      11240
+     ],
+     [
+      2016,
+      11310
+     ],
+     [
+      2017,
+      11520
+     ],
+     [
+      2018,
+      11480
+     ],
+     [
+      2019,
+      11690
+     ],
+     [
+      2020,
+      11350
+     ],
+     [
+      2021,
+      11420
+     ],
+     [
+      2022,
+      11610
+     ],
+     [
+      2023,
+      11800
+     ],
+     [
+      2024,
+      11930
+     ],
+     [
+      2025,
+      12080
+     ]
+    ],
+    "code": "# Fan Chart\n# Question: What might enrollment be over the next five years, and how sure can we be?\n# Put this script and fan.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\ndf <- read_csv(\"fan.csv\", show_col_types = FALSE)\n\n# A simple forecast: keep the average yearly change going, and let the\n# uncertainty grow with each step, based on how much past changes varied\nchanges <- diff(df$students)\ndrift   <- mean(changes)\nspread  <- sd(changes)\nlast    <- tail(df, 1)\n\nfc <- tibble(step = 1:5) |>\n  mutate(year     = last$year + step,\n         center   = last$students + drift * step,\n         lo95 = center - 1.96 * spread * sqrt(step), hi95 = center + 1.96 * spread * sqrt(step),\n         lo80 = center - 1.28 * spread * sqrt(step), hi80 = center + 1.28 * spread * sqrt(step),\n         lo50 = center - 0.67 * spread * sqrt(step), hi50 = center + 0.67 * spread * sqrt(step))\n\n# Start every band at the last real year so the fan opens from that point\nfc <- bind_rows(tibble(year = last$year, center = last$students,\n                       lo95 = last$students, hi95 = last$students, lo80 = last$students,\n                       hi80 = last$students, lo50 = last$students, hi50 = last$students), fc)\n\np <- ggplot() +\n  geom_ribbon(data = fc, aes(x = year, ymin = lo95, ymax = hi95), fill = \"#F0B95A\", alpha = 0.18) +\n  geom_ribbon(data = fc, aes(x = year, ymin = lo80, ymax = hi80), fill = \"#F0B95A\", alpha = 0.28) +\n  geom_ribbon(data = fc, aes(x = year, ymin = lo50, ymax = hi50), fill = \"#F0B95A\", alpha = 0.45) +\n  geom_line(data = fc, aes(x = year, y = center), color = \"#F0B95A\", linetype = \"dashed\", linewidth = 1) +\n  geom_line(data = df, aes(x = year, y = students), color = \"#E8EDF4\", linewidth = 1.3) +\n  geom_point(data = df, aes(x = year, y = students), color = \"#E8EDF4\", size = 2) +\n  annotate(\"text\", x = last$year + 5.2, y = c(max(fc$hi95), max(fc$hi50)) ,\n           label = c(\"95% band\", \"50% band\"), hjust = 0, vjust = 0.5, color = ink, family = font, size = 4) +\n  scale_x_continuous(breaks = seq(2010, 2030, 2), expand = expansion(add = c(0.4, 2.4))) +\n  scale_y_continuous(labels = scales::comma) +\n  labs(x = NULL, y = \"Students enrolled\",\n       caption = \"Solid line: real history. Dashed line: middle guess. Shading: ranges, not promises. Sample values.\") +\n  theme_gallery() +\n  theme(plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"fan.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "What might Ohio's public school enrollment be over the next five years, and how sure can we be?",
+    "data": "Expanded List FY13 to FY26, all sectors. The forecast is a simple statistical projection built here, not a state forecast.",
+    "note": "The method is a random walk with drift: it extends the average yearly change, and its uncertainty comes from how much past changes varied."
+   },
+   "famous": [
+    {
+     "title": "Understanding the fan chart",
+     "maker": "Erik Britton, Paul Fisher, and John Whitley, Bank of England",
+     "year": "1998",
+     "source": "Quarterly Bulletin 1998 Q1",
+     "site": "Bank of England",
+     "note": "Since February 1996, the Bank of England has published its inflation forecast as a fan chart, showing a range of likely outcomes instead of a single line. This article explains how to read it.",
+     "url": "https://www.bankofengland.co.uk/quarterly-bulletin/1998/q1/the-inflation-report-projections-understanding-the-fan-chart"
+    }
+   ],
    "stories": []
   },
   {
@@ -904,8 +13179,351 @@ window.GALLERY = {
    ],
    "watch": "The wavy baseline makes exact values nearly impossible to read.",
    "pairs": "Long time spans with shifting category mixes.",
-   "question": "How did interest in each course subject flow across a decade?",
+   "question": "How did interest in each subject flow across a decade?",
    "hint": "A stacked area chart that flows around a center like a river.",
+   "lesson": {
+    "question": "How did interest in each subject flow across a decade?",
+    "shape": "Long format: one row per year per subject, with one number. R smooths each subject between the years and stacks them around a center line.",
+    "columns": [
+     {
+      "name": "year",
+      "type": "time",
+      "desc": "The horizontal axis"
+     },
+     {
+      "name": "subject",
+      "type": "category",
+      "desc": "One flowing band per subject"
+     },
+     {
+      "name": "enrollments",
+      "type": "number",
+      "desc": "Course enrollments in the subject that year"
+     }
+    ],
+    "rows": [
+     [
+      2016,
+      "Computer Science",
+      181
+     ],
+     [
+      2017,
+      "Computer Science",
+      288
+     ],
+     [
+      2018,
+      "Computer Science",
+      358
+     ],
+     [
+      2019,
+      "Computer Science",
+      342
+     ],
+     [
+      2020,
+      "Computer Science",
+      290
+     ],
+     [
+      2021,
+      "Computer Science",
+      258
+     ],
+     [
+      2022,
+      "Computer Science",
+      326
+     ],
+     [
+      2023,
+      "Computer Science",
+      446
+     ],
+     [
+      2024,
+      "Computer Science",
+      578
+     ],
+     [
+      2025,
+      "Computer Science",
+      618
+     ],
+     [
+      2016,
+      "Psychology",
+      541
+     ],
+     [
+      2017,
+      "Psychology",
+      531
+     ],
+     [
+      2018,
+      "Psychology",
+      423
+     ],
+     [
+      2019,
+      "Psychology",
+      346
+     ],
+     [
+      2020,
+      "Psychology",
+      325
+     ],
+     [
+      2021,
+      "Psychology",
+      385
+     ],
+     [
+      2022,
+      "Psychology",
+      505
+     ],
+     [
+      2023,
+      "Psychology",
+      578
+     ],
+     [
+      2024,
+      "Psychology",
+      573
+     ],
+     [
+      2025,
+      "Psychology",
+      461
+     ],
+     [
+      2016,
+      "Business",
+      586
+     ],
+     [
+      2017,
+      "Business",
+      490
+     ],
+     [
+      2018,
+      "Business",
+      388
+     ],
+     [
+      2019,
+      "Business",
+      360
+     ],
+     [
+      2020,
+      "Business",
+      452
+     ],
+     [
+      2021,
+      "Business",
+      566
+     ],
+     [
+      2022,
+      "Business",
+      593
+     ],
+     [
+      2023,
+      "Business",
+      543
+     ],
+     [
+      2024,
+      "Business",
+      418
+     ],
+     [
+      2025,
+      "Business",
+      320
+     ],
+     [
+      2016,
+      "Biology",
+      333
+     ],
+     [
+      2017,
+      "Biology",
+      286
+     ],
+     [
+      2018,
+      "Biology",
+      314
+     ],
+     [
+      2019,
+      "Biology",
+      404
+     ],
+     [
+      2020,
+      "Biology",
+      466
+     ],
+     [
+      2021,
+      "Biology",
+      507
+     ],
+     [
+      2022,
+      "Biology",
+      422
+     ],
+     [
+      2023,
+      "Biology",
+      330
+     ],
+     [
+      2024,
+      "Biology",
+      279
+     ],
+     [
+      2025,
+      "Biology",
+      309
+     ],
+     [
+      2016,
+      "Art",
+      184
+     ],
+     [
+      2017,
+      "Art",
+      173
+     ],
+     [
+      2018,
+      "Art",
+      219
+     ],
+     [
+      2019,
+      "Art",
+      271
+     ],
+     [
+      2020,
+      "Art",
+      263
+     ],
+     [
+      2021,
+      "Art",
+      215
+     ],
+     [
+      2022,
+      "Art",
+      178
+     ],
+     [
+      2023,
+      "Art",
+      131
+     ],
+     [
+      2024,
+      "Art",
+      123
+     ],
+     [
+      2025,
+      "Art",
+      165
+     ],
+     [
+      2016,
+      "History",
+      211
+     ],
+     [
+      2017,
+      "History",
+      258
+     ],
+     [
+      2018,
+      "History",
+      301
+     ],
+     [
+      2019,
+      "History",
+      272
+     ],
+     [
+      2020,
+      "History",
+      231
+     ],
+     [
+      2021,
+      "History",
+      164
+     ],
+     [
+      2022,
+      "History",
+      139
+     ],
+     [
+      2023,
+      "History",
+      155
+     ],
+     [
+      2024,
+      "History",
+      174
+     ],
+     [
+      2025,
+      "History",
+      202
+     ]
+    ],
+    "code": "# Streamgraph\n# Question: How did interest in each subject flow across a decade?\n# Put this script and streamgraph.csv in the same folder, then in RStudio choose\n# Session > Set Working Directory > To Source File Location.\n\nlibrary(tidyverse)\n\n# ---- Gallery look: dark background, soft gray text ----\nfont <- \"IBM Plex Sans\"   # use \"sans\" if IBM Plex Sans is not installed\nink  <- \"#8B97A7\"\n\ntheme_gallery <- function() {\n  theme_minimal(base_size = 16, base_family = font) +\n    theme(\n      plot.background  = element_rect(fill = \"#161B23\", color = NA),\n      panel.grid       = element_line(color = \"#222A34\"),\n      panel.grid.minor = element_blank(),\n      text             = element_text(color = ink),\n      axis.text        = element_text(color = ink),\n      legend.position  = \"top\",\n      legend.title     = element_blank(),\n      plot.margin      = margin(24, 28, 18, 18)\n    )\n}\n\npal <- c(\"Computer Science\" = \"#75AADB\", \"Psychology\" = \"#B79CFF\", \"Business\" = \"#F0B95A\",\n         \"Biology\" = \"#7FD18C\", \"Art\" = \"#F38ABE\", \"History\" = \"#46D6D1\")\n\ndf <- read_csv(\"streamgraph.csv\", show_col_types = FALSE)\n\n# 1. Smooth each subject with a spline, so the bands flow between the years\nsmooth <- df |>\n  group_by(subject) |>\n  reframe(as_tibble(spline(year, enrollments, n = 200, method = \"natural\"))) |>\n  rename(year = x, enrollments = y) |>\n  mutate(enrollments = pmax(enrollments, 0))\n\n# 2. Stack the subjects, then shift each year down by half its total,\n#    so the stream is centered on zero instead of sitting on a baseline\nstream <- smooth |>\n  mutate(subject = factor(subject, levels = names(pal))) |>\n  arrange(year, subject) |>\n  group_by(year) |>\n  mutate(top    = cumsum(enrollments) - sum(enrollments) / 2,\n         bottom = top - enrollments) |>\n  ungroup()\n\np <- ggplot(stream, aes(x = year, ymin = bottom, ymax = top, fill = subject)) +\n  geom_ribbon(color = \"#161B23\", linewidth = 0.3) +\n  scale_fill_manual(values = pal, name = NULL) +\n  guides(fill = guide_legend(reverse = TRUE)) +   # legend order matches the stack, top to bottom\n  scale_x_continuous(breaks = seq(2016, 2025, 1), expand = c(0, 0)) +\n  labs(x = NULL, y = NULL,\n       caption = \"Band thickness shows enrollments. The wavy center makes exact values hard to read. Sample values.\") +\n  theme_gallery() +\n  theme(panel.grid = element_blank(), axis.text.y = element_blank(), legend.position = \"right\",\n        plot.caption = element_text(color = ink, hjust = 0))\n\nggsave(\"streamgraph.png\", p, width = 9, height = 6, dpi = 200)\np\n",
+    "packages": [
+     "tidyverse"
+    ]
+   },
+   "ohio": {
+    "question": "How did spending outside daily operations shift over 14 years?",
+    "data": "Expanded List FY13 to FY26, the non-operating categories, all sectors.",
+    "note": "The wavy baseline makes exact values hard to read. Use this chart for the overall story, not for precise numbers."
+   },
+   "famous": [
+    {
+     "title": "Stacked graphs: geometry and aesthetics",
+     "maker": "Lee Byron and Martin Wattenberg",
+     "year": "2008",
+     "source": "",
+     "site": "leebyron.com",
+     "note": "In February 2008, the New York Times published a streamgraph of box office revenue for 7,500 movies over 21 years. This paper explains how the shape was designed and how readers reacted.",
+     "url": "https://leebyron.com/streamgraph"
+    }
+   ],
    "stories": []
   },
   {

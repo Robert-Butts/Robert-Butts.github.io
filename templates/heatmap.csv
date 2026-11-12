@@ -1,0 +1,65 @@
+program,year,students
+Data Analytics,2019,40
+Data Analytics,2020,45
+Data Analytics,2021,53
+Data Analytics,2022,62
+Data Analytics,2023,73
+Data Analytics,2024,82
+Data Analytics,2025,95
+Data Analytics,2026,101
+Computer Science,2019,200
+Computer Science,2020,212
+Computer Science,2021,236
+Computer Science,2022,252
+Computer Science,2023,279
+Computer Science,2024,290
+Computer Science,2025,322
+Computer Science,2026,345
+Nursing,2019,300
+Nursing,2020,310
+Nursing,2021,325
+Nursing,2022,330
+Nursing,2023,352
+Nursing,2024,372
+Nursing,2025,408
+Nursing,2026,427
+Business,2019,450
+Business,2020,446
+Business,2021,472
+Business,2022,462
+Business,2023,486
+Business,2024,483
+Business,2025,490
+Business,2026,529
+Psychology,2019,280
+Psychology,2020,276
+Psychology,2021,278
+Psychology,2022,293
+Psychology,2023,293
+Psychology,2024,285
+Psychology,2025,300
+Psychology,2026,295
+Biology,2019,320
+Biology,2020,322
+Biology,2021,311
+Biology,2022,323
+Biology,2023,316
+Biology,2024,318
+Biology,2025,314
+Biology,2026,300
+English,2019,160
+English,2020,155
+English,2021,148
+English,2022,141
+English,2023,133
+English,2024,127
+English,2025,121
+English,2026,109
+History,2019,120
+History,2020,118
+History,2021,110
+History,2022,104
+History,2023,100
+History,2024,90
+History,2025,82
+History,2026,74

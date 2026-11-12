@@ -1,0 +1,14 @@
+program,college,cost_thousands,completion_rate,students
+Nursing,Health,24.5,78,520
+Exercise Science,Health,16.0,66,240
+Public Health,Health,14.5,71,160
+Computer Science,Science,19.5,64,430
+Biology,Science,18.0,72,380
+Chemistry,Science,21.5,69,140
+Data Analytics,Science,15.0,75,120
+Business,Business,11.5,70,690
+Accounting,Business,12.5,80,260
+Marketing,Business,10.5,63,300
+English,Arts,9.5,74,150
+Music,Arts,26.0,61,90
+Art,Arts,17.0,58,130

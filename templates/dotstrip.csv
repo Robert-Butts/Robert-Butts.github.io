@@ -1,0 +1,33 @@
+program,college,avg_class_size
+Art,Arts and Humanities,21.4
+Music,Arts and Humanities,35.5
+Theatre,Arts and Humanities,26.1
+English,Arts and Humanities,26.2
+History,Arts and Humanities,23.2
+Philosophy,Arts and Humanities,21.5
+Religion,Arts and Humanities,23.5
+Languages,Arts and Humanities,19.0
+Accounting,Business,29.5
+Finance,Business,28.4
+Marketing,Business,26.7
+Management,Business,36.2
+Economics,Business,38.3
+Supply Chain,Business,45.4
+Analytics,Business,38.0
+Sport Management,Business,36.5
+Nursing,Health,32.1
+Public Health,Health,27.6
+Nutrition,Health,15.3
+Exercise Science,Health,34.7
+Health Admin,Health,24.7
+Athletic Training,Health,29.2
+Pre-Med,Health,25.9
+Social Work,Health,47.1
+Biology,Sciences,49.3
+Chemistry,Sciences,44.5
+Physics,Sciences,34.1
+Mathematics,Sciences,47.7
+Computer Science,Sciences,35.7
+Geology,Sciences,49.5
+Neuroscience,Sciences,31.6
+Data Analytics,Sciences,41.1
