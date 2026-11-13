@@ -284,6 +284,22 @@
   .deck-card p { font-size: 13px; color: var(--ink-medium); }
   .deck-card .icon-row { float: right; width: 64px; height: 48px; margin-left: 8px; }
   .empty-deck { font-family: var(--display); font-style: italic; font-size: 17px; color: var(--ink-muted); text-align: center; padding: 30px; }
+
+  /* Link from each chart to its full lesson (CSV file, R code, examples) in the Chart Gallery */
+  .gallery-link {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 16px;
+    font-family: var(--mono); font-size: 12.5px; font-weight: 500; letter-spacing: 0.02em;
+    color: var(--green-dark); text-decoration: none;
+    border: 1.5px solid var(--green-dark); border-radius: 999px; padding: 7px 14px;
+    transition: background 0.15s;
+  }
+  .gallery-link:hover { background: var(--green-pale); }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  .gallery-link:focus-visible { outline: 3px solid var(--green); outline-offset: 2px; }
+  /* Browse cards: the link sits at the bottom, so links line up across a row */
+  .deck-card { display: flex; flex-direction: column; }
+  .deck-card .gl-row { margin-top: auto; padding-top: 14px; }
+  .deck-card .gallery-link { margin-top: 0; }
   .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 8px; }
   .stat-card { background: var(--green-pale); border: 1px solid var(--gold); border-radius: var(--card-radius); padding: 16px 18px; text-align: center; }
   .stat-card .big { font-family: var(--display); font-weight: 600; font-size: 38px; line-height: 1; color: var(--green-dark); }
@@ -2020,7 +2036,17 @@ function renderRecipeCard(r) {
       '<div class="recipe-section burn"><div class="section-label">Common mistake</div><p>' + r.burn + '</p></div>' +
       section('Often seen with', '<p>' + r.pairs + '</p>') +
       section('Example question', '<p class="example">' + r.example + '</p>') +
+      galleryLink(r, true) +
     '</div>';
+}
+
+/* Each chart's full lesson lives at chart.html?c=<key>, using the same keys as this guide.
+   During a game the link opens a new tab, so the current round and streak are not lost. */
+function galleryLink(r, newTab) {
+  return '<a class="gallery-link" href="chart.html?c=' + encodeURIComponent(r.key) + '"' +
+    (newTab ? ' target="_blank" rel="noopener"' : '') + '>' +
+    'Full lesson in the Gallery <span aria-hidden="true">&rarr;</span>' +
+    (newTab ? '<span class="sr-only"> (opens in a new tab)</span>' : '') + '</a>';
 }
 
 function section(label, inner) {
@@ -2056,6 +2082,7 @@ function renderDeck() {
       '<div class="mini-label">Common mistake</div><p>' + r.burn + '</p>' +
       '<div class="mini-label">Often seen with</div><p>' + r.pairs + '</p>' +
       '<div class="mini-label">Example question</div><p>' + r.example + '</p>' +
+      '<div class="gl-row">' + galleryLink(r) + '</div>' +
     '</div>'
   ).join('');
 }
