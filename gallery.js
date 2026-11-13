@@ -234,8 +234,10 @@
         '<tr class="hd"><td class="rn">1</td>' + L.columns.map(function(col){ return '<td data-type="' + col.type + '">' + esc(col.name) + '</td>'; }).join('') + '</tr>' +
         rows.map(function(r, ri){
           return '<tr><td class="rn">' + (ri + 2) + '</td>' + r.map(function(v){
+            /* Show each value exactly as the CSV file stores it: no thousands commas,
+               so years read 2019 and nobody copies a comma that would split a CSV cell */
             var isNum = typeof v === 'number';
-            return '<td' + (isNum ? ' class="num"' : '') + '>' + esc(isNum ? v.toLocaleString('en-US') : v) + '</td>';
+            return '<td' + (isNum ? ' class="num"' : '') + '>' + esc(String(v)) + '</td>';
           }).join('') + '</tr>';
         }).join('') +
         (L.rows.length > maxRows ? '<tr class="more"><td class="rn"></td><td colspan="' + L.columns.length + '">' + (L.rows.length - maxRows) + ' more rows in the CSV file</td></tr>' : '') +
