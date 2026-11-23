@@ -902,3 +902,209 @@ a.c-famous:hover .go{color:var(--fc)}
 @media (max-width:1100px) and (min-width:721px){ .home-wall .g-tile:nth-child(6){display:flex} }
 .about-text p a{color:var(--blue); border-bottom:1px solid rgba(117,170,219,.45); transition:border-color .18s ease}
 .about-text p a:hover{border-color:var(--blue)}
+
+/* ---------- 25. WORK PAGE: FEATURED PROJECT STAGE ----------
+   One featured project per screen. work.js sets three numbers on
+   each .scene while you scroll:
+     --p     where the scene sits: 0 = centered, 1 = one screen below, -1 = one screen above
+     --k     how tightly the frame is clipped (0 when centered)
+     --skew  a small lean that follows scroll speed
+   Each layer moves by a different amount of --p, which is what makes
+   the parallax. With no script, or with reduced motion, all three stay
+   at 0 and the page is still. */
+.scene[data-cc="blue"], .rail a[data-cc="blue"]{--cc:var(--blue)}
+.scene[data-cc="green"], .rail a[data-cc="green"]{--cc:var(--green)}
+.scene[data-cc="violet"], .rail a[data-cc="violet"]{--cc:var(--violet)}
+.scene[data-cc="amber"], .rail a[data-cc="amber"]{--cc:var(--amber)}
+.scene[data-cc="red"], .rail a[data-cc="red"]{--cc:var(--red)}
+.scene[data-cc="teal"], .rail a[data-cc="teal"]{--cc:var(--teal)}
+
+.work-head{padding-bottom:0}
+.scroll-cue{
+  display:inline-flex; align-items:center; gap:14px; margin-top:38px;
+  font-family:var(--mono); font-size:.76rem; letter-spacing:.04em; color:var(--muted);
+  transition:color .18s ease;
+}
+.scroll-cue:hover{color:var(--text)}
+.sc-line{position:relative; width:1px; height:46px; background:var(--line-2); overflow:hidden}
+.sc-line::after{content:""; position:absolute; left:0; top:-40%; width:1px; height:40%; background:var(--amber); animation:cueDrop 2.2s cubic-bezier(.6,0,.3,1) infinite}
+@keyframes cueDrop{to{top:110%}}
+
+.stage{position:relative; margin-top:clamp(36px, 6vh, 64px); overflow-x:clip}
+.stage .scene{
+  position:relative; padding:0;
+  height:calc(100svh - 66px); min-height:600px;
+  scroll-margin-top:66px;
+}
+.scene-inner{
+  position:relative; z-index:1;
+  width:min(1240px, 100% - 56px); height:100%; margin:0 auto;
+  display:grid; grid-template-columns:repeat(12, minmax(0, 1fr)); grid-template-rows:minmax(0, 1fr) auto auto;
+  column-gap:24px; padding:3svh 0 4.5svh;
+}
+
+/* soft accent light behind each project; drifts slower than the frame */
+.scene-glow{
+  position:absolute; left:50%; top:50%; width:min(1100px, 95vw); height:120%; pointer-events:none;
+  background:radial-gradient(closest-side, color-mix(in srgb, var(--cc) 20%, transparent), transparent);
+  transform:translate3d(-50%, calc(-50% + var(--p, 0) * -22vh), 0);
+  opacity:calc(1 - min(1, max(var(--p, 0), calc(var(--p, 0) * -1))) * .7);
+}
+
+/* the image frame */
+.frame{
+  grid-column:3 / 13; grid-row:1; position:relative; display:block; min-height:0;
+  border-radius:22px; overflow:hidden; isolation:isolate;
+  background:var(--panel);
+  clip-path:inset(calc(var(--k, 0) * 100%) calc(var(--k, 0) * 100%) round 22px);
+  transform:skewY(var(--skew, 0deg));
+  box-shadow:0 0 0 1px rgba(255,255,255,.04);
+}
+/* dark fade along the bottom so the large title stays readable where it overlaps */
+.frame::before{
+  content:""; position:absolute; inset:auto 0 0 0; height:46%; z-index:2; pointer-events:none;
+  background:linear-gradient(to top, rgba(10,13,18,.92), rgba(10,13,18,.55) 45%, transparent);
+}
+/* light that follows the cursor on hover */
+.frame::after{
+  content:""; position:absolute; inset:0; z-index:3; pointer-events:none; opacity:0;
+  background:radial-gradient(520px circle at var(--mx, 50%) var(--my, 40%), rgba(255,255,255,.16), transparent 62%);
+  mix-blend-mode:overlay; transition:opacity .35s ease;
+}
+.frame:hover::after{opacity:1}
+
+/* style 1: a photo that fills the frame and drifts slower than the page */
+.frame-photo .cover{
+  position:absolute; left:0; right:0; top:-11%; width:100%; height:122%;
+  max-width:none; object-fit:cover; object-position:center 50%;
+  transform:translate3d(0, calc(var(--p, 0) * -8%), 0) scale(1.02);
+  transition:scale .9s cubic-bezier(.2,.8,.2,1);
+}
+.frame-photo:hover .cover{scale:1.04}
+.frame-credit{
+  position:absolute; right:14px; bottom:12px; z-index:4;
+  font-family:var(--mono); font-size:.64rem; letter-spacing:.02em; color:rgba(232,237,244,.78);
+  background:rgba(10,13,18,.55); padding:4px 9px; border-radius:7px;
+}
+
+/* style 2: a screenshot that floats inside a frame lit with the project color,
+   and rises faster than the page so more of it shows as you scroll */
+.frame-shot{
+  background:
+    radial-gradient(90% 120% at 88% 0%, color-mix(in srgb, var(--cc) 34%, transparent), transparent 62%),
+    linear-gradient(160deg, color-mix(in srgb, var(--cc) 16%, #121821), #0F141B 70%);
+}
+.frame-shot .shot{
+  position:absolute; left:9%; right:9%; top:9%;
+  border-radius:12px; overflow:hidden; background:#fff;
+  box-shadow:0 30px 70px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.08);
+  transform:translate3d(0, calc(var(--p, 0) * 14%), 0);
+  transition:translate .9s cubic-bezier(.2,.8,.2,1);
+}
+.frame-shot:hover .shot{translate:0 -10px}
+.frame-shot .shot img{width:100%; height:auto}
+.frame-shot .shot svg{display:none}
+/* if the screenshot cannot load, show the drawing instead */
+.frame-shot .shot.no-img{background:rgba(255,255,255,.03); aspect-ratio:16 / 10}
+.frame-shot .shot.no-img img{display:none}
+.frame-shot .shot.no-img svg{display:block; width:100%; height:100%}
+
+/* the large title, moving a little faster than the frame */
+.scene-title{
+  grid-column:1 / 13; grid-row:2; position:relative; z-index:2; pointer-events:none;
+  margin-top:-1em;
+  font-family:var(--display); font-weight:600;
+  font-size:min(7vw, 11.5svh, 7.4rem); line-height:.94; letter-spacing:-.035em;
+  color:var(--text);
+  transform:translate3d(0, calc(var(--p, 0) * 70px), 0);
+}
+.scene-title .ln{display:block; overflow:hidden; padding:0 .04em .06em 0; margin-bottom:-.06em}
+.scene-title .ln > span{display:inline-block}
+.work-motion .scene-title .ln > span{transform:translateY(108%); transition:transform 1s cubic-bezier(.16,.84,.24,1)}
+.work-motion .scene-title .ln:nth-child(2) > span{transition-delay:.07s}
+.work-motion .scene.on .scene-title .ln > span{transform:none}
+
+/* the facts under the title */
+.scene-meta{
+  grid-column:1 / 13; grid-row:3; margin-top:20px;
+  display:grid; grid-template-columns:minmax(0, 3fr) minmax(0, 5fr) minmax(0, 4fr); gap:28px; align-items:start;
+  transform:translate3d(0, calc(var(--p, 0) * 36px), 0);
+}
+.sm-type{display:flex; flex-direction:column; gap:6px}
+.sm-type .card-tools{margin-top:0}
+.sm-desc{color:var(--muted); font-size:.98rem; line-height:1.6; max-width:56ch}
+.sm-links{display:flex; flex-wrap:wrap; gap:10px; justify-content:flex-end}
+.sm-btn{
+  display:inline-flex; align-items:center; gap:9px; padding:12px 18px; border-radius:11px;
+  font-family:var(--mono); font-size:.76rem; letter-spacing:.03em;
+  background:var(--cc); color:#0E1116; font-weight:600;
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.sm-btn:hover{transform:translateY(-2px); box-shadow:0 10px 26px color-mix(in srgb, var(--cc) 35%, transparent)}
+.sm-btn.sm-quiet{background:transparent; color:var(--text); border:1.5px solid var(--line-2); font-weight:500}
+.sm-btn.sm-quiet:hover{border-color:var(--cc); color:var(--cc); box-shadow:none}
+.sm-btn .arr{transition:transform .18s ease}
+.sm-btn:hover .arr{transform:translate(2px, -2px)}
+.work-motion .scene-meta > *{opacity:0; translate:0 14px; transition:opacity .7s ease, translate .7s cubic-bezier(.2,.8,.2,1)}
+.work-motion .scene.on .scene-meta > *{opacity:1; translate:0 0}
+.work-motion .scene.on .scene-meta > :nth-child(2){transition-delay:.12s}
+.work-motion .scene.on .scene-meta > :nth-child(3){transition-delay:.22s}
+
+/* side list of featured projects */
+.rail{
+  position:fixed; left:22px; top:40%; z-index:90; transform:translate(-16px, -50%);
+  display:flex; flex-direction:column; align-items:flex-start; gap:6px;
+  opacity:0; visibility:hidden; transition:opacity .35s ease, transform .35s ease, visibility 0s .35s;
+}
+.rail-on .rail{opacity:1; visibility:visible; transform:translate(0, -50%); transition:opacity .35s ease, transform .35s ease}
+.rail a{display:flex; align-items:center; gap:12px; padding:6px 0; color:var(--muted)}
+.rail-bar{display:block; width:16px; height:2px; border-radius:2px; background:var(--line-2); transition:width .3s ease, background .3s ease}
+.rail-name{
+  font-family:var(--mono); font-size:.7rem; letter-spacing:.03em; white-space:nowrap;
+  padding:4px 9px; border-radius:7px; background:rgba(14,17,22,.82);
+  opacity:0; transform:translateX(-6px); transition:opacity .25s ease, transform .25s ease;
+}
+.rail a:hover .rail-name, .rail a:focus-visible .rail-name{opacity:1; transform:none}
+.rail a:hover .rail-bar, .rail a:focus-visible .rail-bar{background:var(--text)}
+.rail a.is-active{color:var(--text)}
+.rail a.is-active .rail-bar{width:34px; background:var(--cc)}
+
+/* small label that follows the cursor over a frame and says what a click does */
+.cursor-chip{
+  position:fixed; left:0; top:0; z-index:95; pointer-events:none;
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.03em; font-weight:600;
+  padding:9px 14px; border-radius:999px; background:var(--cc, var(--blue)); color:#0E1116;
+  opacity:0; scale:.6; transition:opacity .2s ease, scale .25s cubic-bezier(.2,.8,.2,1);
+  white-space:nowrap;
+}
+.cursor-chip.show{opacity:1; scale:1}
+
+/* the photo grows to fill the screen before the project page opens */
+.wipe{
+  position:fixed; inset:0; z-index:200; pointer-events:none;
+  background-size:cover; background-position:center; background-color:var(--bg);
+}
+
+/* ---------- 26. WORK PAGE: AFTER THE PROJECTS ---------- */
+.more-work{padding-top:clamp(56px, 8vw, 100px)}
+
+/* ---------- 27. WORK PAGE: SMALLER SCREENS ---------- */
+@media (max-width:1359px){ .rail{display:none} }
+@media (max-width:900px), (max-height:560px){
+  .stage{margin-top:28px}
+  .stage .scene{height:auto; min-height:0; padding:34px 0 46px}
+  .scene-inner{display:block; width:auto; padding:0 20px}
+  .frame{aspect-ratio:4 / 3.1; border-radius:18px; clip-path:inset(calc(var(--k, 0) * 60%) calc(var(--k, 0) * 60%) round 18px); transform:none}
+  .scene-title{font-size:clamp(2.3rem, 10.5vw, 4rem); margin-top:-.95em; padding-left:16px; transform:none}
+  .scene-meta{display:flex; flex-direction:column; gap:12px; margin-top:16px; transform:none}
+  .sm-links{justify-content:flex-start}
+  .frame-credit{bottom:auto; top:10px; right:10px}
+}
+@media (max-width:420px){
+  .frame-shot .shot{left:6%; right:6%; top:7%}
+  .sm-btn{width:100%; justify-content:center}
+}
+@media (prefers-reduced-motion:reduce){
+  .sc-line::after{display:none}
+  .work-motion .scene-title .ln > span, .work-motion .scene-meta > *{transform:none !important; translate:none !important; opacity:1 !important}
+}

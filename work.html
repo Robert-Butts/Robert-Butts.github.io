@@ -9,10 +9,10 @@
 <!--
   ============================================================
   WORK PAGE (work.html)
-  The full gallery. Add or remove projects by copying one
-  <article class="card"> block. To use a real image, replace the
-  inner <svg>...</svg> with: <img src="your-image.png" alt="...">
-  Search for EDIT to find the parts to change.
+  Featured projects get one full screen each, with layered
+  parallax as you scroll (the motion is in work.js).
+  Search for EDIT to find the parts to change, and read the note
+  above <div class="stage"> to add a featured project.
   ============================================================
 -->
 
@@ -60,52 +60,77 @@
 <main id="main">
 
 <!-- ===== PAGE HEADER ===== -->
-<div class="page-head">
+<div class="page-head work-head">
   <div class="wrap">
     <p class="eyebrow ph-a">Work</p>
     <!-- EDIT: page heading and intro -->
     <h1 class="ph-b">Work I have created with data.</h1>
     <p class="ph-lead ph-c">A selection of visualizations and data projects. Each one started as a messy question and ended as something a person could read at a glance.</p>
+    <a class="scroll-cue ph-d" href="#dublin"><span class="sc-line" aria-hidden="true"></span>Scroll to move through four featured projects</a>
   </div>
 </div>
 
-<!-- ===== GALLERY ===== -->
-<section>
-  <div class="wrap">
-    <div class="grid-3">
+<!-- ===== FEATURED PROJECTS (one project per screen) =====
+     Each featured project is one <section class="scene"> block. To add one:
+       1. Copy a whole scene block and give it a new id (for example id="budget").
+       2. Change data-cc to one of: blue, green, violet, amber, red, teal.
+       3. Change the image, title lines, description, tools, and links.
+       4. Add a matching link to the side list in <nav class="rail"> below.
+     Two image styles:
+       frame-photo : a photo that fills the whole frame (see Pacific brant).
+       frame-shot  : a screenshot that floats inside a colored frame (see NBA).
+     Long titles: split them into two <span class="ln"> lines so they stay large.
+     The motion lives in work.js. Anyone who prefers reduced motion sees a still page. -->
+<div class="stage" id="stage">
 
-      <!-- NBA score differentials (Tableau Public)
-           EDIT: the thumbnail loads from Tableau's preview image for this viz, so it
-           updates itself when you republish. To use your own screenshot instead, save
-           it as images/work/nba.png and change the img src below to that path. -->
-      <a class="card reveal" data-cc="amber" data-tilt href="https://public.tableau.com/app/profile/robert.butts/viz/NBAGameScoreDifferentialVisualization/Dashboard1" target="_blank" rel="noopener">
-        <div class="thumb">
+  <!-- Side list of the featured projects (shows on wide screens only) -->
+  <nav class="rail" aria-label="Featured projects">
+    <a href="#dublin" data-cc="blue"><span class="rail-bar" aria-hidden="true"></span><span class="rail-name">Data-Driven Dublin</span></a>
+    <a href="#lego" data-cc="red"><span class="rail-bar" aria-hidden="true"></span><span class="rail-name">LEGO complexity analysis</span></a>
+    <a href="#brant" data-cc="teal"><span class="rail-bar" aria-hidden="true"></span><span class="rail-name">Helicopters and Pacific brant</span></a>
+    <a href="#nba" data-cc="amber"><span class="rail-bar" aria-hidden="true"></span><span class="rail-name">NBA score differentials</span></a>
+  </nav>
+
+  <!-- OSU capstone: ACS pipeline + Data-Driven Dublin StoryMap.
+       The image is Figure 1 from the StoryMap. -->
+  <section class="scene" id="dublin" data-cc="blue" aria-labelledby="dublin-title">
+    <div class="scene-glow" aria-hidden="true"></div>
+    <div class="scene-inner">
+      <a class="frame frame-shot" href="https://storymaps.arcgis.com/stories/329f10f1c2064be987c463b079d29b16" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" data-cursor="Read the StoryMap">
+        <div class="shot">
           <svg viewBox="0 0 320 200" aria-hidden="true">
-            <line x1="24" y1="100" x2="296" y2="100" stroke="rgba(255,255,255,.18)" stroke-width="1.5"/>
-            <g fill="#F0B95A">
-              <rect x="32" y="52" width="16" height="48" rx="2"/><rect x="56" y="100" width="16" height="30" rx="2"/>
-              <rect x="80" y="70" width="16" height="30" rx="2"/><rect x="104" y="100" width="16" height="58" rx="2"/>
-              <rect x="128" y="38" width="16" height="62" rx="2"/><rect x="152" y="100" width="16" height="22" rx="2"/>
-              <rect x="176" y="84" width="16" height="16" rx="2"/><rect x="200" y="100" width="16" height="44" rx="2"/>
-              <rect x="224" y="60" width="16" height="40" rx="2"/><rect x="248" y="100" width="16" height="36" rx="2"/>
-              <rect x="272" y="76" width="16" height="24" rx="2"/>
-            </g>
+            <g fill="#75AADB"><circle cx="62" cy="64" r="5"/><circle cx="80" cy="52" r="4"/><circle cx="72" cy="80" r="4.5"/><circle cx="94" cy="70" r="3.5"/><circle cx="56" cy="46" r="3.5"/></g>
+            <g fill="#7FD18C"><circle cx="176" cy="136" r="5"/><circle cx="196" cy="124" r="4"/><circle cx="162" cy="122" r="4.5"/><circle cx="190" cy="148" r="3.5"/><circle cx="208" cy="138" r="3.5"/></g>
+            <g fill="#B79CFF"><circle cx="248" cy="62" r="5"/><circle cx="268" cy="74" r="4"/><circle cx="262" cy="50" r="4.5"/><circle cx="284" cy="62" r="3.5"/></g>
           </svg>
-          <img class="fit" src="https://public.tableau.com/static/images/NB/NBAGameScoreDifferentialVisualization/Dashboard1/1.png" alt="Preview of the NBA score differential dashboard" loading="lazy" onerror="this.style.display='none'">
-          <span class="card-ext" aria-hidden="true">&#8599;</span>
-        </div>
-        <div class="card-body">
-          <span class="card-tag">Tableau Public</span>
-          <h3>NBA score differentials</h3>
-          <p>Every final margin from an NBA season in one view, so blowouts and close calls stand apart at a glance.</p>
-          <span class="card-tools">Tableau &middot; interactive dashboard</span>
+          <img src="images/work/capstone.jpg" alt="" loading="lazy" onerror="this.parentNode.classList.add('no-img')">
         </div>
       </a>
+      <h2 class="scene-title" id="dublin-title"><span class="ln"><span>Data-Driven</span></span><span class="ln"><span>Dublin</span></span></h2>
+      <div class="scene-meta">
+        <div class="sm-type">
+          <span class="card-tag">Graduate capstone</span>
+          <span class="card-tools">Python &middot; SQLite &middot; R &middot; ArcGIS &middot; GitHub Actions</span>
+        </div>
+        <p class="sm-desc">A four-person capstone for my M.S. at Ohio State. We built a pipeline that pulls American Community Survey data from the Census API into a SQLite database, then used clustering to find the places most like Dublin, Ohio across nineteen measures.</p>
+        <div class="sm-links">
+          <a class="sm-btn" href="https://storymaps.arcgis.com/stories/329f10f1c2064be987c463b079d29b16" target="_blank" rel="noopener">Read the StoryMap <span class="arr" aria-hidden="true">&#8599;</span></a>
+          <a class="sm-btn sm-quiet" href="https://github.com/butts-denison/MTDACapstone" target="_blank" rel="noopener">View the code <span class="arr" aria-hidden="true">&#8599;</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-      <!-- LEGO complexity analysis (Tableau Public)
-           EDIT: same thumbnail rule as above; local file would be images/work/lego.png -->
-      <a class="card reveal d1" data-cc="red" data-tilt href="https://public.tableau.com/app/profile/robert.butts/viz/LegoVisualizationforCompetition/LEGOComplexityAnalysis" target="_blank" rel="noopener">
-        <div class="thumb">
+  <!-- LEGO complexity analysis (Tableau Public)
+       EDIT: the screenshot loads from Tableau's preview image for this viz, so it
+       updates itself when you republish. To use your own screenshot instead, save it
+       as images/work/lego.png and change the img src below to that path. If the image
+       cannot load, the bar drawing shows instead. -->
+  <section class="scene" id="lego" data-cc="red" aria-labelledby="lego-title">
+    <div class="scene-glow" aria-hidden="true"></div>
+    <div class="scene-inner">
+      <a class="frame frame-shot" href="https://public.tableau.com/app/profile/robert.butts/viz/LegoVisualizationforCompetition/LEGOComplexityAnalysis" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" data-cursor="Open the dashboard">
+        <div class="shot">
           <svg viewBox="0 0 320 200" aria-hidden="true">
             <line x1="24" y1="176" x2="296" y2="176" stroke="rgba(255,255,255,.10)" stroke-width="1"/>
             <g fill="#F2716F">
@@ -119,160 +144,91 @@
               <rect x="209" y="58" width="16" height="6" rx="3"/><rect x="251" y="38" width="16" height="6" rx="3"/>
             </g>
           </svg>
-          <img class="fit" src="https://public.tableau.com/static/images/Le/LegoVisualizationforCompetition/LEGOComplexityAnalysis/1.png" alt="Preview of the LEGO complexity analysis" loading="lazy" onerror="this.style.display='none'">
-          <span class="card-ext" aria-hidden="true">&#8599;</span>
+          <img src="https://public.tableau.com/static/images/Le/LegoVisualizationforCompetition/LEGOComplexityAnalysis/1.png" alt="" loading="lazy" onerror="this.parentNode.classList.add('no-img')">
         </div>
-        <div class="card-body">
+      </a>
+      <h2 class="scene-title" id="lego-title"><span class="ln"><span>LEGO complexity</span></span><span class="ln"><span>analysis</span></span></h2>
+      <div class="scene-meta">
+        <div class="sm-type">
           <span class="card-tag">Tableau Public</span>
-          <h3>LEGO complexity analysis</h3>
-          <p>How the complexity of LEGO sets has climbed across the decades. Built for the Big Ten Academic Alliance 2023 data competition.</p>
           <span class="card-tools">Tableau &middot; competition entry</span>
         </div>
+        <p class="sm-desc">How the complexity of LEGO sets has climbed across the decades. Built for the Big Ten Academic Alliance 2023 data competition.</p>
+        <div class="sm-links">
+          <a class="sm-btn" href="https://public.tableau.com/app/profile/robert.butts/viz/LegoVisualizationforCompetition/LEGOComplexityAnalysis" target="_blank" rel="noopener">Open the dashboard on Tableau Public <span class="arr" aria-hidden="true">&#8599;</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pacific brant and helicopters (graduate project). The project page lives in
+       the pacific-brant folder. data-expand makes the photo grow to fill the screen
+       before that page opens. Photo: Gregory Smith, U.S. Fish and Wildlife Service,
+       CC BY 4.0. Keep the credit line if you keep the photo. -->
+  <section class="scene" id="brant" data-cc="teal" aria-labelledby="brant-title">
+    <div class="scene-glow" aria-hidden="true"></div>
+    <div class="scene-inner">
+      <a class="frame frame-photo" href="pacific-brant/index.html" tabindex="-1" aria-hidden="true" data-cursor="See the project" data-expand>
+        <img class="cover" src="images/work/pacific-brant-feature.webp" alt="" loading="lazy">
+        <span class="frame-credit">Photo: Gregory Smith, USFWS, CC BY 4.0</span>
       </a>
-
-      <!-- OSU capstone: ACS pipeline + Data-Driven Dublin StoryMap -->
-      <article class="card reveal d2" data-cc="blue" data-tilt>
-        <div class="thumb">
-          <svg viewBox="0 0 320 200" aria-hidden="true">
-            <g stroke="rgba(255,255,255,.07)" stroke-width="1">
-              <line x1="0" y1="50" x2="320" y2="50"/><line x1="0" y1="100" x2="320" y2="100"/><line x1="0" y1="150" x2="320" y2="150"/>
-              <line x1="80" y1="0" x2="80" y2="200"/><line x1="160" y1="0" x2="160" y2="200"/><line x1="240" y1="0" x2="240" y2="200"/>
-            </g>
-            <g fill="#75AADB">
-              <circle cx="62" cy="64" r="5"/><circle cx="80" cy="52" r="4"/><circle cx="72" cy="80" r="4.5"/>
-              <circle cx="94" cy="70" r="3.5"/><circle cx="56" cy="46" r="3.5"/>
-            </g>
-            <circle cx="73" cy="63" r="30" fill="none" stroke="#75AADB" stroke-width="1.5" stroke-dasharray="4 5" opacity=".5"/>
-            <g fill="#7FD18C">
-              <circle cx="176" cy="136" r="5"/><circle cx="196" cy="124" r="4"/><circle cx="162" cy="122" r="4.5"/>
-              <circle cx="190" cy="148" r="3.5"/><circle cx="208" cy="138" r="3.5"/>
-            </g>
-            <circle cx="186" cy="134" r="32" fill="none" stroke="#7FD18C" stroke-width="1.5" stroke-dasharray="4 5" opacity=".5"/>
-            <g fill="#B79CFF">
-              <circle cx="248" cy="62" r="5"/><circle cx="268" cy="74" r="4"/><circle cx="262" cy="50" r="4.5"/>
-              <circle cx="284" cy="62" r="3.5"/>
-            </g>
-            <circle cx="264" cy="62" r="26" fill="none" stroke="#B79CFF" stroke-width="1.5" stroke-dasharray="4 5" opacity=".5"/>
-          </svg>
-          <!-- Figure 1 from the Data-Driven Dublin StoryMap. The "fit" class shows the
-               whole chart on white instead of cropping it, matching the Tableau cards.
-               If the file is missing, the onerror handler hides it and the cluster
-               drawing above shows instead, so the card never looks broken. -->
-          <img class="fit" src="images/work/capstone.jpg" alt="Correlation matrix of selected American Community Survey variables" loading="lazy" onerror="this.style.display='none'">
-        </div>
-        <div class="card-body">
-          <span class="card-tag">Graduate capstone</span>
-          <h3>Data-Driven Dublin</h3>
-          <p>A four-person capstone for my M.S. at Ohio State. We built an automated pipeline that pulls American Community Survey data from the Census API into a SQLite database, then used clustering to find the places most like Dublin, Ohio across nineteen measures.</p>
-          <span class="card-tools">Python &middot; SQLite &middot; R &middot; ArcGIS &middot; GitHub Actions</span>
-          <div class="card-links">
-            <a href="https://storymaps.arcgis.com/stories/329f10f1c2064be987c463b079d29b16" target="_blank" rel="noopener">Read the StoryMap <span class="arr">&rarr;</span></a>
-            <a href="https://github.com/butts-denison/MTDACapstone" target="_blank" rel="noopener">View the code <span class="arr">&rarr;</span></a>
-          </div>
-        </div>
-      </article>
-
-      <!-- Pacific brant and helicopters (graduate project). The page lives in the
-           pacific-brant folder and shows the slide deck in the browser. The thumbnail
-           is the team's probability matrix from the last slide. -->
-      <a class="card reveal" data-cc="teal" data-tilt href="pacific-brant/index.html">
-        <div class="thumb">
-          <svg viewBox="0 0 320 200" aria-hidden="true">
-            <g fill="#46D6D1" opacity=".9">
-              <circle cx="60" cy="140" r="6"/><circle cx="96" cy="126" r="6"/><circle cx="132" cy="104" r="6"/>
-              <circle cx="168" cy="86" r="6"/><circle cx="204" cy="72" r="6"/><circle cx="240" cy="62" r="6"/>
-            </g>
-          </svg>
-          <img src="images/work/pacific-brant.jpg" alt="Probability matrix of brant flight response, shaded from red to green by helicopter altitude and distance" loading="lazy" onerror="this.style.display='none'">
-        </div>
-        <div class="card-body">
+      <h2 class="scene-title" id="brant-title"><span class="ln"><span>Helicopters and</span></span><span class="ln"><span>Pacific brant</span></span></h2>
+      <div class="scene-meta">
+        <div class="sm-type">
           <span class="card-tag">Graduate project</span>
-          <h3>Helicopters and Pacific brant</h3>
-          <p>A three-person statistics project for my M.S. at Ohio State. We used logistic regression to find how close a helicopter can fly before flocks of Pacific brant take flight at Izembek Lagoon, Alaska, and turned the model into flight guidance.</p>
           <span class="card-tools">R &middot; logistic regression &middot; slide deck</span>
         </div>
-      </a>
-
-      <!-- card 3 -->
-      <article class="card reveal" data-cc="violet" data-tilt>
-        <div class="thumb">
-          <svg viewBox="0 0 320 200" aria-hidden="true">
-            <line x1="24" y1="176" x2="296" y2="176" stroke="rgba(255,255,255,.10)" stroke-width="1"/>
-            <line x1="24" y1="176" x2="296" y2="64" stroke="#B79CFF" stroke-width="2" stroke-dasharray="5 5" opacity=".55"/>
-            <g fill="#B79CFF">
-              <circle cx="44" cy="150" r="4.5"/><circle cx="70" cy="140" r="4.5"/><circle cx="92" cy="150" r="4.5"/>
-              <circle cx="116" cy="126" r="4.5"/><circle cx="138" cy="134" r="4.5"/><circle cx="160" cy="116" r="4.5"/>
-              <circle cx="182" cy="124" r="4.5"/><circle cx="204" cy="104" r="4.5"/><circle cx="226" cy="112" r="4.5"/>
-              <circle cx="248" cy="90" r="4.5"/><circle cx="270" cy="98" r="4.5"/><circle cx="292" cy="78" r="4.5"/>
-            </g>
-          </svg>
+        <p class="sm-desc">A three-person statistics project for my M.S. at Ohio State. We used logistic regression to find how close a helicopter can fly before flocks of Pacific brant take flight at Izembek Lagoon, Alaska, and turned the model into flight guidance.</p>
+        <div class="sm-links">
+          <a class="sm-btn" href="pacific-brant/index.html" data-expand>See the project and slides <span class="arr" aria-hidden="true">&rarr;</span></a>
         </div>
-        <div class="card-body">
-          <span class="card-tag">Exploratory</span>
-          <h3>Course load vs. outcomes</h3>
-          <p>A look at whether heavier course loads relate to final grades.</p>
-          <span class="card-tools">Python &middot; matplotlib</span>
-        </div>
-      </article>
-
-      <!-- card 4 -->
-      <article class="card reveal d1" data-cc="amber" data-tilt>
-        <div class="thumb">
-          <svg viewBox="0 0 320 200" aria-hidden="true">
-            <g fill="#F0B95A">
-              <rect x="22" y="20" width="42" height="38" rx="3" opacity=".30"/><rect x="70" y="20" width="42" height="38" rx="3" opacity=".55"/><rect x="118" y="20" width="42" height="38" rx="3" opacity=".22"/><rect x="166" y="20" width="42" height="38" rx="3" opacity=".70"/><rect x="214" y="20" width="42" height="38" rx="3" opacity=".40"/><rect x="262" y="20" width="42" height="38" rx="3" opacity=".18"/>
-              <rect x="22" y="64" width="42" height="38" rx="3" opacity=".48"/><rect x="70" y="64" width="42" height="38" rx="3" opacity=".85"/><rect x="118" y="64" width="42" height="38" rx="3" opacity=".35"/><rect x="166" y="64" width="42" height="38" rx="3" opacity=".60"/><rect x="214" y="64" width="42" height="38" rx="3" opacity=".95"/><rect x="262" y="64" width="42" height="38" rx="3" opacity=".44"/>
-              <rect x="22" y="108" width="42" height="38" rx="3" opacity=".22"/><rect x="70" y="108" width="42" height="38" rx="3" opacity=".40"/><rect x="118" y="108" width="42" height="38" rx="3" opacity=".66"/><rect x="166" y="108" width="42" height="38" rx="3" opacity=".30"/><rect x="214" y="108" width="42" height="38" rx="3" opacity=".52"/><rect x="262" y="108" width="42" height="38" rx="3" opacity=".78"/>
-            </g>
-          </svg>
-        </div>
-        <div class="card-body">
-          <span class="card-tag">Geographic</span>
-          <h3>Where students come from</h3>
-          <p>A map of home counties, used to plan outreach and recruiting.</p>
-          <span class="card-tools">R &middot; sf</span>
-        </div>
-      </article>
-
-      <!-- card 5 -->
-      <article class="card reveal d2" data-cc="red" data-tilt>
-        <div class="thumb">
-          <svg viewBox="0 0 320 200" aria-hidden="true">
-            <g stroke="#F2716F" stroke-width="3" stroke-linecap="round">
-              <line x1="30" y1="44" x2="210" y2="44"/><line x1="30" y1="80" x2="150" y2="80"/>
-              <line x1="30" y1="116" x2="250" y2="116"/><line x1="30" y1="152" x2="120" y2="152"/>
-            </g>
-            <g fill="#F2716F">
-              <circle cx="210" cy="44" r="6"/><circle cx="150" cy="80" r="6"/><circle cx="250" cy="116" r="6"/><circle cx="120" cy="152" r="6"/>
-            </g>
-          </svg>
-        </div>
-        <div class="card-body">
-          <span class="card-tag">Operations</span>
-          <h3>Support response times</h3>
-          <p>How long help tickets take to close, by department, over one term.</p>
-          <span class="card-tools">Tableau</span>
-        </div>
-      </article>
-
-      <!-- card 6 -->
-      <article class="card reveal" data-cc="green" data-tilt>
-        <div class="thumb">
-          <svg viewBox="0 0 320 200" aria-hidden="true">
-            <circle cx="160" cy="100" r="56" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="26"/>
-            <circle cx="160" cy="100" r="56" fill="none" stroke="#7FD18C" stroke-width="26" stroke-dasharray="214 352" transform="rotate(-90 160 100)"/>
-          </svg>
-        </div>
-        <div class="card-body">
-          <span class="card-tag">Survey</span>
-          <h3>What faculty asked for</h3>
-          <p>The share of faculty requesting each kind of classroom technology.</p>
-          <span class="card-tools">Excel</span>
-        </div>
-      </article>
-
+      </div>
     </div>
+  </section>
 
+  <!-- NBA score differentials (Tableau Public)
+       EDIT: the screenshot loads from Tableau's preview image for this viz, so it
+       updates itself when you republish. To use your own screenshot instead, save it
+       as images/work/nba.png and change the img src below to that path. If the image
+       cannot load, the bar drawing shows instead. -->
+  <section class="scene" id="nba" data-cc="amber" aria-labelledby="nba-title">
+    <div class="scene-glow" aria-hidden="true"></div>
+    <div class="scene-inner">
+      <a class="frame frame-shot" href="https://public.tableau.com/app/profile/robert.butts/viz/NBAGameScoreDifferentialVisualization/Dashboard1" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" data-cursor="Open the dashboard">
+        <div class="shot">
+          <svg viewBox="0 0 320 200" aria-hidden="true">
+            <line x1="24" y1="100" x2="296" y2="100" stroke="rgba(255,255,255,.18)" stroke-width="1.5"/>
+            <g fill="#F0B95A">
+              <rect x="32" y="52" width="16" height="48" rx="2"/><rect x="56" y="100" width="16" height="30" rx="2"/>
+              <rect x="80" y="70" width="16" height="30" rx="2"/><rect x="104" y="100" width="16" height="58" rx="2"/>
+              <rect x="128" y="38" width="16" height="62" rx="2"/><rect x="152" y="100" width="16" height="22" rx="2"/>
+              <rect x="176" y="84" width="16" height="16" rx="2"/><rect x="200" y="100" width="16" height="44" rx="2"/>
+              <rect x="224" y="60" width="16" height="40" rx="2"/><rect x="248" y="100" width="16" height="36" rx="2"/>
+              <rect x="272" y="76" width="16" height="24" rx="2"/>
+            </g>
+          </svg>
+          <img src="https://public.tableau.com/static/images/NB/NBAGameScoreDifferentialVisualization/Dashboard1/1.png" alt="" loading="lazy" onerror="this.parentNode.classList.add('no-img')">
+        </div>
+      </a>
+      <h2 class="scene-title" id="nba-title"><span class="ln"><span>NBA score</span></span><span class="ln"><span>differentials</span></span></h2>
+      <div class="scene-meta">
+        <div class="sm-type">
+          <span class="card-tag">Tableau Public</span>
+          <span class="card-tools">Tableau &middot; interactive dashboard</span>
+        </div>
+        <p class="sm-desc">Every final margin from an NBA season in one view, so blowouts and close calls stand apart at a glance.</p>
+        <div class="sm-links">
+          <a class="sm-btn" href="https://public.tableau.com/app/profile/robert.butts/viz/NBAGameScoreDifferentialVisualization/Dashboard1" target="_blank" rel="noopener">Open the dashboard on Tableau Public <span class="arr" aria-hidden="true">&#8599;</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ===== AFTER THE PROJECTS ===== -->
+<section class="more-work">
+  <div class="wrap">
     <div class="work-more reveal">
       <a href="practice.html">Try the practice tools <span class="arr">&rarr;</span></a>
     </div>
@@ -280,6 +236,7 @@
 </section>
 
 </main>
+
 
 <!-- ===== FOOTER (keep identical on every page) ===== -->
 <footer class="site-foot">
@@ -330,5 +287,6 @@
 </footer>
 
 <script src="site.js"></script>
+<script src="work.js"></script>
 </body>
 </html>
