@@ -1108,3 +1108,84 @@ a.c-famous:hover .go{color:var(--fc)}
   .sc-line::after{display:none}
   .work-motion .scene-title .ln > span, .work-motion .scene-meta > *{transform:none !important; translate:none !important; opacity:1 !important}
 }
+
+/* ---------- 28. HOME: THE SKY MAP ----------
+   The hero on index.html. sky.js draws the sky on .sky-canvas and places
+   each .sky-label link next to its constellation inside .sky-room.
+   Without JavaScript the links show as a plain list. */
+.sky-hero{
+  min-height:100svh; padding:0; display:block;
+  background:
+    radial-gradient(70% 55% at 80% 12%, rgba(58,80,138,.22), transparent 70%),
+    linear-gradient(180deg, #04060B 0%, #070A11 55%, var(--bg) 100%);
+}
+.sky-hero::after{height:140px}
+.sky-canvas{position:absolute; inset:0; width:100%; height:100%; display:block; z-index:0}
+.sky-inner{
+  position:relative; z-index:2; max-width:1320px; margin:0 auto; min-height:100svh;
+  padding:104px 28px 56px;
+  display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1.04fr); gap:28px; align-items:center;
+}
+.sky-hero h1{font-size:clamp(2.5rem, 5.6vw, 4.6rem)}
+.sky-hint{margin-top:34px; max-width:44ch; font-family:var(--mono); font-size:.76rem; line-height:1.65; color:var(--faint)}
+.sky-hero:not(.sky-on) .sky-hint{display:none}
+.js-anim .sky-hint{opacity:0; transform:translateY(16px)}
+.js-anim.loaded .sky-hint{opacity:1; transform:none; transition:opacity .6s ease .9s, transform .6s cubic-bezier(.2,.8,.2,1) .9s}
+.hero-copy{transition:opacity .5s ease}
+.sky-leaving .hero-copy, .sky-leaving .sky-labels{opacity:0; transition:opacity .45s ease}
+
+.sky-room{position:relative; align-self:stretch; min-height:560px}
+.sky-hero.sky-pointing{cursor:pointer}
+.sky-hero.sky-pointing .hero-copy{cursor:auto}
+
+/* the links: a plain list until sky.js turns them into star labels */
+.sky-label[data-cc="blue"]{--cc:var(--blue)}
+.sky-label[data-cc="green"]{--cc:var(--green)}
+.sky-label[data-cc="violet"]{--cc:var(--violet)}
+.sky-label[data-cc="amber"]{--cc:var(--amber)}
+.sky-label[data-cc="red"]{--cc:var(--red)}
+.sky-label[data-cc="teal"]{--cc:var(--teal)}
+.sky-labels{display:grid; gap:16px; padding-top:20px}
+.sky-label{display:flex; flex-direction:column; gap:3px; color:var(--text)}
+.sl-name{font-family:var(--display); font-weight:600; font-size:1.1rem}
+.sl-kind{font-family:var(--mono); font-size:.7rem; letter-spacing:.06em; color:var(--cc, var(--blue))}
+.sl-desc{font-size:.9rem; color:var(--muted)}
+
+.sky-on .sky-labels{display:block; padding:0; transition:opacity .45s ease}
+.sky-on .sky-label{
+  position:absolute; left:0; top:0; display:block; padding:5px 8px; border-radius:8px;
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.02em; line-height:1.35; text-align:center;
+  color:rgba(214,224,240,.62); transition:color .25s ease, background .25s ease;
+}
+.sky-on .sl-name{font-family:inherit; font-weight:400; font-size:inherit; display:block; max-width:250px}
+.sky-on .sl-kind, .sky-on .sl-desc{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.sky-on .sky-label.is-on{color:var(--cc); background:rgba(8,11,18,.6)}
+.js-anim .sky-on .sky-labels{opacity:0}
+.js-anim.loaded .sky-on .sky-labels{opacity:1; transition:opacity 1s ease 1.6s}
+
+/* the card that describes the constellation you are pointing at */
+.sky-card{
+  position:absolute; left:0; top:0; z-index:3; width:min(290px, 88%);
+  display:flex; flex-direction:column; gap:6px; padding:16px 18px 15px;
+  border-radius:14px; background:rgba(9,12,19,.94);
+  border:1px solid color-mix(in srgb, var(--cc, var(--blue)) 38%, transparent);
+  box-shadow:0 20px 50px rgba(0,0,0,.45), 0 0 40px -12px var(--cc, var(--blue));
+  -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+  opacity:0; visibility:hidden; transform:translateY(6px); pointer-events:none;
+  transition:opacity .22s ease, transform .22s ease, visibility 0s .22s;
+}
+.sky-card.show{opacity:1; visibility:visible; transform:none; transition:opacity .22s ease, transform .22s ease}
+.sky-on .sky-card{display:flex}
+.sky-hero:not(.sky-on) .sky-card{display:none}
+.sc-kind{font-family:var(--mono); font-size:.68rem; letter-spacing:.06em; color:var(--cc, var(--blue))}
+.sc-name{font-family:var(--display); font-weight:600; font-size:1.22rem; line-height:1.2; letter-spacing:-.01em; color:var(--text)}
+.sc-desc{font-size:.9rem; line-height:1.55; color:var(--muted)}
+.sc-go{margin-top:4px; font-family:var(--mono); font-size:.7rem; color:var(--faint)}
+@media (hover:none), (pointer:coarse){ .sky-card.show{pointer-events:auto} }
+
+@media (max-width:860px){
+  .sky-on .sl-name{max-width:150px}
+  .sky-inner{grid-template-columns:minmax(0, 1fr); gap:8px; padding:108px 20px 40px; align-items:start}
+  .sky-room{min-height:min(122vw, 620px)}
+  .sky-hint{margin-top:26px}
+}

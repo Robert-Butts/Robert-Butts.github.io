@@ -59,137 +59,79 @@
 
 <main id="main">
 
-<!-- ===== HERO ===== -->
-<section class="hero">
-  <div class="hero-field" id="heroField" aria-hidden="true"></div>
-  <div class="wrap">
-    <p class="eyebrow">Data visualization · Higher education</p>
-    <!-- EDIT: your headline. Wrap the accent word in <span class="under"> -->
-    <h1>
-      <span class="w" style="transition-delay:0s">I</span>
-      <span class="w" style="transition-delay:.04s">help</span>
-      <span class="w" style="transition-delay:.08s">people</span>
-      <span class="w under" style="transition-delay:.12s">see</span>
-      <span class="w" style="transition-delay:.16s">what</span>
-      <span class="w" style="transition-delay:.2s">their</span>
-      <span class="w" style="transition-delay:.24s">data</span>
-      <span class="w" style="transition-delay:.28s">is</span>
-      <span class="w" style="transition-delay:.32s">saying.</span>
-    </h1>
-    <!-- EDIT: one or two sentences about you -->
-    <p class="lead">I am an education technologist in Ohio. I design data visualizations and interactive tools that make hard questions easier to understand, for students, faculty, and anyone who has a decision to make.</p>
-    <div class="cta-row">
-      <a class="btn btn-primary" href="work.html">View the work <span class="arr">&rarr;</span></a>
-      <a class="btn btn-ghost" href="#tools">Explore the tools <span class="arr">&rarr;</span></a>
-    </div>
-    <span class="scroll-tag"><i aria-hidden="true"></i> scroll to explore</span>
-  </div>
-</section>
-
-<!-- ===== RUN-LOG STRIP (animated counters) ===== -->
-<section class="runlog">
-  <div class="wrap">
-    <p class="rl-label">what you can practice here</p>
-    <div class="rl-grid">
-      <div class="rl-item reveal"><b class="rl-c1" data-count="5">0</b><span>interactive tools</span></div>
-      <div class="rl-item reveal d1"><b class="rl-c2" data-count="1568">0</b><span>R flashcards</span></div>
-      <div class="rl-item reveal d2"><b class="rl-c3" data-count="58">0</b><span>chart types</span></div>
-      <div class="rl-item reveal d3"><b class="rl-c4" data-count="28">0</b><span>study decks</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== SELECTED WORK (a taste, full list on work.html) ===== -->
-<section>
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <p class="eyebrow">Selected work</p>
-      <h2>A few projects I am proud of.</h2>
+<!-- ===== HERO: THE SKY MAP =====
+     The stars and constellations are drawn by sky.js. Each link in the
+     sky-labels list below is one constellation. To change where a link goes or
+     what its card says, edit that link here. To change a constellation's shape
+     or position, edit the SHAPES list at the top of sky.js (data-key matches).
+     Without JavaScript, the links show as a plain list. -->
+<section class="hero sky-hero" id="skyHero">
+  <canvas class="sky-canvas" aria-hidden="true"></canvas>
+  <div class="sky-inner">
+    <div class="hero-copy">
+      <p class="eyebrow">Data visualization · Higher education</p>
+      <!-- EDIT: your headline. Wrap the accent word in <span class="under"> -->
+      <h1>
+        <span class="w" style="transition-delay:0s">I</span>
+        <span class="w" style="transition-delay:.04s">help</span>
+        <span class="w" style="transition-delay:.08s">people</span>
+        <span class="w under" style="transition-delay:.12s">see</span>
+        <span class="w" style="transition-delay:.16s">what</span>
+        <span class="w" style="transition-delay:.2s">their</span>
+        <span class="w" style="transition-delay:.24s">data</span>
+        <span class="w" style="transition-delay:.28s">is</span>
+        <span class="w" style="transition-delay:.32s">saying.</span>
+      </h1>
+      <!-- EDIT: one or two sentences about you -->
+      <p class="lead">I am an education technologist in Ohio. I design data visualizations and interactive tools that make hard questions easier to understand, for students, faculty, and anyone who has a decision to make.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="work.html">View the work <span class="arr">&rarr;</span></a>
+        <a class="btn btn-ghost" href="#tools">Explore the tools <span class="arr">&rarr;</span></a>
+      </div>
+      <p class="sky-hint" id="skyHint">Each constellation in this sky is one of my projects. Point to one to read about it, then click to open it.</p>
     </div>
 
-    <div class="grid-3">
-      <!-- EDIT each card. For a real image, replace the <svg>...</svg> with:
-           <img src="your-image.png" alt="Short description"> -->
-<!-- NBA score differentials (Tableau Public)
-           EDIT: the thumbnail loads from Tableau's preview image for this viz, so it
-           updates itself when you republish. To use your own screenshot instead, save
-           it as images/work/nba.png and change the img src below to that path. -->
-      <a class="card reveal" data-cc="amber" data-tilt href="https://public.tableau.com/app/profile/robert.butts/viz/NBAGameScoreDifferentialVisualization/Dashboard1" target="_blank" rel="noopener">
-        <div class="thumb">
-          <svg viewBox="0 0 320 200" aria-hidden="true">
-            <line x1="24" y1="100" x2="296" y2="100" stroke="rgba(255,255,255,.18)" stroke-width="1.5"/>
-            <g fill="#F0B95A">
-              <rect x="32" y="52" width="16" height="48" rx="2"/><rect x="56" y="100" width="16" height="30" rx="2"/>
-              <rect x="80" y="70" width="16" height="30" rx="2"/><rect x="104" y="100" width="16" height="58" rx="2"/>
-              <rect x="128" y="38" width="16" height="62" rx="2"/><rect x="152" y="100" width="16" height="22" rx="2"/>
-              <rect x="176" y="84" width="16" height="16" rx="2"/><rect x="200" y="100" width="16" height="44" rx="2"/>
-              <rect x="224" y="60" width="16" height="40" rx="2"/><rect x="248" y="100" width="16" height="36" rx="2"/>
-              <rect x="272" y="76" width="16" height="24" rx="2"/>
-            </g>
-          </svg>
-          <img class="fit" src="https://public.tableau.com/static/images/NB/NBAGameScoreDifferentialVisualization/Dashboard1/1.png" alt="Preview of the NBA score differential dashboard" loading="lazy" onerror="this.style.display='none'">
-          <span class="card-ext" aria-hidden="true">&#8599;</span>
-        </div>
-        <div class="card-body">
-          <span class="card-tag">Tableau Public</span>
-          <h3>NBA score differentials</h3>
-          <p>Every final margin from an NBA season in one view, so blowouts and close calls stand apart at a glance.</p>
-          <span class="card-tools">Tableau &middot; interactive dashboard</span>
-        </div>
-      </a>
-
-<!-- LEGO complexity analysis (Tableau Public)
-           EDIT: same thumbnail rule as above; local file would be images/work/lego.png -->
-      <a class="card reveal d1" data-cc="red" data-tilt href="https://public.tableau.com/app/profile/robert.butts/viz/LegoVisualizationforCompetition/LEGOComplexityAnalysis" target="_blank" rel="noopener">
-        <div class="thumb">
-          <svg viewBox="0 0 320 200" aria-hidden="true">
-            <line x1="24" y1="176" x2="296" y2="176" stroke="rgba(255,255,255,.10)" stroke-width="1"/>
-            <g fill="#F2716F">
-              <rect x="34" y="140" width="30" height="36" rx="3"/><rect x="76" y="122" width="30" height="54" rx="3"/>
-              <rect x="118" y="104" width="30" height="72" rx="3"/><rect x="160" y="88" width="30" height="88" rx="3"/>
-              <rect x="202" y="66" width="30" height="110" rx="3"/><rect x="244" y="46" width="30" height="130" rx="3"/>
-            </g>
-            <g fill="#F2716F" opacity=".55">
-              <rect x="41" y="132" width="16" height="6" rx="3"/><rect x="83" y="114" width="16" height="6" rx="3"/>
-              <rect x="125" y="96" width="16" height="6" rx="3"/><rect x="167" y="80" width="16" height="6" rx="3"/>
-              <rect x="209" y="58" width="16" height="6" rx="3"/><rect x="251" y="38" width="16" height="6" rx="3"/>
-            </g>
-          </svg>
-          <img class="fit" src="https://public.tableau.com/static/images/Le/LegoVisualizationforCompetition/LEGOComplexityAnalysis/1.png" alt="Preview of the LEGO complexity analysis" loading="lazy" onerror="this.style.display='none'">
-          <span class="card-ext" aria-hidden="true">&#8599;</span>
-        </div>
-        <div class="card-body">
-          <span class="card-tag">Tableau Public</span>
-          <h3>LEGO complexity analysis</h3>
-          <p>How the complexity of LEGO sets has climbed across the decades. Built for the Big Ten Academic Alliance 2023 data competition.</p>
-          <span class="card-tools">Tableau &middot; competition entry</span>
-        </div>
-      </a>
-
-      <article class="card reveal d2" data-cc="violet" data-tilt>
-        <div class="thumb">
-          <svg viewBox="0 0 320 200" aria-hidden="true">
-            <line x1="24" y1="176" x2="296" y2="176" stroke="rgba(255,255,255,.10)" stroke-width="1"/>
-            <line x1="24" y1="176" x2="296" y2="64" stroke="#B79CFF" stroke-width="2" stroke-dasharray="5 5" opacity=".55"/>
-            <g fill="#B79CFF">
-              <circle cx="44" cy="150" r="4.5"/><circle cx="70" cy="140" r="4.5"/><circle cx="92" cy="150" r="4.5"/>
-              <circle cx="116" cy="126" r="4.5"/><circle cx="138" cy="134" r="4.5"/><circle cx="160" cy="116" r="4.5"/>
-              <circle cx="182" cy="124" r="4.5"/><circle cx="204" cy="104" r="4.5"/><circle cx="226" cy="112" r="4.5"/>
-              <circle cx="248" cy="90" r="4.5"/><circle cx="270" cy="98" r="4.5"/><circle cx="292" cy="78" r="4.5"/>
-            </g>
-          </svg>
-        </div>
-        <div class="card-body">
-          <span class="card-tag">Exploratory</span>
-          <h3>Course load vs. outcomes</h3>
-          <p>A look at whether heavier course loads relate to final grades.</p>
-          <span class="card-tools">Python &middot; matplotlib</span>
-        </div>
-      </article>
-    </div>
-
-    <div class="work-more reveal">
-      <a href="work.html">See all work <span class="arr">&rarr;</span></a>
+    <div class="sky-room" id="skyRoom">
+      <nav class="sky-labels" aria-label="Projects in the sky map">
+        <!-- EDIT: one link per constellation. data-key must match a shape in sky.js.
+             data-cc is the color: blue, green, violet, amber, red, teal, pink, orange, lime. -->
+        <a class="sky-label" data-key="dublin" data-cc="blue" href="dublin/index.html">
+          <span class="sl-name">Data-Driven Dublin</span>
+          <span class="sl-kind">Graduate capstone</span>
+          <span class="sl-desc">A Census data pipeline and k-means clustering that narrowed almost 2,400 U.S. places to the 51 most like Dublin, Ohio.</span>
+        </a>
+        <a class="sky-label" data-key="lego" data-cc="red" href="work.html#lego">
+          <span class="sl-name">LEGO complexity analysis</span>
+          <span class="sl-kind">Tableau Public</span>
+          <span class="sl-desc">How the complexity of LEGO sets has climbed across the decades.</span>
+        </a>
+        <a class="sky-label" data-key="brant" data-cc="teal" href="pacific-brant/index.html">
+          <span class="sl-name">Helicopters and Pacific brant</span>
+          <span class="sl-kind">Graduate project</span>
+          <span class="sl-desc">How close a helicopter can fly before flocks of Pacific brant take flight, modeled with logistic regression.</span>
+        </a>
+        <a class="sky-label" data-key="nba" data-cc="amber" href="work.html#nba">
+          <span class="sl-name">NBA score differentials</span>
+          <span class="sl-kind">Tableau Public</span>
+          <span class="sl-desc">Every final margin from an NBA season in one view, so blowouts and close calls stand apart.</span>
+        </a>
+        <a class="sky-label" data-key="gallery" data-cc="violet" href="gallery.html">
+          <span class="sl-name">The Chart Gallery</span>
+          <span class="sl-kind">58 chart types</span>
+          <span class="sl-desc">58 chart types in nine families, each with a sample CSV file and R code. Each star in this cluster is one chart.</span>
+        </a>
+        <a class="sky-label" data-key="practice" data-cc="green" href="practice.html">
+          <span class="sl-name">Practice tools</span>
+          <span class="sl-kind">5 interactive tools</span>
+          <span class="sl-desc">R flashcards, a chart field guide, a method finder, and more ways to practice data skills. Each bright star is one tool.</span>
+        </a>
+      </nav>
+      <div class="sky-card" id="skyCard" aria-hidden="true">
+        <span class="sc-kind"></span>
+        <span class="sc-name"></span>
+        <span class="sc-desc"></span>
+        <span class="sc-go"></span>
+      </div>
     </div>
   </div>
 </section>
@@ -450,5 +392,6 @@
 </footer>
 
 <script src="site.js"></script>
+<script src="sky.js"></script>
 </body>
 </html>
