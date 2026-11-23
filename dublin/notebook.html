@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The k-means notebook · Data-Driven Dublin · Robert Butts</title>
+<meta name="description" content="The Python notebook behind the first round of k-means clustering for the Data-Driven Dublin capstone: loading Census data, keeping reliable places, and grouping places like Dublin, Ohio.">
+<meta property="og:title" content="How we coded the clustering for Data-Driven Dublin">
+<meta property="og:description" content="The Python notebook behind our k-means clustering of U.S. places like Dublin, Ohio.">
+<meta property="og:image" content="https://robert-butts.github.io/dublin/share.jpg">
+<meta property="og:type" content="article">
+
+<!--
+  ============================================================
+  K-MEANS NOTEBOOK PAGE (dublin/notebook.html)
+  Lives at robert-butts.github.io/dublin/notebook.html
+  This page was generated from City_of_Dublin_K_Means_Analysis.ipynb
+  (the Google Colab copy). The team's notes, code, and outputs are
+  shown as written, with three small fixes for the web:
+    1. One note lost its equal signs when pasted into Colab
+       ("k 3" now reads "k = 3"), matching the GitHub copy.
+    2. Em dashes in one note became commas.
+    3. Charts are saved as WebP files in the notebook folder.
+  The numbered section headings (01 to 09) were added for this page.
+  ============================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+
+<style>
+/* ===== Page styles for this notebook only ===== */
+.nb{--accent:var(--blue)}
+.nb .eyebrow::before{background:var(--accent)}
+.nb-meta{display:flex; flex-wrap:wrap; gap:8px 18px; margin-top:22px; font-family:var(--mono); font-size:.78rem; color:var(--muted); letter-spacing:.02em}
+.nb-meta b{color:var(--text); font-weight:500}
+.nb-actions{display:flex; flex-wrap:wrap; gap:12px; margin-top:28px}
+
+.nb-main{padding-top:clamp(48px, 6vw, 72px)}
+.nb-layout{display:grid; grid-template-columns:230px minmax(0, 1fr); gap:56px; align-items:start}
+
+/* contents list */
+.nb-toc{position:sticky; top:96px}
+.nb-toc h2{font-family:var(--mono); font-size:.7rem; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); font-weight:500; margin-bottom:12px}
+.nb-toc ol{list-style:none; display:grid; gap:2px; border-left:1px solid var(--line)}
+.nb-toc a{display:flex; gap:10px; padding:6px 0 6px 14px; margin-left:-1px; border-left:2px solid transparent; font-size:.86rem; line-height:1.35; color:var(--muted); transition:color .18s ease, border-color .18s ease}
+.nb-toc a span{font-family:var(--mono); font-size:.7rem; color:var(--faint); padding-top:2px}
+.nb-toc a:hover{color:var(--text)}
+.nb-toc a.on{color:var(--text); border-left-color:var(--accent)}
+.nb-toc a.on span{color:var(--accent)}
+
+/* about box */
+.nb-about{background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:var(--radius); padding:22px 24px}
+.nb-about h2{font-family:var(--display); font-weight:600; font-size:1.15rem}
+.nb-about p{color:var(--muted); margin-top:8px; font-size:.96rem; line-height:1.65}
+.nb-about a{color:var(--text); text-decoration:underline; text-underline-offset:2px}
+
+/* section headings added for the web */
+.nb-sec{margin:72px 0 14px; padding-top:26px; border-top:1px solid var(--line); scroll-margin-top:84px}
+.nb-sec-n{font-family:var(--mono); font-size:.74rem; letter-spacing:.08em; color:var(--accent)}
+.nb-sec h2{font-family:var(--display); font-weight:600; font-size:clamp(1.35rem, 2.2vw, 1.7rem); letter-spacing:-.01em; margin-top:4px}
+.nb-sec p{color:var(--muted); margin-top:6px; max-width:64ch; font-size:.97rem}
+
+/* the team's notes */
+.nb-cell{margin:14px 0}
+.nb-md{padding:2px 0 2px 16px; border-left:2px solid var(--line-2)}
+.nb-md p{color:#C3CCD8; line-height:1.7; font-size:.97rem}
+.nb-md p + p{margin-top:10px}
+.nb-md strong{color:var(--text); font-weight:600}
+.nb-md h1, .nb-md h2, .nb-md h3{font-family:var(--mono); font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--amber); font-weight:500}
+.nb-md-pre{font-family:var(--mono); font-size:.78rem; line-height:1.55; color:#C3CCD8; white-space:pre-wrap}
+
+/* code cells */
+.nb-code-cell{background:#0A0D12; border:1px solid var(--line); border-radius:12px; overflow:hidden}
+.nb-bar{display:flex; align-items:center; gap:12px; padding:7px 10px 7px 16px; background:var(--panel); border-bottom:1px solid var(--line); font-family:var(--mono); font-size:.68rem; letter-spacing:.04em; color:var(--faint)}
+.nb-tag{color:var(--accent)}
+.nb-copy{margin-left:auto; font-family:var(--mono); font-size:.66rem; letter-spacing:.04em; color:var(--muted); border:1px solid var(--line-2); border-radius:7px; padding:4px 10px; transition:color .18s ease, border-color .18s ease}
+.nb-copy:hover{color:var(--accent); border-color:var(--accent)}
+.nb-copy.done{color:var(--green); border-color:var(--green)}
+.nb-code{margin:0; padding:16px 18px; overflow-x:auto; font-family:var(--mono); font-size:.8rem; line-height:1.7; color:var(--text); tab-size:4}
+.nb-code:focus-visible, .nb-out:focus-visible{outline:2px solid var(--accent); outline-offset:-2px; border-radius:0}
+
+/* syntax colors, from the site's code-editor palette */
+.nb-code .k, .nb-code .kn, .nb-code .kc, .nb-code .kd, .nb-code .ow{color:var(--violet)}
+.nb-code .s, .nb-code .s1, .nb-code .s2, .nb-code .sa, .nb-code .sd, .nb-code .se, .nb-code .si, .nb-code .dl{color:var(--green)}
+.nb-code .m, .nb-code .mi, .nb-code .mf{color:var(--amber)}
+.nb-code .c, .nb-code .c1, .nb-code .cm, .nb-code .ch{color:#6E7B8C; font-style:italic}
+.nb-code .nb, .nb-code .bp, .nb-code .nf, .nb-code .fm{color:var(--blue)}
+.nb-code .nn{color:var(--teal)}
+.nb-code .o, .nb-code .p{color:#A3AFBF}
+
+/* outputs */
+.nb-out-wrap{border-top:1px dashed var(--line-2); padding:12px 18px 16px; background:#0E1116}
+.nb-out-label{font-family:var(--mono); font-size:.62rem; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); margin-bottom:8px}
+.nb-out{margin:0; font-family:var(--mono); font-size:.76rem; line-height:1.55; color:#C3CCD8; white-space:pre; overflow:auto; max-height:30em}
+.nb-warn .nb-out-label, .nb-warn .nb-out{color:var(--amber)}
+.nb-fig{margin:0; background:#fff; border-radius:8px; padding:10px; overflow:hidden}
+.nb-fig img{width:100%; height:auto}
+.nb-fig-sm{max-width:620px}
+
+.nb-end{margin-top:64px; padding-top:28px; border-top:1px solid var(--line); display:flex; flex-wrap:wrap; gap:12px}
+
+@media (max-width:1040px){
+  .nb-layout{grid-template-columns:minmax(0, 1fr); gap:28px}
+  .nb-toc{position:static; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px 18px 12px}
+  .nb-toc ol{grid-template-columns:repeat(2, minmax(0, 1fr)); column-gap:18px; border-left:0}
+  .nb-toc a{padding-left:0; border-left:0}
+}
+@media (max-width:560px){
+  .nb-toc ol{grid-template-columns:1fr}
+  .nb-code{font-size:.76rem; padding:14px}
+  .nb-out-wrap{padding:12px 14px 14px}
+  .nb-fig{padding:6px}
+}
+</style>
+</head>
+
+<body class="nb">
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ===== NAV (same as every page, with ../ because this page sits in a folder) ===== -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../index.html" aria-label="Home">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      Robert Butts
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a class="section-link active" href="../work.html">Work</a>
+      <a class="section-link" href="../gallery.html">Gallery</a>
+      <a class="section-link" href="../practice.html">Practice</a>
+      <a class="section-link" href="../about.html">About</a>
+      <a class="nav-cta" href="../contact.html">Get in touch</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu"><span></span></button>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu" aria-label="Menu">
+  <a href="../index.html">Home</a>
+  <a href="../work.html">Work</a>
+  <a href="../gallery.html">Gallery</a>
+  <a href="../practice.html">Practice</a>
+  <a href="../about.html">About</a>
+  <a href="../contact.html">Get in touch</a>
+</div>
+
+<main id="main">
+
+<!-- ===== PAGE HEADER ===== -->
+<div class="page-head">
+  <div class="wrap">
+    <p class="eyebrow ph-a">Data-Driven Dublin &middot; the code</p>
+    <h1 class="ph-b">How we coded the clustering</h1>
+    <p class="ph-lead ph-c">This is the Python notebook from our first round of k-means clustering, shown the way it ran in Google Colab. You can read every step, from loading the Census data to finding the group of places that holds Dublin.</p>
+    <div class="nb-meta ph-c">
+      <span><b>Language</b> Python</span>
+      <span><b>Libraries</b> pandas, scikit-learn, SciPy, seaborn</span>
+      <span><b>Cells</b> 52 (31 code, 21 notes)</span>
+    </div>
+    <div class="nb-actions ph-d">
+      <a class="btn btn-primary" href="https://github.com/butts-denison/MTDACapstone/blob/main/Scripts/K-Means/City_of_Dublin_K_Means_Analysis.ipynb" target="_blank" rel="noopener">View the notebook on GitHub <span class="arr" aria-hidden="true">&#8599;</span></a>
+      <a class="btn btn-ghost" href="index.html"><span class="arr" aria-hidden="true" style="display:inline-block;transform:scaleX(-1)">&rarr;</span> Back to the project</a>
+    </div>
+  </div>
+</div>
+
+<section class="nb-main">
+  <div class="wrap nb-layout">
+
+    <nav class="nb-toc" aria-label="Notebook sections">
+      <h2>In this notebook</h2>
+      <ol>
+<li><a href="#load"><span>01</span>Load the data</a></li>
+<li><a href="#reliable"><span>02</span>Keep places with reliable estimates</a></li>
+<li><a href="#version-1"><span>03</span>Version 1: raw counts</a></li>
+<li><a href="#version-1-where"><span>04</span>Where Dublin's group is</a></li>
+<li><a href="#version-2"><span>05</span>Version 2: percentages</a></li>
+<li><a href="#heatmap"><span>06</span>What makes each group different</a></li>
+<li><a href="#distance"><span>07</span>How close each place is to the center</a></li>
+<li><a href="#compare"><span>08</span>Comparing the two versions</a></li>
+<li><a href="#experimental"><span>09</span>Experimental work</a></li>
+      </ol>
+    </nav>
+
+    <div class="nb-body">
+      <div class="nb-about">
+        <h2>About this notebook</h2>
+        <p>The notebook runs k-means two ways: once on raw counts and once on percentages of each place's population. It was our first pass at the question. The final model on <a href="https://ohiostate.maps.arcgis.com/apps/dashboards/5dad3d509a8e4ae5a68fecc336e65c41" target="_blank" rel="noopener">our dashboard</a> came later. That model added park, climate, and housing cost data, so its list of 51 places is not in this notebook.</p>
+        <p>Notes from our team sit beside a gray line. Code is in the dark panels, and each output appears right below its code. The numbered headings were added for this page.</p>
+      </div>
+
+<div class="nb-sec" id="load"><span class="nb-sec-n">01</span><h2>Load the data</h2><p>Download the SQLite database that our pipeline built, then read the census table and the list of place names.</p></div>
+<div class="nb-cell nb-md"><p>Import Step</p></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [1]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 1">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.cluster</span><span class="w"> </span><span class="kn">import</span> <span class="n">KMeans</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial.distance</span><span class="w"> </span><span class="kn">import</span> <span class="n">euclidean</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">silhouette_score</span></code></pre></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [2]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 2">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># URL of the .db file hosted on GitHub</span>
+<span class="n">db_url</span> <span class="o">=</span> <span class="s2">"https://raw.githubusercontent.com/brutus-the-homeschooler/Capstone/main/Database/acsse_2022.db"</span>
+
+<span class="c1"># Download the .db file</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">db_url</span><span class="p">)</span>
+
+<span class="c1"># Save the .db file locally</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"acsse_2022.db"</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">db_file</span><span class="p">:</span>
+    <span class="n">db_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+
+<span class="c1"># Connect to the SQLite database</span>
+<span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">'acsse_2022.db'</span><span class="p">)</span>
+
+<span class="c1"># Query the 'census_data' table</span>
+<span class="n">census_data_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s2">"SELECT * FROM census_data"</span><span class="p">,</span> <span class="n">conn</span><span class="p">)</span>
+
+<span class="c1"># Query the 'place_dictionary' table</span>
+<span class="n">place_dict_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s2">"SELECT * FROM place_dictionary"</span><span class="p">,</span> <span class="n">conn</span><span class="p">)</span>
+
+<span class="c1"># Query the 'state_dictionary' table</span>
+<span class="c1">#state_dict_df = pd.read_sql_query("SELECT * FROM state_dictionary", conn)</span>
+
+<span class="c1"># Query the 'variable_dictionary' table</span>
+<span class="c1">#variable_dict_df = pd.read_sql_query("SELECT * FROM variable_dictionary", conn)</span>
+
+<span class="c1"># Close the connection</span>
+<span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></code></pre></div>
+<div class="nb-sec" id="reliable"><span class="nb-sec-n">02</span><h2>Keep places with reliable estimates</h2><p>Choose the 19 measures, then keep only the places where the Census estimates are precise enough to trust.</p></div>
+<div class="nb-cell nb-md"><p><strong>Filter Variables</strong></p>
+<p>Based upon prior analysis, these 19 variables have been selected as reliable and interesting to study for the basis of this analysis.</p></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [3]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 3">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># Define filter variables for estimates (ending with 'E')</span>
+<span class="n">filter_variables</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"K200101_001E"</span><span class="p">,</span> <span class="s2">"K200101_002E"</span><span class="p">,</span> <span class="s2">"K200101_003E"</span><span class="p">,</span> <span class="s2">"K200201_002E"</span><span class="p">,</span> <span class="s2">"K200301_002E"</span><span class="p">,</span>
+    <span class="s2">"K200501_002E"</span><span class="p">,</span> <span class="s2">"K200801_002E"</span><span class="p">,</span> <span class="s2">"K200901_003E"</span><span class="p">,</span> <span class="s2">"K201401_002E"</span><span class="p">,</span> <span class="s2">"K201501_007E"</span><span class="p">,</span>
+    <span class="s2">"K201501_008E"</span><span class="p">,</span> <span class="s2">"K201601_002E"</span><span class="p">,</span> <span class="s2">"K201702_006E"</span><span class="p">,</span> <span class="s2">"K202101_006E"</span><span class="p">,</span> <span class="s2">"K202301_004E"</span><span class="p">,</span>
+    <span class="s2">"K202301_007E"</span><span class="p">,</span> <span class="s2">"K202502_002E"</span><span class="p">,</span> <span class="s2">"K202505_004E"</span><span class="p">,</span> <span class="s2">"K202701_006E"</span>
+<span class="p">]</span></code></pre></div>
+<div class="nb-cell nb-md"><p><strong>Find reliable places</strong></p>
+<p>This code block takes the variables listed above and calculates the coefficient of variation based on the measurement value and the measurement of error, both of which are provided within the dataset.</p></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [4]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 4">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># Step 1: Find columns in census_data_df that match filter_variables for 'E' and their corresponding 'M'</span>
+<span class="n">estimate_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">census_data_df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">filter_variables</span><span class="p">]</span>
+<span class="n">moe_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'M'</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">estimate_cols</span><span class="p">]</span>
+
+<span class="c1"># Step 2: Calculate all CVs at once and store in new columns</span>
+<span class="k">for</span> <span class="n">est_col</span><span class="p">,</span> <span class="n">moe_col</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">estimate_cols</span><span class="p">,</span> <span class="n">moe_cols</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">moe_col</span> <span class="ow">in</span> <span class="n">census_data_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">var_base</span> <span class="o">=</span> <span class="n">est_col</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># Calculate CV for each row and add it as a separate column</span>
+        <span class="n">census_data_df</span><span class="p">[</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">var_base</span><span class="si">}</span><span class="s1">_CV'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">census_data_df</span><span class="p">[</span><span class="n">moe_col</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.645</span> <span class="o">*</span> <span class="n">census_data_df</span><span class="p">[</span><span class="n">est_col</span><span class="p">]))</span> <span class="o">*</span> <span class="mi">100</span>
+
+<span class="c1"># Step 3: Select CV columns and count how many have CV &lt; 15 for each place-state pair</span>
+<span class="n">cv_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">census_data_df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">'_CV'</span><span class="p">)]</span>
+<span class="n">cv_data</span> <span class="o">=</span> <span class="n">census_data_df</span><span class="p">[[</span><span class="s1">'place'</span><span class="p">,</span> <span class="s1">'state'</span><span class="p">]</span> <span class="o">+</span> <span class="n">cv_columns</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1"># Step 4: Group by 'place' and 'state' and count how many variables have a CV &lt; 15 for each pair</span>
+<span class="n">cv_counts</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">cv_data</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span><span class="n">id_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">'place'</span><span class="p">,</span> <span class="s1">'state'</span><span class="p">],</span> <span class="n">value_vars</span><span class="o">=</span><span class="n">cv_columns</span><span class="p">,</span> <span class="n">var_name</span><span class="o">=</span><span class="s1">'Variable'</span><span class="p">,</span> <span class="n">value_name</span><span class="o">=</span><span class="s1">'CV'</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">'CV &lt; 15'</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">'place'</span><span class="p">,</span> <span class="s1">'state'</span><span class="p">])</span>
+    <span class="o">.</span><span class="n">size</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Count'</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Filter to rows where count of variables with CV &lt; 15 is greater than 18</span>
+<span class="n">filtered_result_df</span> <span class="o">=</span> <span class="n">cv_counts</span><span class="p">[</span><span class="n">cv_counts</span><span class="p">[</span><span class="s1">'Count'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">18</span><span class="p">]</span>
+
+<span class="c1"># Step 5: Filter census_data_df based on filtered_result_df and select only the desired columns</span>
+<span class="n">filtered_census_data_df</span> <span class="o">=</span> <span class="n">census_data_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+    <span class="n">filtered_result_df</span><span class="p">[[</span><span class="s1">'place'</span><span class="p">,</span> <span class="s1">'state'</span><span class="p">]]</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(),</span>
+    <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">'place'</span><span class="p">,</span> <span class="s1">'state'</span><span class="p">],</span>
+    <span class="n">how</span><span class="o">=</span><span class="s1">'inner'</span>
+<span class="p">)[[</span><span class="s1">'place'</span><span class="p">,</span> <span class="s1">'state'</span><span class="p">]</span> <span class="o">+</span> <span class="n">filter_variables</span><span class="p">]</span></code></pre></div>
+<div class="nb-sec" id="version-1"><span class="nb-sec-n">03</span><h2>Version 1: raw counts</h2><p>Scale the data, test different numbers of groups, and find the group that holds Dublin. In this version, Dublin landed in a group of 66 places.</p></div>
+<div class="nb-cell nb-md"><p>Make a backup just in case</p></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [5]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 5">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="n">data</span> <span class="o">=</span> <span class="n">filtered_census_data_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></code></pre></div>
+<div class="nb-cell nb-md"><p>Scale the data</p></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [6]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 6">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># Identify columns ending with 'E' for scaling</span>
+<span class="n">columns_to_scale</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">'E'</span><span class="p">)]</span>
+
+<span class="c1"># Separate the identifier columns (place and state) and the columns to scale</span>
+<span class="n">data_identifiers</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s1">'place'</span><span class="p">,</span> <span class="s1">'state'</span><span class="p">]]</span>
+<span class="n">data_to_scale</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">columns_to_scale</span><span class="p">]</span>
+
+<span class="c1"># Scale the data</span>
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+<span class="n">data_scaled_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">data_to_scale</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns_to_scale</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+<span class="c1"># Combine scaled columns with the identifiers (place and state)</span>
+<span class="n">data_final</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">data_identifiers</span><span class="p">,</span> <span class="n">data_scaled_df</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code></pre></div>
+<div class="nb-cell nb-md"><p>Find optimal # for k</p></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [7]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 7">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># Define range for number of clusters to test</span>
+<span class="n">K_range</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+
+<span class="c1"># Calculate inertia for each k in the range</span>
+<span class="n">inertia</span> <span class="o">=</span> <span class="p">[</span><span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data_scaled_df</span><span class="p">)</span><span class="o">.</span><span class="n">inertia_</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">K_range</span><span class="p">]</span>
+
+<span class="c1"># Plot the Elbow Curve</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">K_range</span><span class="p">,</span> <span class="n">inertia</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">'o'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">'Number of clusters (k)'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">'Inertia'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Elbow Method for Optimal k'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></code></pre><div class="nb-out-wrap"><div class="nb-out-label">Output</div><figure class="nb-fig nb-fig-sm"><img src="notebook/fig-12.webp" alt="Elbow chart for version 1, raw counts. Inertia falls steeply from about 10,700 with one group to about 1,400 with four groups, then flattens. From 8 to 12 groups it stays near 500." width="591" height="455" loading="lazy" decoding="async"></figure></div></div>
+<div class="nb-cell nb-md"><p>We see the elbow starts between 8-12.</p></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [8]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 8">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># Define range for number of clusters to test</span>
+<span class="n">K_range</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+
+<span class="c1"># Calculate silhouette scores for each k in the range</span>
+<span class="n">silhouette_scores</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">silhouette_score</span><span class="p">(</span><span class="n">data_scaled_df</span><span class="p">,</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">data_scaled_df</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">K_range</span>
+<span class="p">]</span>
+
+<span class="c1"># Plot silhouette scores</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">K_range</span><span class="p">,</span> <span class="n">silhouette_scores</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">'o'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">'Number of clusters (k)'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">'Silhouette Score'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Silhouette Analysis for Optimal k'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></code></pre><div class="nb-out-wrap"><div class="nb-out-label">Output</div><figure class="nb-fig nb-fig-sm"><img src="notebook/fig-14.webp" alt="Silhouette chart for version 1. The score drops from about 0.88 with two groups to about 0.41 with eight and nine groups and about 0.36 with ten, holds near 0.35 through fourteen groups, then falls to about 0.25." width="570" height="455" loading="lazy" decoding="async"></figure></div></div>
+<div class="nb-cell nb-md"><p>The silhouette analysis shows that the silhouette score declines sharply between <em>k</em> = 3 and <em>k</em> = 6, but it stabilizes somewhat around <em>k</em> = 8 to <em>k</em> = 10, supporting that <em>k</em> = 10 could be a reasonable choice for clustering</p></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [9]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 9">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># Fit KMeans model with the chosen number of clusters</span>
+<span class="n">k_optimal</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># Replace with the chosen optimal number of clusters</span>
+<span class="n">kmeans</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">k_optimal</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">data_final</span><span class="p">[</span><span class="s1">'Cluster'</span><span class="p">]</span> <span class="o">=</span> <span class="n">kmeans</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">data_final</span><span class="p">)</span></code></pre></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [10]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 10">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># Find Dublin's cluster</span>
+<span class="n">Dublin_cluster</span> <span class="o">=</span> <span class="n">data_final</span><span class="p">[(</span><span class="n">data_final</span><span class="p">[</span><span class="s1">'state'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'39'</span><span class="p">)</span> <span class="o">&amp;</span>
+                                         <span class="p">(</span><span class="n">data_final</span><span class="p">[</span><span class="s1">'place'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'22694'</span><span class="p">)][</span><span class="s1">'Cluster'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Cluster for Dublin, Ohio:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Dublin_cluster</span><span class="p">)</span>
+
+<span class="c1"># Filter for rows where state is 39, which is Ohio</span>
+<span class="n">state_39_clusters</span> <span class="o">=</span> <span class="n">data_final</span><span class="p">[</span><span class="n">data_final</span><span class="p">[</span><span class="s1">'state'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'39'</span><span class="p">]</span>
+
+<span class="c1"># Count the number of entries in each cluster for state 39</span>
+<span class="n">cluster_counts_state_39</span> <span class="o">=</span> <span class="n">state_39_clusters</span><span class="p">[</span><span class="s1">'Cluster'</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Cluster counts for Ohio:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cluster_counts_state_39</span><span class="p">)</span>
+
+<span class="c1"># Count the number of entries in each cluster overall</span>
+<span class="n">overall_cluster_counts</span> <span class="o">=</span> <span class="n">data_final</span><span class="p">[</span><span class="s1">'Cluster'</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Overall cluster counts:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">overall_cluster_counts</span><span class="p">)</span></code></pre><div class="nb-out-wrap"><div class="nb-out-label">Output</div><pre class="nb-out" tabindex="0">Cluster for Dublin, Ohio:
+0
+
+Cluster counts for Ohio:
+Cluster
+0    1
+1    1
+3    2
+5    1
+6    1
+7    3
+9    1
+Name: count, dtype: int64
+
+Overall cluster counts:
+Cluster
+0    66
+1    39
+2    50
+3    73
+4    48
+5    56
+6    62
+7    76
+8    49
+9    45
+Name: count, dtype: int64</pre></div></div>
+<div class="nb-cell nb-md"><pre class="nb-md-pre">Cluster for Dublin, Ohio:
+0</pre></div>
+<div class="nb-cell nb-md"><pre class="nb-md-pre">Cluster counts for Ohio:
+Cluster
+0    1
+1    1
+3    2
+5    1
+6    1
+7    3
+9    1
+Name: count, dtype: int64</pre></div>
+<div class="nb-cell nb-md"><pre class="nb-md-pre">Overall cluster counts:
+Cluster
+0    66
+1    39
+2    50
+3    73
+4    48
+5    56
+6    62
+7    76
+8    49
+9    45
+Name: count, dtype: int64</pre></div>
+<div class="nb-cell nb-md"><p>We find that Dublin is in Cluster 0 along with 65 other places. Through the k-means clustering, we are able to bring down the possible sister cities to 65.</p></div>
+<div class="nb-sec" id="version-1-where"><span class="nb-sec-n">04</span><h2>Where Dublin's group is</h2><p>Add state, division, and region names, then count where the places in Dublin's group are located.</p></div>
+<div class="nb-cell nb-md"><p>Analyze Dublin's Cluster</p></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [11]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 11">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># Regions are based off of those at</span>
+<span class="c1"># https://www2.census.gov/geo/pdfs/maps-data/maps/reference/us_regdiv.pdf</span>
+
+<span class="c1"># Create a dictionary to map states to divisions</span>
+
+<span class="n">states_to_division</span> <span class="o">=</span> <span class="p">{</span>
+
+    <span class="s1">'Connecticut'</span><span class="p">:</span><span class="s1">'New England'</span><span class="p">,</span><span class="s1">'Maine'</span><span class="p">:</span><span class="s1">'New England'</span><span class="p">,</span><span class="s1">'Massachusetts'</span><span class="p">:</span><span class="s1">'New England'</span><span class="p">,</span>
+    <span class="s1">'New Hampshire'</span><span class="p">:</span><span class="s1">'New England'</span><span class="p">,</span><span class="s1">'Rhode Island'</span><span class="p">:</span><span class="s1">'New England'</span><span class="p">,</span><span class="s1">'Vermont'</span><span class="p">:</span><span class="s1">'New England'</span><span class="p">,</span>
+
+    <span class="s1">'New Jersey'</span><span class="p">:</span> <span class="s1">'Middle Atlantic'</span><span class="p">,</span> <span class="s1">'Pennsylvania'</span><span class="p">:</span> <span class="s1">'Middle Atlantic'</span><span class="p">,</span><span class="s1">'New York'</span>	<span class="p">:</span> <span class="s1">'Middle Atlantic'</span><span class="p">,</span>
+
+    <span class="s1">'Indiana'</span><span class="p">:</span> <span class="s1">'East North Central'</span><span class="p">,</span><span class="s1">'Illinois'</span><span class="p">:</span> <span class="s1">'East North Central'</span> <span class="p">,</span><span class="s1">'Michigan'</span><span class="p">:</span> <span class="s1">'East North Central'</span><span class="p">,</span>
+    <span class="s1">'Ohio'</span><span class="p">:</span> <span class="s1">'East North Central'</span><span class="p">,</span><span class="s1">'Wisconsin'</span><span class="p">:</span> <span class="s1">'East North Central'</span><span class="p">,</span>
+
+    <span class="s1">'Iowa'</span>	 <span class="p">:</span><span class="s1">'West North Central'</span><span class="p">,</span><span class="s1">'Nebraska'</span>	<span class="p">:</span><span class="s1">'West North Central'</span><span class="p">,</span><span class="s1">'Kansas'</span> 	<span class="p">:</span><span class="s1">'West North Central'</span><span class="p">,</span>
+    <span class="s1">'North Dakota'</span>	<span class="p">:</span><span class="s1">'West North Central'</span><span class="p">,</span><span class="s1">'Minnesota'</span>	<span class="p">:</span><span class="s1">'West North Central'</span> <span class="p">,</span><span class="s1">'South Dakota'</span>	<span class="p">:</span><span class="s1">'West North Central'</span><span class="p">,</span>
+    <span class="s1">'Missouri'</span><span class="p">:</span><span class="s1">'West North Central'</span><span class="p">,</span>
+
+    <span class="s1">'Delaware'</span> <span class="p">:</span><span class="s1">'South Atlantic'</span><span class="p">,</span> <span class="s1">'District of Columbia'</span>	<span class="p">:</span><span class="s1">'South Atlantic'</span><span class="p">,</span>
+    <span class="s1">'Florida'</span> <span class="p">:</span><span class="s1">'South Atlantic'</span><span class="p">,</span><span class="s1">'Georgia'</span> <span class="p">:</span><span class="s1">'South Atlantic'</span><span class="p">,</span><span class="s1">'Maryland'</span> <span class="p">:</span><span class="s1">'South Atlantic'</span><span class="p">,</span>
+    <span class="s1">'North Carolina'</span> <span class="p">:</span><span class="s1">'South Atlantic'</span><span class="p">,</span><span class="s1">'South Carolina'</span> <span class="p">:</span><span class="s1">'South Atlantic'</span><span class="p">,</span>
+    <span class="s1">'Virginia'</span> <span class="p">:</span><span class="s1">'South Atlantic'</span><span class="p">,</span><span class="s1">'West Virginia'</span> <span class="p">:</span><span class="s1">'South Atlantic'</span><span class="p">,</span>
+
+    <span class="s1">'Alabama'</span><span class="p">:</span> <span class="s1">'East South Central'</span><span class="p">,</span><span class="s1">'Kentucky'</span><span class="p">:</span> <span class="s1">'East South Central'</span><span class="p">,</span>
+    <span class="s1">'Mississippi'</span><span class="p">:</span> <span class="s1">'East South Central'</span><span class="p">,</span><span class="s1">'Tennessee'</span><span class="p">:</span> <span class="s1">'East South Central'</span><span class="p">,</span>
+
+    <span class="s1">'Arkansas'</span><span class="p">:</span> <span class="s1">'West South Central'</span><span class="p">,</span> <span class="s1">'Louisiana'</span><span class="p">:</span> <span class="s1">'West South Central'</span><span class="p">,</span>
+    <span class="s1">'Oklahoma'</span><span class="p">:</span><span class="s1">'West South Central'</span><span class="p">,</span><span class="s1">'Texas'</span><span class="p">:</span><span class="s1">'West South Central'</span><span class="p">,</span>
+
+    <span class="s1">'Arizona'</span><span class="p">:</span> <span class="s1">'Mountain'</span><span class="p">,</span> <span class="s1">'Colorado'</span><span class="p">:</span> <span class="s1">'Mountain'</span><span class="p">,</span><span class="s1">'Idaho'</span><span class="p">:</span> <span class="s1">'Mountain'</span><span class="p">,</span> <span class="s1">'New Mexico'</span><span class="p">:</span> <span class="s1">'Mountain'</span><span class="p">,</span>
+    <span class="s1">'Montana'</span><span class="p">:</span> <span class="s1">'Mountain'</span><span class="p">,</span> <span class="s1">'Utah'</span><span class="p">:</span> <span class="s1">'Mountain'</span><span class="p">,</span><span class="s1">'Nevada'</span><span class="p">:</span> <span class="s1">'Mountain'</span><span class="p">,</span><span class="s1">'Wyoming'</span><span class="p">:</span> <span class="s1">'Mountain'</span><span class="p">,</span>
+
+    <span class="s1">'Washington'</span><span class="p">:</span> <span class="s1">'Pacific'</span><span class="p">,</span> <span class="s1">'Oregon'</span><span class="p">:</span> <span class="s1">'Pacific'</span><span class="p">,</span> <span class="s1">'California'</span><span class="p">:</span> <span class="s1">'Pacific'</span><span class="p">,</span><span class="s1">'Alaska'</span><span class="p">:</span> <span class="s1">'Pacific'</span><span class="p">,</span> <span class="s1">'Hawaii'</span><span class="p">:</span> <span class="s1">'Pacific'</span><span class="p">}</span>
+
+<span class="n">division_to_region</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="s1">'New England'</span><span class="p">:</span><span class="s1">'Northeast'</span><span class="p">,</span><span class="s1">'Middle Atlantic'</span><span class="p">:</span><span class="s1">'Northeast'</span><span class="p">,</span>
+   <span class="s1">'East North Central'</span><span class="p">:</span> <span class="s1">'Midwest'</span><span class="p">,</span> <span class="s1">'West North Central'</span><span class="p">:</span> <span class="s1">'Midwest'</span><span class="p">,</span>
+   <span class="s1">'South Atlantic'</span><span class="p">:</span> <span class="s1">'South'</span><span class="p">,</span> <span class="s1">'East South Central'</span><span class="p">:</span> <span class="s1">'South'</span><span class="p">,</span>  <span class="s1">'West South Central'</span><span class="p">:</span> <span class="s1">'South'</span><span class="p">,</span>
+   <span class="s1">'Mountain'</span><span class="p">:</span> <span class="s1">'West'</span><span class="p">,</span> <span class="s1">'Pacific'</span><span class="p">:</span> <span class="s1">'West'</span><span class="p">}</span></code></pre></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [12]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 12">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># Merge place information into data_final</span>
+<span class="n">filtered_census_data_df</span> <span class="o">=</span> <span class="n">data_final</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+    <span class="n">place_dict_df</span><span class="p">[[</span><span class="s1">'place'</span><span class="p">,</span> <span class="s1">'state'</span><span class="p">,</span> <span class="s1">'City Name'</span><span class="p">,</span> <span class="s1">'State_Name'</span><span class="p">]],</span>
+    <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">'place'</span><span class="p">,</span> <span class="s1">'state'</span><span class="p">],</span>
+    <span class="n">how</span><span class="o">=</span><span class="s1">'inner'</span>
+<span class="p">)</span>
+
+<span class="c1"># Map states to divisions and divisions to regions</span>
+<span class="n">filtered_census_data_df</span><span class="p">[</span><span class="s1">'Division'</span><span class="p">]</span> <span class="o">=</span> <span class="n">filtered_census_data_df</span><span class="p">[</span><span class="s1">'State_Name'</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">states_to_division</span><span class="p">)</span>
+<span class="n">filtered_census_data_df</span><span class="p">[</span><span class="s1">'Region'</span><span class="p">]</span> <span class="o">=</span> <span class="n">filtered_census_data_df</span><span class="p">[</span><span class="s1">'Division'</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">division_to_region</span><span class="p">)</span>
+
+<span class="c1"># Identify the target cluster for state = 39 and place = 22694</span>
+<span class="n">target_cluster</span> <span class="o">=</span> <span class="n">filtered_census_data_df</span><span class="p">[</span>
+    <span class="p">(</span><span class="n">filtered_census_data_df</span><span class="p">[</span><span class="s1">'state'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'39'</span><span class="p">)</span> <span class="o">&amp;</span>
+    <span class="p">(</span><span class="n">filtered_census_data_df</span><span class="p">[</span><span class="s1">'place'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'22694'</span><span class="p">)</span>
+<span class="p">][</span><span class="s1">'Cluster'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># Filter for rows with the same cluster value</span>
+<span class="n">cluster_subset</span> <span class="o">=</span> <span class="n">filtered_census_data_df</span><span class="p">[</span><span class="n">filtered_census_data_df</span><span class="p">[</span><span class="s1">'Cluster'</span><span class="p">]</span> <span class="o">==</span> <span class="n">target_cluster</span><span class="p">]</span>
+
+<span class="c1"># Group by State_Name, Region, and Division, and count occurrences</span>
+<span class="n">grouped_counts</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">group_by</span><span class="p">:</span> <span class="n">cluster_subset</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">group_by</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Count'</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">group_by</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'State_Name'</span><span class="p">,</span> <span class="s1">'Region'</span><span class="p">,</span> <span class="s1">'Division'</span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="c1"># Access individual group count DataFrames</span>
+<span class="n">counts_by_state</span> <span class="o">=</span> <span class="n">grouped_counts</span><span class="p">[</span><span class="s1">'State_Name'</span><span class="p">]</span>
+<span class="n">counts_by_region</span> <span class="o">=</span> <span class="n">grouped_counts</span><span class="p">[</span><span class="s1">'Region'</span><span class="p">]</span>
+<span class="n">counts_by_division</span> <span class="o">=</span> <span class="n">grouped_counts</span><span class="p">[</span><span class="s1">'Division'</span><span class="p">]</span>
+
+<span class="c1"># Display the result</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Counts by State:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">counts_by_state</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Counts by Division:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">counts_by_division</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Counts by Region:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">counts_by_region</span><span class="p">)</span></code></pre><div class="nb-out-wrap"><div class="nb-out-label">Output</div><pre class="nb-out" tabindex="0">Counts by State:
+        State_Name  Count
+0          Alabama      1
+1          Arizona      4
+2         Arkansas      2
+3       California     12
+4         Colorado      1
+5          Florida      3
+6          Georgia      1
+7           Hawaii      1
+8         Illinois      2
+9          Indiana      3
+10            Iowa      1
+11        Maryland      2
+12   Massachusetts      3
+13        Michigan      2
+14        Nebraska      1
+15          Nevada      1
+16  North Carolina      4
+17    North Dakota      1
+18            Ohio      1
+19        Oklahoma      1
+20          Oregon      1
+21       Tennessee      2
+22           Texas     10
+23            Utah      1
+24        Virginia      1
+25      Washington      2
+26       Wisconsin      2
+
+Counts by Division:
+             Division  Count
+0  East North Central     10
+1  East South Central      3
+2            Mountain      7
+3         New England      3
+4             Pacific     16
+5      South Atlantic     11
+6  West North Central      3
+7  West South Central     13
+
+Counts by Region:
+      Region  Count
+0    Midwest     13
+1  Northeast      3
+2      South     27
+3       West     23</pre></div></div>
+<div class="nb-sec" id="version-2"><span class="nb-sec-n">05</span><h2>Version 2: percentages</h2><p>Repeat the clustering with each measure written as a percentage of the place's total population. In this version, Dublin landed in a group of 92 places.</p></div>
+<div class="nb-cell nb-md"><p>Below is the same k-means clustering based on the survey data where the values are the percentage compared to the total population variable. For example .487 for Male means the population is 48.7% Male.</p></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [13]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 13">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># Import the CSV file into a DataFrame</span>
+<span class="n">census_clean_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'/content/CensusData_Clean.csv'</span><span class="p">)</span>
+
+
+<span class="c1"># Preview the first few rows of the DataFrame</span>
+<span class="c1">#print(census_clean_df.head())</span></code></pre></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [14]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 14">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># Identify columns ending with 'E' for scaling</span>
+<span class="n">columns_to_scale_2</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">census_clean_df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'place'</span><span class="p">,</span> <span class="s1">'state'</span><span class="p">]]</span>
+
+<span class="c1"># Separate the identifier columns ('place' and 'state') and the columns to scale</span>
+<span class="n">data_identifiers_2</span> <span class="o">=</span> <span class="n">census_clean_df</span><span class="p">[[</span><span class="s1">'place'</span><span class="p">,</span> <span class="s1">'state'</span><span class="p">]]</span>
+<span class="n">data_to_scale_2</span> <span class="o">=</span> <span class="n">census_clean_df</span><span class="p">[</span><span class="n">columns_to_scale_2</span><span class="p">]</span>
+
+<span class="c1"># Scale the data</span>
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+<span class="n">data_scaled_df_2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">data_to_scale_2</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns_to_scale_2</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">census_clean_df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+<span class="c1"># Combine scaled columns with the identifiers (place and state)</span>
+<span class="n">data_final_2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">data_identifiers_2</span><span class="p">,</span> <span class="n">data_scaled_df_2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code></pre></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [15]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 15">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># Define range for number of clusters to test</span>
+<span class="n">K_range</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">17</span><span class="p">)</span>
+
+<span class="c1"># Calculate inertia for each k in the range</span>
+<span class="n">inertia</span> <span class="o">=</span> <span class="p">[</span><span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data_scaled_df_2</span><span class="p">)</span><span class="o">.</span><span class="n">inertia_</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">K_range</span><span class="p">]</span>
+
+<span class="c1"># Plot the Elbow Curve</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">K_range</span><span class="p">,</span> <span class="n">inertia</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">'o'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">'Number of clusters (k)'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">'Inertia'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Elbow Method for Optimal k'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></code></pre><div class="nb-out-wrap"><div class="nb-out-label">Output</div><figure class="nb-fig nb-fig-sm"><img src="notebook/fig-28.webp" alt="Elbow chart for version 2, percentages. Inertia falls steadily from about 8,000 with three groups to about 4,600 with sixteen groups, with no sharp bend." width="580" height="455" loading="lazy" decoding="async"></figure></div></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [16]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 16">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># Define range for number of clusters to test</span>
+<span class="n">K_range</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+
+<span class="c1"># Calculate silhouette scores for each k in the range</span>
+<span class="n">silhouette_scores</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">silhouette_score</span><span class="p">(</span><span class="n">data_scaled_df_2</span><span class="p">,</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">data_scaled_df_2</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">K_range</span>
+<span class="p">]</span>
+
+<span class="c1"># Plot silhouette scores</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">K_range</span><span class="p">,</span> <span class="n">silhouette_scores</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">'o'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">'Number of clusters (k)'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">'Silhouette Score'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Silhouette Analysis for Optimal k'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></code></pre><div class="nb-out-wrap"><div class="nb-out-label">Output</div><figure class="nb-fig nb-fig-sm"><img src="notebook/fig-29.webp" alt="Silhouette chart for version 2. The score is about 0.156 with two groups and 0.151 with four, drops to 0.131 with five, rises slightly to 0.133 with six, then falls to about 0.11 with nine and ten groups." width="576" height="455" loading="lazy" decoding="async"></figure></div></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [17]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 17">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># Drop non-numeric columns</span>
+<span class="n">data_numeric</span> <span class="o">=</span> <span class="n">data_final_2</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">'place'</span><span class="p">,</span> <span class="s1">'state'</span><span class="p">])</span></code></pre></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [18]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 18">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">250</span><span class="p">)</span>
+<span class="n">k_optimal</span> <span class="o">=</span><span class="mi">6</span>  <span class="c1"># Replace with the chosen optimal number of clusters</span>
+<span class="n">kmeans</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">k_optimal</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">250</span><span class="p">)</span>
+
+<span class="c1"># Fit and predict clusters</span>
+<span class="n">clusters</span> <span class="o">=</span> <span class="n">kmeans</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">data_numeric</span><span class="p">)</span>
+
+<span class="c1"># Add the cluster assignments back to the numeric DataFrame</span>
+<span class="n">data_numeric</span><span class="p">[</span><span class="s1">'Cluster'</span><span class="p">]</span> <span class="o">=</span> <span class="n">clusters</span></code></pre></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [19]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 19">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># Add 'place' and 'state' back to the DataFrame</span>
+<span class="n">data_final_2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">data_final_2</span><span class="p">[[</span><span class="s1">'place'</span><span class="p">,</span> <span class="s1">'state'</span><span class="p">]],</span> <span class="n">data_numeric</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># View the final DataFrame with clusters</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data_final_2</span><span class="o">.</span><span class="n">head</span><span class="p">())</span></code></pre><div class="nb-out-wrap"><div class="nb-out-label">Output</div><pre class="nb-out" tabindex="0">             place    state  TotalPop      Male    Female     White  \
+0      Auburn city  Alabama -0.325401 -0.234156  0.234156  0.579360   
+1  Birmingham city  Alabama  0.094120 -1.449736  1.449736 -1.844139   
+2      Dothan city  Alabama -0.359603 -1.020961  1.020961  0.070197   
+3      Hoover city  Alabama -0.280623 -0.702540  0.702540  0.829736   
+4  Huntsville city  Alabama  0.187909  0.307341 -0.307341  0.070966   
+
+   NonHispanic  USCitizen  Commute_DriveAlone  Family_Married  ...  \
+0     0.900989   0.168476            0.721837       -0.691961  ...   
+1     1.021659   0.820438            0.030834       -2.229599  ...   
+2     0.918836   1.032370            0.979756       -0.683772  ...   
+3     0.844354   0.761495            0.849168        1.254567  ...   
+4     0.844248   0.906841            1.140459       -0.257965  ...   
+
+   Eduction_GraduateProf  Household_English  PovertyLvl_2andOver  NonVeteran  \
+0               0.625577           0.516186            -1.197631    0.977014   
+1              -0.778347           1.620394            -2.535192    0.481275   
+2              -0.833127           1.015931            -0.959066   -1.114551   
+3               1.222545           0.891101             1.106191   -0.791548   
+4               0.384977           1.267794            -0.438964   -0.474508   
+
+   Employed  NotLaborForce  House_OwnerOccupied  House_Built80to99  \
+0 -0.348837       1.254508            -0.808182          -0.001011   
+1 -1.164546       1.333946            -0.818702          -1.004822   
+2 -1.264880       0.893057             0.031629           0.131211   
+3  0.402615      -0.630281             1.097359           0.831652   
+4 -0.029941       0.251193             0.249701          -0.114009   
+
+   HealthIns_Covered  Cluster  
+0           1.759790        4  
+1          -0.515075        5  
+2          -1.517278        5  
+3          -0.545186        3  
+4           0.075125        2  
+
+[5 rows x 22 columns]</pre></div></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [20]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 20">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># Find Dublin's cluster</span>
+<span class="n">Dublin_cluster</span> <span class="o">=</span> <span class="n">data_final_2</span><span class="p">[(</span><span class="n">data_final_2</span><span class="p">[</span><span class="s1">'state'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'Ohio'</span><span class="p">)</span> <span class="o">&amp;</span>
+                                         <span class="p">(</span><span class="n">data_final_2</span><span class="p">[</span><span class="s1">'place'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'Dublin city'</span><span class="p">)][</span><span class="s1">'Cluster'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Cluster for Dublin, Ohio:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Dublin_cluster</span><span class="p">)</span>
+
+<span class="c1"># Filter for rows where state is 39, which is Ohio</span>
+<span class="n">state_39_clusters</span> <span class="o">=</span> <span class="n">data_final_2</span><span class="p">[</span><span class="n">data_final_2</span><span class="p">[</span><span class="s1">'state'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'Ohio'</span><span class="p">]</span>
+
+<span class="c1"># Count the number of entries in each cluster for state 39</span>
+<span class="n">cluster_counts_state_39</span> <span class="o">=</span> <span class="n">state_39_clusters</span><span class="p">[</span><span class="s1">'Cluster'</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Cluster counts for Ohio:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cluster_counts_state_39</span><span class="p">)</span>
+
+<span class="c1"># Count the number of entries in each cluster overall</span>
+<span class="n">overall_cluster_counts</span> <span class="o">=</span> <span class="n">data_final_2</span><span class="p">[</span><span class="s1">'Cluster'</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Overall cluster counts:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">overall_cluster_counts</span><span class="p">)</span></code></pre><div class="nb-out-wrap"><div class="nb-out-label">Output</div><pre class="nb-out" tabindex="0">Cluster for Dublin, Ohio:
+3
+
+Cluster counts for Ohio:
+Cluster
+2    3
+3    2
+4    1
+5    4
+Name: count, dtype: int64
+
+Overall cluster counts:
+Cluster
+0     52
+1    116
+2    148
+3     92
+4     39
+5    117
+Name: count, dtype: int64</pre></div></div>
+<div class="nb-cell nb-md"><pre class="nb-md-pre">Cluster for Dublin, Ohio:
+3
+
+Cluster counts for Ohio:
+Cluster
+2    3
+3    2
+4    1
+5    4
+Name: count, dtype: int64
+
+Overall cluster counts:
+Cluster
+0     52
+1    116
+2    148
+3     92
+4     39
+5    117
+Name: count, dtype: int64</pre></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [21]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 21">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># Map Division and Region</span>
+<span class="n">data_final_2</span><span class="p">[</span><span class="s1">'Division'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_final_2</span><span class="p">[</span><span class="s1">'state'</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">states_to_division</span><span class="p">)</span>
+<span class="n">data_final_2</span><span class="p">[</span><span class="s1">'Region'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_final_2</span><span class="p">[</span><span class="s1">'Division'</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">division_to_region</span><span class="p">)</span>
+
+<span class="c1"># Find Dublin, Ohio cluster</span>
+<span class="n">target_cluster</span> <span class="o">=</span> <span class="n">data_final_2</span><span class="p">[</span>
+    <span class="p">(</span><span class="n">data_final_2</span><span class="p">[</span><span class="s1">'state'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'Ohio'</span><span class="p">)</span> <span class="o">&amp;</span>
+    <span class="p">(</span><span class="n">data_final_2</span><span class="p">[</span><span class="s1">'place'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'Dublin city'</span><span class="p">)</span>
+<span class="p">][</span><span class="s1">'Cluster'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># Filter for rows with the same cluster value</span>
+<span class="n">cluster_subset_2</span> <span class="o">=</span> <span class="n">data_final_2</span><span class="p">[</span><span class="n">data_final_2</span><span class="p">[</span><span class="s1">'Cluster'</span><span class="p">]</span> <span class="o">==</span> <span class="n">target_cluster</span><span class="p">]</span>
+
+<span class="c1"># Group by State_Name, Region, and Division, and count occurrences</span>
+<span class="n">grouped_counts_2</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">group_by</span><span class="p">:</span> <span class="n">cluster_subset_2</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">group_by</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Count'</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">group_by</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'state'</span><span class="p">,</span> <span class="s1">'Region'</span><span class="p">,</span> <span class="s1">'Division'</span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="c1"># Access individual group count DataFrames</span>
+<span class="n">counts_by_state_2</span> <span class="o">=</span> <span class="n">grouped_counts_2</span><span class="p">[</span><span class="s1">'state'</span><span class="p">]</span>
+<span class="n">counts_by_region_2</span> <span class="o">=</span> <span class="n">grouped_counts_2</span><span class="p">[</span><span class="s1">'Region'</span><span class="p">]</span>
+<span class="n">counts_by_division_2</span> <span class="o">=</span> <span class="n">grouped_counts_2</span><span class="p">[</span><span class="s1">'Division'</span><span class="p">]</span>
+
+<span class="c1"># Display the result</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Counts by State:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">counts_by_state_2</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Counts by Division:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">counts_by_division_2</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Counts by Region:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">counts_by_region_2</span><span class="p">)</span></code></pre><div class="nb-out-wrap"><div class="nb-out-label">Output</div><pre class="nb-out" tabindex="0">Counts by State:
+             state  Count
+0          Alabama      2
+1          Arizona      6
+2       California     18
+3         Colorado      3
+4          Florida      6
+5          Georgia      6
+6           Hawaii      1
+7         Illinois      8
+8          Indiana      1
+9         Maryland      5
+10   Massachusetts      1
+11        Michigan      4
+12       Minnesota      5
+13        Missouri      1
+14        New York      1
+15  North Carolina      2
+16            Ohio      2
+17          Oregon      2
+18  South Carolina      1
+19       Tennessee      2
+20           Texas      9
+21        Virginia      4
+22      Washington      2
+
+Counts by Division:
+             Division  Count
+0  East North Central     15
+1  East South Central      4
+2     Middle Atlantic      1
+3            Mountain      9
+4         New England      1
+5             Pacific     23
+6      South Atlantic     24
+7  West North Central      6
+8  West South Central      9
+
+Counts by Region:
+      Region  Count
+0    Midwest     21
+1  Northeast      2
+2      South     37
+3       West     32</pre></div></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [22]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 22">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="n">data_numeric</span></code></pre><div class="nb-out-wrap"><div class="nb-out-label">Output</div><pre class="nb-out" tabindex="0">     TotalPop      Male    Female     White  NonHispanic  USCitizen  \
+0   -0.325401 -0.234156  0.234156  0.579360     0.900989   0.168476   
+1    0.094120 -1.449736  1.449736 -1.844139     1.021659   0.820438   
+2   -0.359603 -1.020961  1.020961  0.070197     0.918836   1.032370   
+3   -0.280623 -0.702540  0.702540  0.829736     0.844354   0.761495   
+4    0.187909  0.307341 -0.307341  0.070966     0.844248   0.906841   
+..        ...       ...       ...       ...          ...        ...   
+559  1.417305 -0.445344  0.445344 -1.210280    -0.069236   0.170535   
+560 -0.468565 -0.386356  0.386356  1.667255     0.903232   1.122137   
+561 -0.376154  1.111080 -1.111080  1.283361     1.011181   1.121677   
+562 -0.359815  1.447032 -1.447032  1.112551     0.487703   0.914848   
+563 -0.380881  1.384163 -1.384163  1.251893     0.240623   1.310614   
+
+     Commute_DriveAlone  Family_Married  EnrolledSchool_Over3Yrs  \
+0              0.721837       -0.691961                 4.108962   
+1              0.030834       -2.229599                -0.186067   
+2              0.979756       -0.683772                -0.306189   
+3              0.849168        1.254567                -0.271534   
+4              1.140459       -0.257965                -0.024225   
+..                  ...             ...                      ...   
+559           -0.480701       -2.040832                 0.308218   
+560            1.179045        1.442038                -0.627518   
+561            1.168340       -1.075338                 0.086389   
+562            2.121489       -0.089473                -0.265472   
+563            2.284534        0.492588                -0.503437   
+
+     Education_Bachelors  Eduction_GraduateProf  Household_English  \
+0              -0.419886               0.625577           0.516186   
+1              -0.910451              -0.778347           1.620394   
+2              -1.145462              -0.833127           1.015931   
+3               0.940832               1.222545           0.891101   
+4               0.019047               0.384977           1.267794   
+..                   ...                    ...                ...   
+559            -1.286676              -0.976019           0.583219   
+560             0.462461              -0.158007           1.031494   
+561            -1.435498              -1.071678           1.235021   
+562             0.375186              -0.663771           1.191411   
+563            -1.086159              -0.823005           1.384824   
+
+     PovertyLvl_2andOver  NonVeteran  Employed  NotLaborForce  \
+0              -1.197631    0.977014 -0.348837       1.254508   
+1              -2.535192    0.481275 -1.164546       1.333946   
+2              -0.959066   -1.114551 -1.264880       0.893057   
+3               1.106191   -0.791548  0.402615      -0.630281   
+4              -0.438964   -0.474508 -0.029941       0.251193   
+..                   ...         ...       ...            ...   
+559            -1.632582   -0.166840 -0.579283       0.010775   
+560             1.137915    0.117793  0.012624       0.370967   
+561            -1.205612    1.577192  0.786709       0.752748   
+562             0.347854    0.628873  1.098439      -0.992526   
+563            -0.313861   -1.773612 -0.379096      -0.400461   
+
+     House_OwnerOccupied  House_Built80to99  HealthIns_Covered  Cluster  
+0              -0.808182          -0.001011           1.759790        4  
+1              -0.818702          -1.004822          -0.515075        5  
+2               0.031629           0.131211          -1.517278        5  
+3               1.097359           0.831652          -0.545186        3  
+4               0.249701          -0.114009           0.075125        2  
+..                   ...                ...                ...      ...  
+559            -1.308977          -1.936215          -0.163932        5  
+560             1.783986          -0.399148          -0.493939        2  
+561            -0.148588          -0.714823           0.498865        5  
+562             0.704288           0.255174           0.621667        2  
+563             1.287114          -0.393911          -1.170040        2  
+
+[564 rows x 20 columns]</pre></div></div>
+<div class="nb-sec" id="heatmap"><span class="nb-sec-n">06</span><h2>What makes each group different</h2><p>A heatmap of each group's center shows which measures set that group apart.</p></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [23]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 23">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># Only include numeric data</span>
+<span class="n">data_numeric</span> <span class="o">=</span> <span class="n">data_final_2</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s1">'number'</span><span class="p">])</span>
+
+<span class="n">data_numeric</span> <span class="o">=</span> <span class="n">data_numeric</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">'Cluster'</span><span class="p">])</span>
+
+<span class="c1"># Assuming you have already fitted the k-means model on your data</span>
+<span class="n">centroids</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">kmeans</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">data_numeric</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span></code></pre></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [24]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 24">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># Heatmap</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">centroids</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'coolwarm'</span><span class="p">,</span> <span class="n">xticklabels</span><span class="o">=</span><span class="n">data_numeric</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">yticklabels</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">"Cluster </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">centroids</span><span class="p">))])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Heatmap of Cluster Centroids"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"Variables"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"Clusters"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></code></pre><div class="nb-out-wrap"><div class="nb-out-label">Output</div><figure class="nb-fig"><img src="notebook/fig-38.webp" alt="Heatmap of the six group centers across the 19 measures, shaded from blue (low) to red (high). Cluster 3, Dublin&#x27;s group, is high on married families (1.3), bachelor&#x27;s degrees (1.2), graduate degrees (1.2), income at twice the poverty level or more (1.1), owner-occupied homes (0.97), and homes built from 1980 to 1999 (0.95)." width="1191" height="860" loading="lazy" decoding="async"></figure></div></div>
+<div class="nb-cell nb-md"><p>The heatmap of cluster centroids provides key insights into the characteristics of the variables within each cluster. Cluster 5 stands out with higher values for variables such as House_Built80to99, HealthIns_Covered, and Education_Bachelors, indicating that these features are particularly dominant in this cluster. In contrast, other clusters exhibit lower values for these variables, suggesting different population dynamics or socioeconomic trends. Cluster 5 also shows relatively high proportions of variables like Commute_DriveAlone and Employed, reinforcing its unique profile compared to the others. The visual gradient across the heatmap highlights the variability in each variable's influence on the clusters, with some variables such as PovertyLvl_2andOver and NonVeteran exhibiting consistently lower values across clusters. This variability allows for clear distinctions between clusters and helps in understanding the dominant traits that define Cluster 5 compared to the rest.</p></div>
+<div class="nb-sec" id="distance"><span class="nb-sec-n">07</span><h2>How close each place is to the center</h2><p>Measure how far each place in Dublin's group sits from the center of the group.</p></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [25]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 25">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># `kmeans.cluster_centers_` contains the centroids</span>
+<span class="c1"># Add 'Cluster' column to the dataset if it's not already there</span>
+<span class="n">data_final_2</span><span class="p">[</span><span class="s1">'Cluster'</span><span class="p">]</span> <span class="o">=</span> <span class="n">kmeans</span><span class="o">.</span><span class="n">labels_</span>
+
+<span class="c1"># Filter Cluster 5 data</span>
+<span class="n">cluster_3</span> <span class="o">=</span> <span class="n">data_final_2</span><span class="p">[</span><span class="n">data_final_2</span><span class="p">[</span><span class="s1">'Cluster'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">]</span>
+
+<span class="c1"># Get the centroid of Cluster 3</span>
+<span class="n">cluster_3_centroid</span> <span class="o">=</span> <span class="n">kmeans</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>  <span class="c1"># Replace '3' with the cluster index for Cluster for Dublin</span>
+<span class="c1"># Identify the numeric columns used in k-means clustering</span>
+<span class="n">columns_used_in_kmeans</span> <span class="o">=</span> <span class="n">data_numeric</span><span class="o">.</span><span class="n">columns</span>  <span class="c1"># Replace with the actual column names used in clustering</span>
+
+<span class="c1"># Calculate Euclidean distance to the centroid for each point in Cluster 3</span>
+<span class="n">cluster_3</span><span class="p">[</span><span class="s1">'Distance_to_Centroid'</span><span class="p">]</span> <span class="o">=</span> <span class="n">cluster_3</span><span class="p">[</span><span class="n">columns_used_in_kmeans</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">euclidean</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">cluster_3_centroid</span><span class="p">),</span>
+    <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span>
+
+<span class="c1"># Check if Dublin City, OH is in Cluster 3</span>
+<span class="n">dublin_row</span> <span class="o">=</span> <span class="n">cluster_3</span><span class="p">[(</span><span class="n">cluster_3</span><span class="p">[</span><span class="s1">'place'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'Dublin city'</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">cluster_3</span><span class="p">[</span><span class="s1">'state'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'Ohio'</span><span class="p">)]</span></code></pre><div class="nb-out-wrap nb-warn"><div class="nb-out-label">Warning</div><pre class="nb-out" tabindex="0">&lt;ipython-input-25-fdef7175554c&gt;:14: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  cluster_3['Distance_to_Centroid'] = cluster_3[columns_used_in_kmeans].apply(</pre></div></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [26]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 26">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># Scatterplot for Cluster 5, colored by Region</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="c1"># Scatterplot with colors based on the 'Region' column</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">cluster_3</span><span class="p">[</span><span class="s1">'Distance_to_Centroid'</span><span class="p">],</span>
+    <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">cluster_3</span><span class="p">),</span>  <span class="c1"># Keep points horizontally aligned for clarity</span>
+    <span class="n">hue</span><span class="o">=</span><span class="n">cluster_3</span><span class="p">[</span><span class="s1">'Region'</span><span class="p">],</span>  <span class="c1"># Color by Region</span>
+    <span class="n">palette</span><span class="o">=</span><span class="s1">'tab10'</span><span class="p">,</span>          <span class="c1"># Use a distinct color palette</span>
+    <span class="n">s</span><span class="o">=</span><span class="mi">100</span>                     <span class="c1"># Size of points</span>
+<span class="p">)</span>
+
+<span class="c1"># Highlight Dublin City, OH</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">dublin_row</span><span class="p">[</span><span class="s1">'Distance_to_Centroid'</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="n">color</span><span class="o">=</span><span class="s1">'red'</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s1">'*'</span><span class="p">,</span>
+    <span class="n">s</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s1">'Dublin City, OH'</span>
+<span class="p">)</span>
+
+<span class="c1"># Customize the plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Closeness of Places in Cluster 3 to Cluster Centroid (Colored by Region)'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">'Distance to Centroid'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">'Density (horizontal for visualization)'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">'Region'</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.05</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s1">'upper left'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></code></pre><div class="nb-out-wrap"><div class="nb-out-label">Output</div><figure class="nb-fig"><img src="notebook/fig-41.webp" alt="Dot strip of the places in Cluster 3, placed by distance from the group&#x27;s center and colored by region. Most places fall between distances of about 2 and 4. Dublin, marked with a red star, sits near 2.4. A few places sit far out, near 5, 5.6, and 6.6." width="1231" height="547" loading="lazy" decoding="async"></figure></div></div>
+<div class="nb-cell nb-md"><p>Dublin City, OH (marked by the red star) is positioned relatively close to the centroid of Cluster 5, making it a strong representative of the cluster's overall characteristics. Its location on the lower end of the distance spectrum suggests that it is central to the cluster in terms of feature similarity. The points in the scatterplot are spread along the X-axis, which represents their Euclidean distances to the centroid; smaller distances indicate a closer alignment with the core features of Cluster 5. The Y-axis, meanwhile, serves purely for visual separation. Most places in Cluster 5 are grouped between distances of approximately 2 and 4, indicating a relatively compact cluster with a clear core, though there are a few outliers beyond a distance of 6. These outliers differ more significantly from the centroid and may not share as many characteristics with Dublin City or other central members of the cluster.</p></div>
+<div class="nb-sec" id="compare"><span class="nb-sec-n">08</span><h2>Comparing the two versions</h2><p>Count the places in Dublin's group by region and by division under each version.</p></div>
+<div class="nb-cell nb-md"><p>Comparison between the two methods</p></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [27]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 27">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="nb">print</span><span class="p">(</span><span class="s2">"Counts by Region (Using raw values):"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">counts_by_region</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Counts by Region (using percentages):"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">counts_by_region_2</span><span class="p">)</span></code></pre><div class="nb-out-wrap"><div class="nb-out-label">Output</div><pre class="nb-out" tabindex="0">Counts by Region (Using raw values):
+      Region  Count
+0    Midwest     13
+1  Northeast      3
+2      South     27
+3       West     23
+
+Counts by Region (using percentages):
+      Region  Count
+0    Midwest     21
+1  Northeast      2
+2      South     37
+3       West     32</pre></div></div>
+<div class="nb-cell nb-md"><p>Both methods highlight a strong reliance on the West and South regions, followed by the Midwest. Notably, Dublin, Ohio, is located in the Midwest region. This raises interesting questions about how potential sister cities could be concentrated in the South or West regions rather than within the same geographical area. The relatively high counts in the South and West suggest that cities in these regions may share similar socioeconomic or demographic characteristics with Dublin, Ohio, despite being geographically distant.</p>
+<p>Paired with the earlier proximity-to-centroid visual analysis, this lends further support to examining the unique variables that position certain cities as closer matches to Dublin within the cluster. It also emphasizes the importance of expanding the analysis to include region-specific trends, such as population density, economic indicators, or cultural factors, that might influence cluster placement. This insight opens up opportunities to refine the analysis by incorporating additional regional variables or weighting certain features to better reflect Dublin's specific profile.</p>
+<p>By combining the cluster proximity data with these regional distributions, the analysis gains a multidimensional perspective, helping narrow down potential sister cities while uncovering the broader relationships between regions and their shared attributes with Dublin, Ohio. This layered approach could significantly aid in making more informed decisions about which cities best align with Dublin's characteristics and priorities.</p></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [28]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 28">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="nb">print</span><span class="p">(</span><span class="s2">"Counts by Division (Using raw values):"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">counts_by_division</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Counts by Division (using percentages):"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">counts_by_division_2</span><span class="p">)</span></code></pre><div class="nb-out-wrap"><div class="nb-out-label">Output</div><pre class="nb-out" tabindex="0">Counts by Division (Using raw values):
+             Division  Count
+0  East North Central     10
+1  East South Central      3
+2            Mountain      7
+3         New England      3
+4             Pacific     16
+5      South Atlantic     11
+6  West North Central      3
+7  West South Central     13
+
+Counts by Division (using percentages):
+             Division  Count
+0  East North Central     15
+1  East South Central      4
+2     Middle Atlantic      1
+3            Mountain      9
+4         New England      1
+5             Pacific     23
+6      South Atlantic     24
+7  West North Central      6
+8  West South Central      9</pre></div></div>
+<div class="nb-cell nb-md"><p>The division-level analysis closely mirrors the trends observed at the region level, with divisions like the Pacific, South Atlantic, and West South Central standing out in the upper bands. Interestingly, the East North Central division, which includes Ohio (and therefore Dublin), also ranks prominently, suggesting potential sister cities may exist both within Dublin's immediate geographic area and beyond.</p>
+<p>The presence of divisions like Pacific and South Atlantic in the upper band indicates that cities in these divisions may share characteristics with Dublin despite being geographically distant. This underscores the value of exploring similarities beyond immediate proximity, such as economic indicators, demographic patterns, or cultural traits.</p>
+<p>While the analysis reveals strong possibilities within the East North Central division, aligning with the expected regional proximity of Dublin, this is balanced by notable representation from divisions in the South and West. This further validates the need for a holistic approach that combines geographic proximity with clustering variables to identify sister cities that align with Dublin’s unique attributes.</p></div>
+<div class="nb-sec" id="experimental"><span class="nb-sec-n">09</span><h2>Experimental work</h2><p>Extra code the team tried at the end, including the full lists of places in Dublin's group.</p></div>
+<div class="nb-cell nb-md"><h1>EXPERIMENTAL WORK BELOW</h1></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [29]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 29">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="n">dublin_data</span> <span class="o">=</span> <span class="n">data_final</span><span class="p">[(</span><span class="n">data_final</span><span class="p">[</span><span class="s1">'place'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">22694</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">data_final</span><span class="p">[</span><span class="s1">'state'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">39</span><span class="p">)]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dublin_data</span><span class="p">)</span></code></pre><div class="nb-out-wrap"><div class="nb-out-label">Output</div><pre class="nb-out" tabindex="0">Empty DataFrame
+Columns: [place, state, K200101_001E, K200101_002E, K200101_003E, K200201_002E, K200301_002E, K200501_002E, K200801_002E, K200901_003E, K201401_002E, K201501_007E, K201501_008E, K201601_002E, K201702_006E, K202101_006E, K202301_004E, K202301_007E, K202502_002E, K202505_004E, K202701_006E, Cluster]
+Index: []
+
+[0 rows x 22 columns]</pre></div></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [30]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 30">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># Identify the target cluster for Dublin, Ohio (already done)</span>
+<span class="n">target_cluster</span> <span class="o">=</span> <span class="n">filtered_census_data_df</span><span class="p">[</span>
+    <span class="p">(</span><span class="n">filtered_census_data_df</span><span class="p">[</span><span class="s1">'state'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'39'</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">filtered_census_data_df</span><span class="p">[</span><span class="s1">'place'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'22694'</span><span class="p">)</span>
+<span class="p">][</span><span class="s1">'Cluster'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># Filter for rows with the same cluster</span>
+<span class="n">cluster_subset</span> <span class="o">=</span> <span class="n">filtered_census_data_df</span><span class="p">[</span><span class="n">filtered_census_data_df</span><span class="p">[</span><span class="s1">'Cluster'</span><span class="p">]</span> <span class="o">==</span> <span class="n">target_cluster</span><span class="p">]</span>
+
+<span class="c1"># Retrieve unique city and state combinations</span>
+<span class="n">comparable_cities</span> <span class="o">=</span> <span class="n">cluster_subset</span><span class="p">[[</span><span class="s1">'City Name'</span><span class="p">,</span> <span class="s1">'State_Name'</span><span class="p">]]</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Cities comparable to Dublin (Cluster </span><span class="si">{}</span><span class="s2">):"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">target_cluster</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">comparable_cities</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">'City Name'</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">'State_Name'</span><span class="p">]))</span></code></pre><div class="nb-out-wrap"><div class="nb-out-label">Output</div><pre class="nb-out" tabindex="0">Cities comparable to Dublin (Cluster 0):
+Dothan city, Alabama
+Flagstaff city, Arizona
+Gilbert town, Arizona
+Glendale city, Arizona
+Goodyear city, Arizona
+Fayetteville city, Arkansas
+Fort Smith city, Arkansas
+Dublin city, California
+El Dorado Hills CDP, California
+Elk Grove city, California
+Encinitas city, California
+Escondido city, California
+Fairfield city, California
+Folsom city, California
+Fontana city, California
+Fremont city, California
+Fresno city, California
+Fullerton city, California
+Garden Grove city, California
+Fort Collins city, Colorado
+Fort Lauderdale city, Florida
+Fort Myers city, Florida
+Gainesville city, Florida
+Dunwoody city, Georgia
+Kaneohe CDP, Hawaii
+Downers Grove village, Illinois
+Elgin city, Illinois
+Evansville city, Indiana
+Fishers city, Indiana
+Fort Wayne city, Indiana
+Des Moines city, Iowa
+Eldersburg CDP, Maryland
+Ellicott City CDP, Maryland
+Fall River city, Massachusetts
+Franklin Town city, Massachusetts
+Haverhill city, Massachusetts
+Detroit city, Michigan
+Farmington Hills city, Michigan
+Lincoln city, Nebraska
+Enterprise CDP, Nevada
+Fayetteville city, North Carolina
+Gastonia city, North Carolina
+Greensboro city, North Carolina
+Greenville city, North Carolina
+Fargo city, North Dakota
+Dublin city, Ohio
+Edmond city, Oklahoma
+Eugene city, Oregon
+Franklin city, Tennessee
+Germantown city, Tennessee
+Denton city, Texas
+El Paso city, Texas
+Euless city, Texas
+Flower Mound town, Texas
+Fort Worth city, Texas
+Friendswood city, Texas
+Frisco city, Texas
+Galveston city, Texas
+Garland city, Texas
+Georgetown city, Texas
+Draper city, Utah
+Dale City CDP, Virginia
+Everett city, Washington
+Federal Way city, Washington
+Eau Claire city, Wisconsin
+Franklin city, Wisconsin</pre></div></div>
+<div class="nb-cell nb-code-cell"><div class="nb-bar"><span class="nb-tag">In [31]</span><span>Python</span><button class="nb-copy" type="button" aria-label="Copy the code in cell 31">Copy</button></div><pre class="nb-code" tabindex="0"><code><span class="c1"># Identify Dublin's cluster</span>
+<span class="n">target_cluster_2</span> <span class="o">=</span> <span class="n">data_final_2</span><span class="p">[</span>
+    <span class="p">(</span><span class="n">data_final_2</span><span class="p">[</span><span class="s1">'state'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'Ohio'</span><span class="p">)</span> <span class="o">&amp;</span>
+    <span class="p">(</span><span class="n">data_final_2</span><span class="p">[</span><span class="s1">'place'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'Dublin city'</span><span class="p">)</span>
+<span class="p">][</span><span class="s1">'Cluster'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># Filter for rows with the same cluster as Dublin</span>
+<span class="n">cluster_subset_2</span> <span class="o">=</span> <span class="n">data_final_2</span><span class="p">[</span><span class="n">data_final_2</span><span class="p">[</span><span class="s1">'Cluster'</span><span class="p">]</span> <span class="o">==</span> <span class="n">target_cluster_2</span><span class="p">]</span>
+
+<span class="c1"># Create a new DataFrame with just the place and state columns</span>
+<span class="n">comparable_cities_states_2</span> <span class="o">=</span> <span class="n">cluster_subset_2</span><span class="p">[[</span><span class="s1">'place'</span><span class="p">,</span> <span class="s1">'state'</span><span class="p">]]</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Cities and States comparable to Dublin (Cluster </span><span class="si">{}</span><span class="s2">):"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">target_cluster_2</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">comparable_cities_states_2</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">'place'</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">'state'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></code></pre><div class="nb-out-wrap"><div class="nb-out-label">Output</div><pre class="nb-out" tabindex="0">Cities and States comparable to Dublin (Cluster 3):
+Hoover city, Alabama
+Madison city, Alabama
+Casas Adobes CDP, Arizona
+Catalina Foothills CDP, Arizona
+Marana town, Arizona
+Oro Valley town, Arizona
+Peoria city, Arizona
+Scottsdale city, Arizona
+Benton city, California
+Camarillo city, California
+Carlsbad city, California
+Castro Valley CDP, California
+El Dorado Hills CDP, California
+Encinitas city, California
+Folsom city, California
+Laguna Niguel city, California
+Livermore city, California
+Mission Viejo city, California
+Newport Beach city, California
+Pleasanton city, California
+Poway city, California
+San Clemente city, California
+San Ramon city, California
+Thousand Oaks city, California
+Walnut Creek city, California
+Yorba Linda city, California
+Centennial city, Colorado
+Highlands Ranch CDP, Colorado
+Lafayette city, Colorado
+Aventura city, Florida
+Boca Raton city, Florida
+Cooper City city, Florida
+Delray Beach city, Florida
+Jupiter town, Florida
+Palm Beach Gardens city, Florida
+Alpharetta city, Georgia
+Dunwoody city, Georgia
+Johns Creek city, Georgia
+Milton city, Georgia
+Roswell city, Georgia
+Sandy Springs city, Georgia
+East Honolulu CDP, Hawaii
+Arlington Heights village, Illinois
+Buffalo Grove village, Illinois
+Downers Grove village, Illinois
+Glenview village, Illinois
+Naperville city, Illinois
+O'Fallon city, Illinois
+Orland Park village, Illinois
+Wheaton city, Illinois
+Carmel city, Indiana
+Bethesda CDP, Maryland
+Columbia CDP, Maryland
+Fremont city, Maryland
+Olney CDP, Maryland
+Severna Park CDP, Maryland
+Barnstable Town city, Massachusetts
+Farmington Hills city, Michigan
+Novi city, Michigan
+Rochester Hills city, Michigan
+Troy city, Michigan
+Apple Valley city, Minnesota
+Chanhassen city, Minnesota
+Eden Prairie city, Minnesota
+Plymouth city, Minnesota
+Shoreview city, Minnesota
+Chesterfield city, Missouri
+White Plains city, New York
+Apex town, North Carolina
+Cary town, North Carolina
+Dublin city, Ohio
+Strongsville city, Ohio
+Lake Oswego city, Oregon
+South Laurel CDP, Oregon
+Mount Pleasant town, South Carolina
+Franklin city, Tennessee
+Germantown city, Tennessee
+Allen city, Texas
+Central Islip CDP, Texas
+Coppell city, Texas
+Flower Mound town, Texas
+Georgetown city, Texas
+Keller city, Texas
+Plano city, Texas
+Sugar Land city, Texas
+The Woodlands CDP, Texas
+Burke CDP, Virginia
+Centreville CDP, Virginia
+McLean CDP, Virginia
+Reston CDP, Virginia
+Bothell city, Washington
+Kirkland city, Washington</pre></div></div>
+
+      <div class="nb-end">
+        <a class="btn btn-ghost" href="index.html"><span class="arr" aria-hidden="true" style="display:inline-block;transform:scaleX(-1)">&rarr;</span> Back to the project</a>
+        <a class="btn btn-ghost" href="https://github.com/butts-denison/MTDACapstone/blob/main/Scripts/K-Means/City_of_Dublin_K_Means_Analysis.ipynb" target="_blank" rel="noopener">View the notebook on GitHub <span class="arr" aria-hidden="true">&#8599;</span></a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<!-- ===== FOOTER (same as every page, with ../ links) ===== -->
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="fb-name">
+          <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+          Robert Butts
+        </div>
+        <p>Data visualization and clear thinking, from a technologist in Ohio higher education.</p>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>Site</h4>
+          <a href="../index.html">Home</a>
+          <a href="../work.html">Work</a>
+          <a href="../gallery.html">Gallery</a>
+          <a href="../practice.html">Practice</a>
+          <a href="../about.html">About</a>
+          <a href="../contact.html">Contact</a>
+        </div>
+        <div class="foot-col">
+          <h4>Elsewhere</h4>
+          <a href="https://www.linkedin.com/in/robertmbutts/" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+        <div class="foot-col">
+          <h4>Say hello</h4>
+          <a href="mailto:rbutts42@gmail.com">rbutts42@gmail.com</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 Robert Butts.</span>
+      <span>Charts, questions, and the occasional insight.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../site.js"></script>
+<script>
+/* ===== Copy buttons and the contents list ===== */
+(function(){
+  document.querySelectorAll('.nb-copy').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var code = btn.closest('.nb-code-cell').querySelector('.nb-code').textContent;
+      function done(){
+        btn.textContent = 'Copied'; btn.classList.add('done');
+        setTimeout(function(){ btn.textContent = 'Copy'; btn.classList.remove('done'); }, 1600);
+      }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(code).then(done, function(){ btn.textContent = 'Select and copy'; });
+      } else { btn.textContent = 'Select and copy'; }
+    });
+  });
+
+  /* highlight the section you are reading in the contents list */
+  var links = {};
+  document.querySelectorAll('.nb-toc a').forEach(function(a){ links[a.getAttribute('href').slice(1)] = a; });
+  var secs = [].slice.call(document.querySelectorAll('.nb-sec'));
+  function mark(){
+    var y = window.innerHeight * 0.3, cur = null;
+    secs.forEach(function(s){ if(s.getBoundingClientRect().top < y) cur = s.id; });
+    Object.keys(links).forEach(function(k){ links[k].classList.toggle('on', k === cur); });
+  }
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if(!ticking){ ticking = true; requestAnimationFrame(function(){ ticking = false; mark(); }); }
+  }, {passive:true});
+  mark();
+})();
+</script>
+</body>
+</html>

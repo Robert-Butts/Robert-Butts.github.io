@@ -91,19 +91,21 @@
     <a href="#nba" data-cc="amber"><span class="rail-bar" aria-hidden="true"></span><span class="rail-name">NBA score differentials</span></a>
   </nav>
 
-  <!-- OSU capstone: ACS pipeline + Data-Driven Dublin StoryMap.
-       The image is Figure 1 from the StoryMap. -->
+  <!-- OSU capstone: Data-Driven Dublin. The project page lives in the dublin
+       folder (with the k-means notebook at dublin/notebook.html). The image is
+       a screenshot of the team's ArcGIS dashboard. data-expand makes it grow
+       to fill the screen before the project page opens. -->
   <section class="scene" id="dublin" data-cc="blue" aria-labelledby="dublin-title">
     <div class="scene-glow" aria-hidden="true"></div>
     <div class="scene-inner">
-      <a class="frame frame-shot" href="https://storymaps.arcgis.com/stories/329f10f1c2064be987c463b079d29b16" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" data-cursor="Read the StoryMap">
+      <a class="frame frame-shot" href="dublin/index.html" tabindex="-1" aria-hidden="true" data-cursor="See the project" data-expand>
         <div class="shot">
           <svg viewBox="0 0 320 200" aria-hidden="true">
             <g fill="#75AADB"><circle cx="62" cy="64" r="5"/><circle cx="80" cy="52" r="4"/><circle cx="72" cy="80" r="4.5"/><circle cx="94" cy="70" r="3.5"/><circle cx="56" cy="46" r="3.5"/></g>
             <g fill="#7FD18C"><circle cx="176" cy="136" r="5"/><circle cx="196" cy="124" r="4"/><circle cx="162" cy="122" r="4.5"/><circle cx="190" cy="148" r="3.5"/><circle cx="208" cy="138" r="3.5"/></g>
             <g fill="#B79CFF"><circle cx="248" cy="62" r="5"/><circle cx="268" cy="74" r="4"/><circle cx="262" cy="50" r="4.5"/><circle cx="284" cy="62" r="3.5"/></g>
           </svg>
-          <img src="images/work/capstone.jpg" alt="" loading="lazy" onerror="this.parentNode.classList.add('no-img')">
+          <img src="images/work/dublin-dashboard.webp" alt="" loading="lazy" onerror="this.parentNode.classList.add('no-img')">
         </div>
       </a>
       <h2 class="scene-title" id="dublin-title"><span class="ln"><span>Data-Driven</span></span><span class="ln"><span>Dublin</span></span></h2>
@@ -112,10 +114,10 @@
           <span class="card-tag">Graduate capstone</span>
           <span class="card-tools">Python &middot; SQLite &middot; R &middot; ArcGIS &middot; GitHub Actions</span>
         </div>
-        <p class="sm-desc">A four-person capstone for my M.S. at Ohio State. We built a pipeline that pulls American Community Survey data from the Census API into a SQLite database, then used clustering to find the places most like Dublin, Ohio across nineteen measures.</p>
+        <p class="sm-desc">A four-person capstone for my M.S. at Ohio State. We built a pipeline that pulls American Community Survey data from the Census API into a SQLite database, then used k-means clustering to narrow almost 2,400 U.S. places to the 51 most like Dublin, Ohio.</p>
         <div class="sm-links">
-          <a class="sm-btn" href="https://storymaps.arcgis.com/stories/329f10f1c2064be987c463b079d29b16" target="_blank" rel="noopener">Read the StoryMap <span class="arr" aria-hidden="true">&#8599;</span></a>
-          <a class="sm-btn sm-quiet" href="https://github.com/butts-denison/MTDACapstone" target="_blank" rel="noopener">View the code <span class="arr" aria-hidden="true">&#8599;</span></a>
+          <a class="sm-btn" href="dublin/index.html" data-expand>See the project and code <span class="arr" aria-hidden="true">&rarr;</span></a>
+          <a class="sm-btn sm-quiet" href="https://ohiostate.maps.arcgis.com/apps/dashboards/5dad3d509a8e4ae5a68fecc336e65c41" target="_blank" rel="noopener">Open the dashboard <span class="arr" aria-hidden="true">&#8599;</span></a>
         </div>
       </div>
     </div>

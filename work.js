@@ -6,7 +6,7 @@
      2. the masked title reveal and the side list of projects
      3. gentle snapping, so a short scroll settles on the next project
      4. the cursor light and the small "what a click does" label
-     5. the photo that grows to fill the screen before a project page opens
+     5. the image that grows to fill the screen before a project page opens
    Anyone who prefers reduced motion gets a still page with no snapping.
 
    Settings you can change:
@@ -195,20 +195,31 @@
     window.addEventListener('scroll', function(){ chip.classList.remove('show'); }, {passive:true});
   }
 
-  /* ---- 5. photo grows to fill the screen, then the project page opens ---- */
+  /* ---- 5. the image grows to fill the screen, then the project page opens ----
+     A photo frame (frame-photo) grows its photo. A screenshot frame (frame-shot)
+     grows its lit background with the screenshot centered on it. With reduced
+     motion, the link simply opens the page. */
   document.querySelectorAll('[data-expand]').forEach(function(link){
     link.addEventListener('click', function(e){
-      if(e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey){ return; }
+      if(reduce || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey){ return; }
       var scene = link.closest('.scene');
       var fr = scene && scene.querySelector('.frame');
       var img = fr && fr.querySelector('img.cover');
-      if(!fr || !img){ return; }
+      var shot = fr && !img && fr.querySelector('.shot:not(.no-img) img');
+      if(!fr || (!img && !shot)){ return; }
       e.preventDefault();
       var r = fr.getBoundingClientRect();
       var W = window.innerWidth, H = window.innerHeight;
       var wipe = document.createElement('div');
       wipe.className = 'wipe';
-      wipe.style.backgroundImage = 'url("' + (img.currentSrc || img.src) + '")';
+      if(img){
+        wipe.style.backgroundImage = 'url("' + (img.currentSrc || img.src) + '")';
+      } else {
+        wipe.style.backgroundImage = 'url("' + (shot.currentSrc || shot.src) + '"), ' + getComputedStyle(fr).backgroundImage;
+        wipe.style.backgroundSize = 'min(82%, 1500px) auto, 100% 100%, 100% 100%';
+        wipe.style.backgroundPosition = 'center 46%, center, center';
+        wipe.style.backgroundRepeat = 'no-repeat';
+      }
       wipe.style.clipPath = 'inset(' + Math.max(0, r.top) + 'px ' + Math.max(0, W - r.right) + 'px ' +
         Math.max(0, H - r.bottom) + 'px ' + Math.max(0, r.left) + 'px round 22px)';
       body.appendChild(wipe);
