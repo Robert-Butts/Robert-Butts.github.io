@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pacific Brant and Helicopters · Robert Butts</title>
+<meta name="description" content="A graduate statistics project: logistic regression models of when helicopter flights make Pacific brant take flight at Izembek Lagoon, Alaska, with flight-distance recommendations.">
+<meta property="og:title" content="Helicopters and Pacific brant at Izembek Lagoon">
+<meta property="og:description" content="A logistic regression study of when helicopter flights make Pacific brant take flight, with flight-distance recommendations.">
+<meta property="og:image" content="https://robert-butts.github.io/pacific-brant/share.jpg">
+<meta property="og:type" content="article">
+
+<!--
+  ============================================================
+  PACIFIC BRANT PROJECT PAGE (pacific-brant/index.html)
+  Lives at robert-butts.github.io/pacific-brant/
+  The slide deck shows as images in a viewer on this page, so
+  visitors can read it in the browser. The PDF is not published.
+
+  To change a slide: replace slides/slide-NN.webp (1920 x 1080)
+  and slides/thumbs/slide-NN.webp (384 x 216), then update its
+  title and description in the SLIDES list near the bottom.
+  ============================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+
+<style>
+/* ===== Page styles for this project only ===== */
+.pb{--accent:var(--teal); --accent-dim:var(--teal-dim)}
+.pb .eyebrow::before{background:var(--accent)}
+.pb-meta{display:flex; flex-wrap:wrap; gap:8px 18px; margin-top:22px; font-family:var(--mono); font-size:.78rem; color:var(--muted); letter-spacing:.02em}
+.pb-meta b{color:var(--text); font-weight:500}
+
+/* banner photo */
+.pb-hero{margin-top:40px}
+.pb-hero figure{margin:0; border-radius:var(--radius); overflow:hidden; border:1px solid var(--line); background:var(--panel)}
+.pb-hero img{display:block; width:100%; height:auto; aspect-ratio:2000 / 840; object-fit:cover}
+.pb-hero figcaption{font-size:.8rem; color:var(--faint); padding:10px 16px}
+.pb-hero figcaption a{color:var(--muted); text-decoration:underline; text-underline-offset:2px}
+
+/* at-a-glance numbers */
+.pb-stats{display:grid; grid-template-columns:repeat(4, 1fr); gap:16px}
+.pb-stat{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:22px 22px 20px}
+.pb-stat .n{font-family:var(--display); font-weight:600; font-size:clamp(1.9rem, 3vw, 2.5rem); line-height:1; color:var(--accent)}
+.pb-stat .n small{font-size:.5em; margin-left:2px; color:var(--muted); font-weight:500}
+.pb-stat p{margin-top:10px; color:var(--muted); font-size:.92rem; line-height:1.5}
+
+/* summary text */
+.pb-h2{font-family:var(--display); font-weight:600; font-size:clamp(1.6rem, 2.6vw, 2.1rem); letter-spacing:-.01em; margin-bottom:18px}
+.pb-cols{display:grid; grid-template-columns:repeat(3, 1fr); gap:28px}
+.pb-cols h3{font-family:var(--display); font-weight:600; font-size:1.15rem; margin-bottom:10px; color:var(--text)}
+.pb-cols p, .pb-cols li{color:var(--muted); line-height:1.65; font-size:.98rem}
+.pb-cols ul{margin:8px 0 0 18px}
+.pb-recs{margin-top:34px; background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:var(--radius); padding:24px 26px}
+.pb-recs h3{font-family:var(--display); font-weight:600; font-size:1.15rem}
+.pb-recs p{color:var(--muted); margin-top:6px}
+.pb-recs ul{margin:14px 0 0 18px; display:grid; gap:8px}
+.pb-recs li{color:var(--text); line-height:1.55}
+.pb-recs li b{color:var(--accent); font-weight:600}
+
+/* slide viewer */
+.deck{margin-top:8px}
+.deck-stage{position:relative; aspect-ratio:16 / 9; background:#0A0D11; border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow)}
+.deck-stage img{position:absolute; inset:0; width:100%; height:100%; object-fit:contain; user-select:none; -webkit-user-drag:none}
+.deck-stage:fullscreen{border-radius:0; border:0; background:#000}
+/* the left and right halves of the slide work as previous and next, even in full screen */
+.deck-stage{cursor:pointer}
+.deck-btn:focus-visible, .deck-thumb:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
+.deck-btn:disabled{opacity:.4; cursor:default; border-color:var(--line-2); color:var(--text)}
+.deck-bar{display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:14px}
+.deck-cap{min-width:0}
+.deck-count{font-family:var(--mono); font-size:.76rem; letter-spacing:.06em; color:var(--accent)}
+.deck-title{font-family:var(--display); font-weight:600; font-size:1.12rem; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.deck-tools{display:flex; gap:8px; flex:none}
+.deck-btn{font-family:var(--mono); font-size:.74rem; letter-spacing:.03em; padding:9px 13px; border-radius:9px; border:1px solid var(--line-2); background:var(--panel); color:var(--text); cursor:pointer; display:inline-flex; align-items:center; gap:7px}
+.deck-btn:hover{border-color:var(--accent); color:var(--accent)}
+.deck-strip{display:flex; gap:10px; overflow-x:auto; padding:14px 2px 10px; margin-top:6px; scroll-snap-type:x proximity; scrollbar-width:thin}
+.deck-thumb{flex:none; width:128px; aspect-ratio:16 / 9; border-radius:8px; overflow:hidden; border:2px solid transparent; padding:0; background:var(--panel-2); cursor:pointer; position:relative; scroll-snap-align:center; opacity:.62; transition:opacity .15s ease, border-color .15s ease}
+.deck-thumb:hover{opacity:.9}
+.deck-thumb.on{border-color:var(--accent); opacity:1}
+.deck-thumb img{width:100%; height:100%; object-fit:cover; display:block}
+.deck-thumb span{position:absolute; left:5px; bottom:4px; font-family:var(--mono); font-size:.62rem; color:#fff; background:rgba(10,13,17,.72); padding:1px 5px; border-radius:4px}
+.deck-hint{font-size:.82rem; color:var(--faint); margin-top:4px}
+
+/* credits */
+.pb-credits{display:grid; grid-template-columns:repeat(2, 1fr); gap:18px 34px}
+.pb-credits h3{font-family:var(--mono); font-size:.74rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; font-weight:500}
+.pb-credits p{color:var(--muted); line-height:1.65; font-size:.95rem}
+.pb-credits a{color:var(--text); text-decoration:underline; text-underline-offset:2px}
+.pb-back{margin-top:40px}
+
+@media (max-width:900px){
+  .pb-stats{grid-template-columns:repeat(2, 1fr)}
+  .pb-cols{grid-template-columns:1fr; gap:22px}
+  .pb-credits{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .deck-bar{flex-direction:column; align-items:stretch}
+  .deck-tools{flex-wrap:wrap}
+  .deck-title{white-space:normal}
+  .deck-thumb{width:104px}
+  .pb-stat{padding:18px}
+}
+</style>
+</head>
+
+<body class="pb">
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ===== NAV (same as every page, with ../ because this page sits in a folder) ===== -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../index.html" aria-label="Home">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      Robert Butts
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a class="section-link active" href="../work.html">Work</a>
+      <a class="section-link" href="../gallery.html">Gallery</a>
+      <a class="section-link" href="../practice.html">Practice</a>
+      <a class="section-link" href="../about.html">About</a>
+      <a class="nav-cta" href="../contact.html">Get in touch</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu"><span></span></button>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu" aria-label="Menu">
+  <a href="../index.html">Home</a>
+  <a href="../work.html">Work</a>
+  <a href="../gallery.html">Gallery</a>
+  <a href="../practice.html">Practice</a>
+  <a href="../about.html">About</a>
+  <a href="../contact.html">Get in touch</a>
+</div>
+
+<main id="main">
+
+<!-- ===== PAGE HEADER ===== -->
+<div class="page-head">
+  <div class="wrap">
+    <p class="eyebrow ph-a">Graduate project</p>
+    <h1 class="ph-b">Helicopters and Pacific brant at Izembek Lagoon</h1>
+    <p class="ph-lead ph-c">A team statistics project from my M.S. at Ohio State. We used logistic regression to find how a helicopter's distance and altitude change the chance that a flock of Pacific brant takes flight, then turned the model into flight guidance.</p>
+    <div class="pb-meta ph-c">
+      <span><b>Team</b> Robert Butts, Doug Caruso, Josh Roush</span>
+      <span><b>Course</b> GRADTDA 5402, The Ohio State University</span>
+      <span><b>Tools</b> R, logistic regression</span>
+    </div>
+    <div class="pb-hero ph-c">
+      <figure>
+        <img src="hero.webp" alt="Three Pacific black brant swimming on calm blue water" width="2000" height="840">
+        <figcaption>Photo: <a href="https://www.fws.gov/media/pacific-black-brantjpg" target="_blank" rel="noopener">Pacific Black Brant</a> by Gregory Smith, via the U.S. Fish and Wildlife Service, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. Cropped.</figcaption>
+      </figure>
+    </div>
+  </div>
+</div>
+
+<!-- ===== AT A GLANCE ===== -->
+<section style="padding-bottom:0">
+  <div class="wrap">
+    <div class="pb-stats">
+      <div class="pb-stat reveal"><div class="n">464</div><p>observations of brant flocks during helicopter test flights</p></div>
+      <div class="pb-stat reveal d1"><div class="n">61<small>%</small></div><p>of those observations ended with the flock taking flight (285 of 464)</p></div>
+      <div class="pb-stat reveal d2"><div class="n">373</div><p>AIC for distance alone, far better than 616 for altitude alone. Distance mattered most.</p></div>
+      <div class="pb-stat reveal d3"><div class="n">2,000<small>m</small></div><p>the sideways distance we recommend to keep the chance of flight near 10% or less</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SUMMARY ===== -->
+<section>
+  <div class="wrap">
+    <h2 class="pb-h2 reveal">The project in brief</h2>
+    <div class="pb-cols">
+      <div class="reveal">
+        <h3>The question</h3>
+        <p>Each fall, more than 100,000 Pacific brant feed on eelgrass at Izembek Lagoon, Alaska, to store energy for a long migration. Helicopter flights can scare flocks into the air and cost them that energy. The FAA asks aircraft to stay at least 2,000 feet (609 meters) above the lagoon. We asked whether that rule is enough, and what distance and altitude keep flocks on the water.</p>
+      </div>
+      <div class="reveal d1">
+        <h3>What we did</h3>
+        <p>Spotters recorded how flocks responded to test flights by Bell 205 and Sikorsky HH-3F helicopters. Each of the 464 observations has the helicopter's altitude, its lateral (sideways) distance from the flock, and whether the flock flew. We explored the data, then compared logistic regression models:</p>
+        <ul>
+          <li>altitude only</li>
+          <li>lateral distance only</li>
+          <li>both together</li>
+          <li>both plus their interaction</li>
+        </ul>
+      </div>
+      <div class="reveal d2">
+        <h3>What we found</h3>
+        <p>Lateral distance was the strongest predictor: the farther away the helicopter, the lower the chance of flight. Our final model uses both distance and altitude. The interaction model scored better on paper, but it predicted nearly certain flight at distances where the data showed almost none, so we did not trust it.</p>
+      </div>
+    </div>
+
+    <div class="pb-recs reveal">
+      <h3>Our recommendations</h3>
+      <p>To keep the chance of a flight response at about 10% or less:</p>
+      <ul>
+        <li>Keep helicopters at least <b>2,000 meters</b> away to the side.</li>
+        <li>Within <b>1,000 meters</b>, flocks are more likely than not to take flight at any altitude.</li>
+        <li>Closer than 2,000 meters, stay below <b>100 meters</b> of altitude.</li>
+        <li>At the FAA minimum altitude of 609 meters, stay at least <b>2,400 to 2,500 meters</b> away.</li>
+        <li>Beyond <b>3,200 meters</b> away, altitude can be as high as 1,500 meters.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== THE PRESENTATION ===== -->
+<section id="slides" style="padding-top:0">
+  <div class="wrap">
+    <h2 class="pb-h2 reveal">The full presentation</h2>
+    <div class="deck reveal" id="deck" aria-roledescription="carousel" aria-label="Presentation slides">
+      <div class="deck-stage" id="deckStage">
+        <img id="deckImg" src="slides/slide-01.webp" alt="" width="1920" height="1080" draggable="false">
+      </div>
+      <div class="deck-bar">
+        <div class="deck-cap" aria-live="polite">
+          <div class="deck-count" id="deckCount">Slide 1 of 24</div>
+          <div class="deck-title" id="deckTitle"></div>
+        </div>
+        <div class="deck-tools">
+          <button class="deck-btn" id="deckPrev" type="button"><span aria-hidden="true">&larr;</span> Previous</button>
+          <button class="deck-btn" id="deckNext" type="button">Next <span aria-hidden="true">&rarr;</span></button>
+          <button class="deck-btn" id="deckFull" type="button">Full screen <span aria-hidden="true">&#x26F6;</span></button>
+        </div>
+      </div>
+      <div class="deck-strip" id="deckStrip" role="tablist" aria-label="Choose a slide"></div>
+      <p class="deck-hint">Click either side of a slide, use the arrow keys, swipe, or pick a slide above.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CREDITS ===== -->
+<section id="credits" style="padding-top:0">
+  <div class="wrap">
+    <h2 class="pb-h2 reveal">Credits and sources</h2>
+    <div class="pb-credits reveal">
+      <div>
+        <h3>Team</h3>
+        <p>Robert Butts, Doug Caruso, and Josh Roush, for GRADTDA 5402 at The Ohio State University.</p>
+      </div>
+      <div>
+        <h3>The original study</h3>
+        <p>The data and the research question come from a published case study with the same title: Erickson, W. P., Nick, T. G., and Ward, D. H. (1998). <a href="https://pubs.usgs.gov/publication/70184937" target="_blank" rel="noopener">Investigating flight response of Pacific brant to helicopters at Izembek Lagoon, Alaska by using logistic regression</a>. In R. Peck, L. D. Haugh, and A. Goodman (Eds.), <i>Statistical Case Studies: A Collaboration Between Academe and Industry</i>, chapter 13. SIAM.</p>
+      </div>
+      <div>
+        <h3>Photo</h3>
+        <p><a href="https://www.fws.gov/media/pacific-black-brantjpg" target="_blank" rel="noopener">Pacific Black Brant</a> by Gregory Smith, via the U.S. Fish and Wildlife Service, licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. Cropped, and used on the title slide with the project title added.</p>
+      </div>
+      <div>
+        <h3>Maps</h3>
+        <p>Slides 22 and 23 show satellite imagery from Google Maps, with our model's probabilities shaded on top. Map imagery: Google.</p>
+      </div>
+    </div>
+    <div class="pb-back reveal">
+      <a class="btn btn-ghost" href="../work.html"><span class="arr" style="display:inline-block;transform:scaleX(-1)">&rarr;</span> Back to all work</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===== FOOTER (same as every page, with ../ links) ===== -->
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="fb-name">
+          <span class="mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+              <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          Robert Butts
+        </div>
+        <p>Data visualization and clear thinking, from a technologist in Ohio higher education.</p>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>Site</h4>
+          <a href="../index.html">Home</a>
+          <a href="../work.html">Work</a>
+          <a href="../gallery.html">Gallery</a>
+          <a href="../practice.html">Practice</a>
+          <a href="../about.html">About</a>
+          <a href="../contact.html">Contact</a>
+        </div>
+        <div class="foot-col">
+          <h4>Elsewhere</h4>
+          <a href="https://www.linkedin.com/in/robertmbutts/" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+        <div class="foot-col">
+          <h4>Say hello</h4>
+          <a href="mailto:rbutts42@gmail.com">rbutts42@gmail.com</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 Robert Butts.</span>
+      <span>Charts, questions, and the occasional insight.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../site.js"></script>
+<script>
+/* ===== Slide viewer =====
+   Each slide has a short title (shown under the slide) and a full description
+   (read aloud by screen readers in place of the image). */
+var SLIDES = [
+  ['Title slide', 'Title slide: "Investigating flight response of Pacific Brant to helicopters at Izembek Lagoon, Alaska," by Robert Butts, Doug Caruso, and Josh Roush, over a photo of three Pacific brant swimming.'],
+  ['Background', 'Background: More than 100,000 Pacific brant feed on eelgrass in or near Izembek Lagoon each fall before a long migration. Nearby helicopter flights can disrupt resting and feeding, and air traffic has grown with oil exploration. Spotters recorded how flocks responded to test flights by Bell 205 and Sikorsky HH-3F Coast Guard helicopters, noting altitude, lateral distance, and whether the flock took flight.'],
+  ['Current FAA restrictions', 'Current FAA restrictions: aircraft must stay at least 2,000 feet, or 609 meters, above Izembek Lagoon.'],
+  ['Questions of interest', 'Questions of interest: What is the effect of helicopter altitude on flight response? What is the effect of lateral distance? Which logistic regression model best reflects flight response using lateral distance, altitude, and their interaction? What recommendations can guide air traffic near brant flocks?'],
+  ['The data', 'The data: 464 observations and 4 columns: observation number, altitude and lateral distance (recorded in hundreds of meters and converted to meters), and flight response (1 = yes, 0 = no). No missing values or exclusions.'],
+  ['Box plot of lateral distance', 'Box plot of lateral distance in meters. The median is about 660 meters, most values fall under about 1,700 meters, and outliers reach about 8,000 meters.'],
+  ['Box plot of altitude', 'Box plot of altitude in meters. The median is about 305 meters, the middle half runs from about 150 to 460 meters, and one high value sits near 1,220 meters.'],
+  ['Characterizing the data: summary statistics', 'Summary table. Altitude ranges from 91 to 1,219 meters, with a median of 305 and a mean of 328.4. Lateral distance ranges from 0 to 8,047 meters, with a median of 660 and a mean of 1,097.'],
+  ['Characterizing the data: counts', 'Counts: 179 observations with no flight and 285 with flight. Lateral distance: 280 under 1,000 meters, 95 from 1,000 to 1,900, 52 from 1,900 to 2,900, and 37 over 3,000. Altitude: 190 under 300 meters, 198 from 300 to 600, and 76 over 600.'],
+  ['Distance and altitude of each test flight', 'Scatter plot of helicopter altitude against lateral distance, colored by whether the flock took flight. Flights happen mostly within about 1,500 meters at any altitude. Red circles mark the highest passes, a band of mixed responses near 1,500 meters, and two distant passes with no response.'],
+  ['Lateral distance by flight response (box plot)', 'Box plots of lateral distance by flight response. Flocks that flew had a median distance near 500 meters; flocks that did not fly had a median near 1,800 meters.'],
+  ['Lateral distance by flight response (dot plot)', 'Dot plot of lateral distance by flight response. Flights cluster at short distances, while no-flight cases spread much farther out.'],
+  ['Altitude by flight response (box plot)', 'Box plots of altitude by flight response. The two groups look almost the same, with medians near 305 meters.'],
+  ['Altitude by flight response (dot plot)', 'Dot plot of altitude by flight response. Both groups span the same altitudes, and the highest passes, near 1,220 meters, all produced flights.'],
+  ['Model 1: altitude only', 'Model 1, altitude only, with its logistic regression equation. P-value 0.0117, AIC 616. Finding: the odds of flight increase by a factor of 1.12 for every 100 meters of altitude.'],
+  ['Model 2: lateral distance only', 'Model 2, lateral distance only. P-value below 2e-16, AIC 373, much better than Model 1. Finding: each 100 meters of lateral distance multiplies the odds of flight by 0.79, so the farther away, the lower the odds.'],
+  ['Final model: altitude and lateral distance', 'Final model, Model 3, with altitude and lateral distance. P-values below 2e-16 for lateral distance and 0.00357 for altitude, AIC 365. The probability of flight falls with lateral distance and rises with altitude.'],
+  ['Interaction between altitude and distance', 'Interaction plot of flight probability across lateral distance groups, from under 1,000 meters to over 3,000 meters, for low, medium, and high altitude. All start near 0.87 under 1,000 meters; low altitude drops fastest, high altitude stays high longest, and all reach near zero beyond 3,000 meters.'],
+  ['Why not an interaction model?', 'Why not an interaction model: it had a better AIC (350 versus 365) and ANOVA favored it, but its probability table predicted nearly 100% flight beyond 3,000 meters at altitudes above 600 meters. That contradicts the data and the interaction plot, so the team suspected multicollinearity.'],
+  ['Questions of interest, revisited', 'Questions of interest, repeated before the recommendations.'],
+  ['Recommendations', 'Recommendations, for keeping the chance of flight at 10% or less: keep lateral distance at least 2,000 meters; distances under 1,000 meters are more likely than not to cause flight at any altitude; closer than 2,000 meters, altitude should not exceed 100 meters; at the FAA minimum altitude of 609 meters, keep at least 2,400 to 2,500 meters away; altitude can be as high as 1,500 meters once lateral distance passes 3,200 meters.'],
+  ['Map of probabilities at 500 meters', 'Satellite map of Izembek Lagoon and Cold Bay Airport, shaded from red (high chance of flight) to green (low) by distance, for helicopters flying at 500 meters. A table lists probabilities from 95.8% at 100 meters away to 0.7% at 3,500 meters. Map imagery: Google.'],
+  ['Map of probabilities at 1,500 meters', 'The same map for helicopters flying at 1,500 meters. Probabilities run from 99.4% at 100 meters away to 4.7% at 3,500 meters. Map imagery: Google.'],
+  ['Probability matrix of flight response', 'Probability matrix of flight response for altitudes from 100 to 1,500 meters (columns) and lateral distances from 100 to 3,500 meters (rows), shaded from red to green, with values under 10% in bold.']
+];
+
+(function(){
+  var n = SLIDES.length, i = 0;
+  var img = document.getElementById('deckImg');
+  var prev = document.getElementById('deckPrev'), next = document.getElementById('deckNext');
+  var count = document.getElementById('deckCount'), title = document.getElementById('deckTitle');
+  var strip = document.getElementById('deckStrip'), stage = document.getElementById('deckStage');
+  var full = document.getElementById('deckFull');
+  function src(k, thumb){ var s = String(k + 1).padStart(2, '0'); return 'slides/' + (thumb ? 'thumbs/' : '') + 'slide-' + s + '.webp'; }
+
+  /* thumbnail strip */
+  SLIDES.forEach(function(s, k){
+    var b = document.createElement('button');
+    b.className = 'deck-thumb'; b.type = 'button';
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-label', 'Slide ' + (k + 1) + ': ' + s[0]);
+    b.innerHTML = '<img src="' + src(k, true) + '" alt="" loading="lazy" draggable="false"><span>' + (k + 1) + '</span>';
+    b.addEventListener('click', function(){ show(k); });
+    strip.appendChild(b);
+  });
+  var thumbs = strip.querySelectorAll('.deck-thumb');
+
+  function show(k, quiet){
+    i = Math.max(0, Math.min(n - 1, k));
+    img.src = src(i);
+    img.alt = SLIDES[i][1];
+    count.textContent = 'Slide ' + (i + 1) + ' of ' + n;
+    title.textContent = SLIDES[i][0];
+    prev.disabled = i === 0; next.disabled = i === n - 1;
+    thumbs.forEach(function(t, j){ t.classList.toggle('on', j === i); t.setAttribute('aria-selected', j === i); });
+    var t = thumbs[i];
+    strip.scrollTo({left: t.offsetLeft - strip.clientWidth / 2 + t.clientWidth / 2, behavior: quiet ? 'auto' : 'smooth'});
+    /* load the next and previous slides early, so arrows feel instant */
+    [i - 1, i + 1].forEach(function(j){ if(j >= 0 && j < n){ var p = new Image(); p.src = src(j); } });
+    if(!quiet && history.replaceState) history.replaceState(null, '', '#slide-' + (i + 1));
+  }
+  prev.addEventListener('click', function(){ show(i - 1); });
+  next.addEventListener('click', function(){ show(i + 1); });
+  var swiped = false;
+  stage.addEventListener('click', function(e){
+    if(swiped){ swiped = false; return; }
+    var r = stage.getBoundingClientRect();
+    show(i + (e.clientX - r.left < r.width / 2 ? -1 : 1));
+  });
+
+  /* arrow keys work anywhere on the page, except while typing in a field */
+  document.addEventListener('keydown', function(e){
+    if(e.altKey || e.ctrlKey || e.metaKey) return;
+    var tag = (e.target.tagName || '').toLowerCase();
+    if(tag === 'input' || tag === 'textarea' || tag === 'select') return;
+    if(e.key === 'ArrowRight'){ show(i + 1); e.preventDefault(); }
+    if(e.key === 'ArrowLeft'){ show(i - 1); e.preventDefault(); }
+  });
+
+  /* swipe on phones and tablets */
+  var x0 = null;
+  stage.addEventListener('touchstart', function(e){ x0 = e.touches[0].clientX; }, {passive: true});
+  stage.addEventListener('touchend', function(e){
+    if(x0 === null) return;
+    var dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if(Math.abs(dx) > 40){ swiped = true; show(i + (dx < 0 ? 1 : -1)); setTimeout(function(){ swiped = false; }, 400); }
+  });
+
+  /* full screen, where the browser allows it (iPhones do not) */
+  if(stage.requestFullscreen){
+    full.addEventListener('click', function(){
+      if(document.fullscreenElement) document.exitFullscreen(); else stage.requestFullscreen();
+    });
+  } else { full.hidden = true; }
+
+  /* a link like pacific-brant/#slide-21 opens on that slide */
+  var m = location.hash.match(/^#slide-(\d+)$/);
+  show(m ? parseInt(m[1], 10) - 1 : 0, true);
+  if(m) document.getElementById('slides').scrollIntoView();
+})();
+</script>
+</body>
+</html>
