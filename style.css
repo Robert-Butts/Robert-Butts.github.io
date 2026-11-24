@@ -1189,3 +1189,15 @@ a.c-famous:hover .go{color:var(--fc)}
   .sky-room{min-height:min(122vw, 620px)}
   .sky-hint{margin-top:26px}
 }
+
+/* ============================================================
+   3D DATA FIELD (drawn by field3d.js)
+   The turning 3D scatterplot from recall(), behind the top of a
+   page. It covers the first screen and fades out toward the bottom,
+   and sits behind the page's text and cards. field3d.js explains how
+   to add it to a page.
+============================================================ */
+.has-field3d{position:relative; z-index:0; isolation:isolate}
+.field3d{position:absolute; left:0; right:0; top:0; height:100vh; height:100svh; min-height:560px; max-height:1000px; z-index:-1; pointer-events:none; overflow:hidden;
+  -webkit-mask-image:linear-gradient(180deg, #000 0%, #000 52%, transparent 100%); mask-image:linear-gradient(180deg, #000 0%, #000 52%, transparent 100%)}
+.field3d canvas{display:block; width:100%; height:100%}

@@ -59,7 +59,11 @@
   <a href="contact.html">Get in touch</a>
 </div>
 
-<main id="main">
+<main id="main" class="has-field3d">
+
+<!-- 3D DATA FIELD: the turning scatterplot from recall(), behind the top of this page
+     (drawn by field3d.js; delete this line and the two script lines at the bottom to remove it) -->
+<div class="field3d" data-field3d aria-hidden="true"></div>
 
 <!-- ===== PAGE HEADER ===== -->
 <div class="page-head">
@@ -331,5 +335,7 @@
 </footer>
 
 <script src="site.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+<script src="field3d.js" defer></script>
 </body>
 </html>
