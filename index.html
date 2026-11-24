@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Robert Butts · Data Visualization Portfolio</title>
-<meta name="description" content="Robert Butts is an educational technologist in Ohio who makes charts, data tools, and games that make data easier to learn.">
+<meta name="description" content="Robert Butts helps people see what their data is saying, with charts, data tools, and games that make learning stick.">
 
 <!--
   ============================================================
   HOME PAGE (index.html)
-  Three parts:
+  Two parts:
     1. the sky: the real stars over Columbus, Ohio, right now,
-       drawn by sky.js from the star list in sky-stars.js
-    2. Work: six project cards that slide sideways as you scroll
-    3. About, then a one-line footer
+       drawn by sky.js from the star list in sky-stars.js, above a
+       black bar with the name, place, and time
+    2. About and contact, then a one-line footer
   Search this file for the word EDIT to find easy things to change.
   This page styles the shared menu its own way (see "MENU" in the
   styles below); the other pages keep the menu from style.css.
@@ -44,8 +44,8 @@ body.home-sky{--serif:'Cormorant Garamond', Georgia, serif; --sky-accent:#F2D49B
 .home-sky .mobile-menu a{font-family:var(--serif); font-weight:500; font-size:2rem; color:var(--ink)}
 
 /* THE SKY */
-.sky-hero, .work, .home-about{padding:0}
-.sky-hero{position:relative; height:100vh; height:100svh; min-height:560px; overflow:hidden; background:#05070B}
+.sky-hero, .home-about{padding:0}
+.sky-hero{--bar:28%; position:relative; height:100vh; height:100svh; min-height:560px; overflow:hidden; background:#05070B}
 .sky-stage{position:absolute; inset:0}
 .sky-svg{display:block}
 .sky-svg .fig{cursor:pointer; outline:none}
@@ -79,46 +79,23 @@ body.home-sky{--serif:'Cormorant Garamond', Georgia, serif; --sky-accent:#F2D49B
 .sc-desc{font-size:14px; line-height:1.55; margin-top:8px; color:rgba(233,227,213,.78)}
 .sc-where{font-family:var(--serif); font-style:italic; font-size:15px; margin-top:12px; color:var(--sky-accent)}
 
-.sky-foot{position:absolute; left:0; right:0; bottom:0; display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:14px 32px;
-  padding:0 clamp(20px, 5vw, 72px) clamp(22px, 4.5vh, 44px); pointer-events:none}
+/* the black bar: the ground below the horizon (its height is --bar above; sky.js reads it too) */
+.sky-foot{position:absolute; left:0; right:0; bottom:0; height:var(--bar); box-sizing:border-box; display:flex; flex-wrap:wrap; align-items:center; align-content:center; justify-content:space-between; gap:14px 32px;
+  padding:clamp(18px, 3vh, 32px) clamp(20px, 5vw, 72px); pointer-events:none}
 .sky-foot h1{margin:0; font-family:var(--serif); font-weight:500; font-size:clamp(46px, 6.4vw, 96px); line-height:.92; letter-spacing:-.01em; color:var(--ink)}
 .sky-readout{margin:0; font-family:var(--mono); font-size:11px; line-height:1.9; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); text-align:right}
 
-/* WORK */
-.home-h2{margin:0; font-family:var(--serif); font-weight:500; font-size:clamp(34px, 3.4vw, 46px); line-height:1; letter-spacing:0; color:var(--ink)}
-.work{position:relative}
-.work-sticky{display:flex; flex-direction:column; justify-content:center; gap:28px; padding:clamp(64px, 10vh, 112px) 0 clamp(40px, 7vh, 80px)}
-.work .home-h2{padding:0 clamp(20px, 5vw, 72px)}
-.work-track{display:flex; gap:32px; padding:0 clamp(20px, 5vw, 72px) 18px; overflow-x:auto; scroll-snap-type:x mandatory}
-.wcard{flex:0 0 auto; width:min(70vw, 880px); display:flex; flex-direction:column; gap:16px; scroll-snap-align:start; color:inherit}
-.wcard-media{position:relative; aspect-ratio:16 / 10; overflow:hidden; border-radius:3px; background:#0B0F16; border:1px solid rgba(233,227,213,.08)}
-.wcard-media img{position:relative; width:100%; height:100%; object-fit:cover; transition:transform .7s cubic-bezier(.2,.8,.2,1)}
-.wcard-media .fallback{position:absolute; inset:0; width:100%; height:100%}
-.wcard:hover .wcard-media img{transform:scale(1.025)}
-.wcard-meta{display:flex; align-items:center; gap:12px}
-.wcard-glyph{flex:none}
-.wcard-title{display:block; font-family:var(--serif); font-weight:600; font-size:27px; line-height:1.12; color:var(--ink); transition:color .2s ease}
-.wcard:hover .wcard-title, .wcard:focus-visible .wcard-title{color:var(--sky-accent)}
-.wcard-kind{display:block; font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); margin-top:4px}
-.work-bar{display:none; position:relative; height:1px; margin:0 clamp(20px, 5vw, 72px); background:rgba(233,227,213,.12)}
-.work-bar span{position:absolute; inset:0; background:var(--sky-accent); transform-origin:left center; transform:scaleX(0)}
-/* pinned: set by sky.js on wide screens */
-.work.pin .work-sticky{position:sticky; top:0; height:100vh; height:100svh; overflow:hidden; padding:66px 0 0}
-.work.pin .work-track{width:max-content; overflow:visible; padding-bottom:0; scroll-snap-type:none; will-change:transform}
-.work.pin .wcard{width:min(62vw, 880px, calc((100vh - 310px) * 1.6)); width:min(62vw, 880px, calc((100svh - 310px) * 1.6))}
-.work.pin .work-bar{display:block}
-@media (max-width:760px){
-  .work-track{flex-direction:column; overflow:visible; gap:44px; padding-bottom:0}
-  .wcard{width:auto}
-}
-
 /* ABOUT AND FOOTER */
+.home-h2{margin:0; font-family:var(--serif); font-weight:500; font-size:clamp(34px, 3.4vw, 46px); line-height:1; letter-spacing:0; color:var(--ink)}
 .home-sky .home-about{padding:clamp(48px, 8vh, 96px) clamp(20px, 5vw, 72px) clamp(64px, 10vh, 112px)}
 .home-about-inner{max-width:1296px; margin:0 auto; border-top:1px solid rgba(233,227,213,.1); padding-top:clamp(48px, 8vh, 88px); display:flex; flex-wrap:wrap; gap:32px 56px; align-items:flex-start}
-.home-about-inner img{flex:0 0 auto; width:clamp(140px, 16vw, 220px); aspect-ratio:1 / 1; object-fit:cover; border-radius:2px; filter:grayscale(.2)}
+.home-about-inner img{flex:0 0 auto; width:clamp(140px, 16vw, 220px); height:auto; aspect-ratio:1 / 1; object-fit:cover; border-radius:2px; filter:grayscale(.2)}
 .home-about-text{flex:1 1 420px; max-width:640px; min-width:0}
 .home-about-text .home-h2{margin-bottom:18px}
 .home-about-text p{margin:0; font-size:18px; line-height:1.7; color:var(--ink-2)}
+.home-about-text p + p{margin-top:16px}
+.home-about-text p a{color:var(--ink); text-decoration:underline; text-decoration-color:rgba(242,212,155,.45); text-underline-offset:4px}
+.home-about-text p a:hover, .home-about-text p a:focus-visible{color:var(--sky-accent); text-decoration-color:var(--sky-accent)}
 .home-links{display:flex; flex-wrap:wrap; gap:6px 28px; margin-top:22px; font-size:15px}
 .plain{color:var(--ink-2); text-decoration:underline; text-decoration-color:rgba(233,227,213,.3); text-underline-offset:4px; padding:10px 0}
 .plain:hover, .plain:focus-visible{color:var(--sky-accent); text-decoration-color:var(--sky-accent)}
@@ -129,8 +106,7 @@ body.home-sky{--serif:'Cormorant Garamond', Georgia, serif; --sky-accent:#F2D49B
 
 @media (prefers-reduced-motion:reduce){
   .sky-svg .tw1, .sky-svg .tw2, .sky-svg .tw3{animation:none}
-  .wcard-media img, .sky-card{transition:none}
-  .wcard:hover .wcard-media img{transform:none}
+  .sky-card{transition:none}
 }
 </style>
 </head>
@@ -149,7 +125,7 @@ body.home-sky{--serif:'Cormorant Garamond', Georgia, serif; --sky-accent:#F2D49B
       <a class="section-link" href="deep-dives.html">Deep dives</a>
       <a class="section-link" href="gallery.html">Gallery</a>
       <a class="section-link" href="practice.html">Practice</a>
-      <a class="section-link" href="about.html">About</a>
+      <a class="section-link" href="#about">About</a>
       <a class="section-link" href="contact.html">Contact</a>
     </nav>
     <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu"><span></span></button>
@@ -161,7 +137,7 @@ body.home-sky{--serif:'Cormorant Garamond', Georgia, serif; --sky-accent:#F2D49B
   <a href="deep-dives.html">Deep dives</a>
   <a href="gallery.html">Gallery</a>
   <a href="practice.html">Practice</a>
-  <a href="about.html">About</a>
+  <a href="#about">About</a>
   <a href="contact.html">Contact</a>
 </div>
 
@@ -192,73 +168,20 @@ body.home-sky{--serif:'Cormorant Garamond', Georgia, serif; --sky-accent:#F2D49B
   </div>
 </section>
 
-<!-- ===== 2. WORK =====
-     On wide screens this section stays in place while scrolling slides the cards to the left
-     (sky.js). On phones the cards stack. With reduced motion, the row scrolls sideways.
-     EDIT: to add a project, copy one card. Images are 960 x 600 in images/home/.
-     The LEGO card loads Tableau's preview image; if it cannot load, its constellation shows. -->
-<section class="work row" id="work" aria-labelledby="workTitle">
-  <div class="work-sticky">
-    <h2 class="home-h2" id="workTitle">Work</h2>
-    <div class="work-track" id="workTrack">
-        <a class="wcard" href="dublin/index.html">
-          <div class="wcard-media"><img src="images/home/dublin.jpg" alt="The Dublin benchmarking dashboard: a U.S. map of similar places beside Dublin, Ohio’s census figures." width="960" height="600" loading="lazy"></div>
-          <div class="wcard-meta">
-            <svg class="wcard-glyph" width="30" height="30" viewBox="0 0 28 28" aria-hidden="true"><path d="M12.17,25.5L11.53,19.31L12.56,13.98L17.12,8.83L18.55,13.91L22.15,18.17M12.56,13.98L5.85,10.14L6.2,2.5" fill="none" stroke="#C9D3E6" stroke-opacity=".5" stroke-width=".9" stroke-linejoin="round"/><circle cx="12.17" cy="25.5" r="1.5" fill="#EDE6D6"/><circle cx="11.53" cy="19.31" r="1.5" fill="#EDE6D6"/><circle cx="12.56" cy="13.98" r="1.5" fill="#EDE6D6"/><circle cx="17.12" cy="8.83" r="1.5" fill="#EDE6D6"/><circle cx="18.55" cy="13.91" r="1.5" fill="#EDE6D6"/><circle cx="22.15" cy="18.17" r="1.5" fill="#EDE6D6"/><circle cx="5.85" cy="10.14" r="1.5" fill="#EDE6D6"/><circle cx="6.2" cy="2.5" r="1.5" fill="#EDE6D6"/></svg>
-            <div><span class="wcard-title">Data-Driven Dublin</span><span class="wcard-kind">Graduate capstone</span></div>
-          </div>
-        </a>
-        <a class="wcard" href="nba-games/">
-          <div class="wcard-media"><img src="images/home/nba.jpg" alt="The explorer’s chart of Game 7 of the 2025 NBA Finals, showing the Thunder’s lead after every scoring play." width="960" height="600" loading="lazy"></div>
-          <div class="wcard-meta">
-            <svg class="wcard-glyph" width="30" height="30" viewBox="0 0 28 28" aria-hidden="true"><path d="M6.26,21.83L5.2,25.15L7.85,25.05L7.92,23.2L6.26,21.83L3.28,13.41L6.92,12.56L10.32,16.8L13.52,19.27L15.55,20.79L18.41,19.72L22.18,13.67L23.5,6.64L25.5,2.85M6.92,12.56L7.19,11.71M3.28,13.41L2.5,10.79" fill="none" stroke="#C9D3E6" stroke-opacity=".5" stroke-width=".9" stroke-linejoin="round"/><circle cx="6.26" cy="21.83" r="1.5" fill="#EDE6D6"/><circle cx="5.2" cy="25.15" r="1.5" fill="#EDE6D6"/><circle cx="7.85" cy="25.05" r="1.5" fill="#EDE6D6"/><circle cx="7.92" cy="23.2" r="1.5" fill="#EDE6D6"/><circle cx="3.28" cy="13.41" r="1.5" fill="#EDE6D6"/><circle cx="6.92" cy="12.56" r="1.5" fill="#EDE6D6"/><circle cx="10.32" cy="16.8" r="1.5" fill="#EDE6D6"/><circle cx="13.52" cy="19.27" r="1.5" fill="#EDE6D6"/><circle cx="15.55" cy="20.79" r="1.5" fill="#EDE6D6"/><circle cx="18.41" cy="19.72" r="1.5" fill="#EDE6D6"/><circle cx="22.18" cy="13.67" r="1.5" fill="#EDE6D6"/><circle cx="23.5" cy="6.64" r="1.5" fill="#EDE6D6"/><circle cx="25.5" cy="2.85" r="1.5" fill="#EDE6D6"/><circle cx="7.19" cy="11.71" r="1.5" fill="#EDE6D6"/><circle cx="2.5" cy="10.79" r="1.5" fill="#EDE6D6"/></svg>
-            <div><span class="wcard-title">NBA Game Explorer</span><span class="wcard-kind">Deep dive</span></div>
-          </div>
-        </a>
-        <a class="wcard" href="pacific-brant/index.html">
-          <div class="wcard-media"><img src="images/home/brant.jpg" alt="Three Pacific brant swimming on dark water." width="960" height="600" loading="lazy"></div>
-          <div class="wcard-meta">
-            <svg class="wcard-glyph" width="30" height="30" viewBox="0 0 28 28" aria-hidden="true"><path d="M2.5,7.0L7.71,14.16L14.3,13.53L18.53,21.0L25.5,15.21" fill="none" stroke="#C9D3E6" stroke-opacity=".5" stroke-width=".9" stroke-linejoin="round"/><circle cx="2.5" cy="7.0" r="1.5" fill="#EDE6D6"/><circle cx="7.71" cy="14.16" r="1.5" fill="#EDE6D6"/><circle cx="14.3" cy="13.53" r="1.5" fill="#EDE6D6"/><circle cx="18.53" cy="21.0" r="1.5" fill="#EDE6D6"/><circle cx="25.5" cy="15.21" r="1.5" fill="#EDE6D6"/></svg>
-            <div><span class="wcard-title">Helicopters and Pacific brant</span><span class="wcard-kind">Graduate project</span></div>
-          </div>
-        </a>
-        <a class="wcard" href="gallery.html">
-          <div class="wcard-media"><img src="images/home/gallery.jpg" alt="A map of Ohio counties shaded by school spending per student, from the Chart Gallery." width="960" height="600" loading="lazy"></div>
-          <div class="wcard-meta">
-            <svg class="wcard-glyph" width="30" height="30" viewBox="0 0 28 28" aria-hidden="true"><path d="M16.21,14.21L23.9,8.68L25.5,13.41L19.17,17.11L16.21,14.21L11.3,14.91L7.27,15.15L2.5,19.32" fill="none" stroke="#C9D3E6" stroke-opacity=".5" stroke-width=".9" stroke-linejoin="round"/><circle cx="16.21" cy="14.21" r="1.5" fill="#EDE6D6"/><circle cx="23.9" cy="8.68" r="1.5" fill="#EDE6D6"/><circle cx="25.5" cy="13.41" r="1.5" fill="#EDE6D6"/><circle cx="19.17" cy="17.11" r="1.5" fill="#EDE6D6"/><circle cx="11.3" cy="14.91" r="1.5" fill="#EDE6D6"/><circle cx="7.27" cy="15.15" r="1.5" fill="#EDE6D6"/><circle cx="2.5" cy="19.32" r="1.5" fill="#EDE6D6"/></svg>
-            <div><span class="wcard-title">The Chart Gallery</span><span class="wcard-kind">58 chart types</span></div>
-          </div>
-        </a>
-        <a class="wcard" href="practice.html">
-          <div class="wcard-media"><img src="images/home/practice.jpg" alt="Four quiz charts from the Chart Field Guide: a Sankey diagram, a streamgraph, a treemap, and a bump chart." width="960" height="600" loading="lazy"></div>
-          <div class="wcard-meta">
-            <svg class="wcard-glyph" width="30" height="30" viewBox="0 0 28 28" aria-hidden="true"><path d="M18.32,2.5L15.1,6.38L12.41,11.58L12.92,17.81L15.74,23.14L12.48,25.5L9.68,19.13L12.92,17.81" fill="none" stroke="#C9D3E6" stroke-opacity=".5" stroke-width=".9" stroke-linejoin="round"/><circle cx="18.32" cy="2.5" r="1.5" fill="#EDE6D6"/><circle cx="15.1" cy="6.38" r="1.5" fill="#EDE6D6"/><circle cx="12.41" cy="11.58" r="1.5" fill="#EDE6D6"/><circle cx="12.92" cy="17.81" r="1.5" fill="#EDE6D6"/><circle cx="15.74" cy="23.14" r="1.5" fill="#EDE6D6"/><circle cx="12.48" cy="25.5" r="1.5" fill="#EDE6D6"/><circle cx="9.68" cy="19.13" r="1.5" fill="#EDE6D6"/></svg>
-            <div><span class="wcard-title">Practice tools</span><span class="wcard-kind">5 interactive tools</span></div>
-          </div>
-        </a>
-        <a class="wcard" href="work.html#lego">
-          <div class="wcard-media"><svg class="fallback" viewBox="-180 0 960 600" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path d="M403.01,348.61L383.65,371.07L329.42,371.74L292.7,427.17L235.08,450.0L243.92,434.6L211.45,428.45L198.07,318.21L196.99,150.0L302.71,265.48L329.42,371.74M302.71,265.48L198.07,318.21" fill="none" stroke="#C9D3E6" stroke-opacity=".35" stroke-width="2" stroke-linejoin="round"/><circle cx="403.01" cy="348.61" r="5" fill="#EDE6D6"/><circle cx="383.65" cy="371.07" r="5" fill="#EDE6D6"/><circle cx="329.42" cy="371.74" r="5" fill="#EDE6D6"/><circle cx="292.7" cy="427.17" r="5" fill="#EDE6D6"/><circle cx="235.08" cy="450.0" r="5" fill="#EDE6D6"/><circle cx="243.92" cy="434.6" r="5" fill="#EDE6D6"/><circle cx="211.45" cy="428.45" r="5" fill="#EDE6D6"/><circle cx="198.07" cy="318.21" r="5" fill="#EDE6D6"/><circle cx="196.99" cy="150.0" r="5" fill="#EDE6D6"/><circle cx="302.71" cy="265.48" r="5" fill="#EDE6D6"/></svg><img src="https://public.tableau.com/static/images/Le/LegoVisualizationforCompetition/LEGOComplexityAnalysis/1.png" alt="The LEGO complexity dashboard on Tableau Public." width="960" height="600" loading="lazy" onerror="this.remove()"></div>
-          <div class="wcard-meta">
-            <svg class="wcard-glyph" width="30" height="30" viewBox="0 0 28 28" aria-hidden="true"><path d="M21.9,17.73L20.41,19.45L16.26,19.5L13.44,23.75L9.02,25.5L9.7,24.32L7.21,23.85L6.19,15.4L6.1,2.5L14.21,11.35L16.26,19.5M14.21,11.35L6.19,15.4" fill="none" stroke="#C9D3E6" stroke-opacity=".5" stroke-width=".9" stroke-linejoin="round"/><circle cx="21.9" cy="17.73" r="1.5" fill="#EDE6D6"/><circle cx="20.41" cy="19.45" r="1.5" fill="#EDE6D6"/><circle cx="16.26" cy="19.5" r="1.5" fill="#EDE6D6"/><circle cx="13.44" cy="23.75" r="1.5" fill="#EDE6D6"/><circle cx="9.02" cy="25.5" r="1.5" fill="#EDE6D6"/><circle cx="9.7" cy="24.32" r="1.5" fill="#EDE6D6"/><circle cx="7.21" cy="23.85" r="1.5" fill="#EDE6D6"/><circle cx="6.19" cy="15.4" r="1.5" fill="#EDE6D6"/><circle cx="6.1" cy="2.5" r="1.5" fill="#EDE6D6"/><circle cx="14.21" cy="11.35" r="1.5" fill="#EDE6D6"/></svg>
-            <div><span class="wcard-title">LEGO complexity analysis</span><span class="wcard-kind">Tableau Public</span></div>
-          </div>
-        </a>
-    </div>
-    <div class="work-bar" aria-hidden="true"><span id="workBar"></span></div>
-  </div>
-</section>
-
-<!-- ===== 3. ABOUT ===== EDIT: the two sentences and the links -->
-<section class="home-about" aria-labelledby="aboutTitle">
+<!-- ===== 2. ABOUT AND CONTACT ===== EDIT: the two paragraphs and the links.
+     This is the only About on the site: about.html now forwards here, and every menu's
+     About link opens this section (id="about").
+     Contact goes through the form on contact.html, so no email address appears on the site. -->
+<section class="home-about" id="about" aria-labelledby="aboutTitle">
   <div class="home-about-inner">
     <img src="images/profile/robert-headshot.jpg" alt="Robert Butts" width="800" height="768" loading="lazy">
     <div class="home-about-text">
       <h2 class="home-h2" id="aboutTitle">About</h2>
-      <p>I am an educational technologist at Denison University in Ohio. I help faculty teach with technology and data, and I make charts, tools, and games that make data easier to learn.</p>
+      <p>I help people see what their data is saying. The thread through all of my work is the same: taking something complicated and making it clear. In my day job, that means helping faculty choose and use the right tools. On my own time, it means turning data into pictures that answer a question at a glance, and building small interactive tools that make learning stick.</p>
+      <p>I am strongly influenced by the Financial Times Visual Vocabulary, a guide that sorts charts by the question each one answers. It inspired my <a href="gallery.html#credits">Chart Gallery</a>.</p>
       <div class="home-links">
-        <a class="plain" href="mailto:rbutts42@gmail.com">rbutts42@gmail.com</a>
+        <a class="plain" href="contact.html">Send me a message</a>
         <a class="plain" href="https://www.linkedin.com/in/robertmbutts/" target="_blank" rel="noopener">LinkedIn</a>
-        <a class="plain" href="about.html">More about me</a>
       </div>
     </div>
   </div>

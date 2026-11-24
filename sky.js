@@ -5,10 +5,7 @@
         facing north, with each project in one of the six
         constellations that never set there
      2. the card that appears when you point to a constellation
-     3. the Work row: on wide screens the section stays in place
-        while scrolling slides the cards sideways
-   Without JavaScript, the sky's project links show as a plain
-   list and the Work cards sit in a row you can scroll sideways.
+   Without JavaScript, the sky's project links show as a plain list.
    ============================================================ */
 (function () {
   'use strict';
@@ -74,8 +71,10 @@
       if (!w || !h) return;
       var ms = Date.now(), lst = lstDeg(ms);
       /* the never-setting circle: as large as fits, with its top kept below the menu */
-      var R = Math.max(90, Math.min(0.37 * h, 0.42 * w, (0.8 * h - 124) / 2));
-      var scale = R / CAP, cx = w / 2, horizonY = Math.round(0.8 * h), cy = horizonY - R;
+      var bar = (parseFloat(getComputedStyle(hero).getPropertyValue('--bar')) || 28) / 100;   /* the black bar's share of the screen */
+      var horizonY = Math.round((1 - bar) * h);
+      var R = Math.max(90, Math.min(0.37 * h, 0.42 * w, (horizonY - 124) / 2));
+      var scale = R / CAP, cx = w / 2, cy = horizonY - R;
       var rs = Math.max(0.75, Math.min(1.2, Math.min(w, h) / 900));
       /* gnomonic projection facing north, centered at the height of the North Star,
          so the horizon stays a straight line */
@@ -234,79 +233,4 @@
     });
   }
 
-  /* ---- 3. the Work row ----------------------------------- */
-  /* pin   : wide screens; the section stays in place while scrolling slides the cards left
-     row   : reduced motion or a very short window; the cards sit in a row that scrolls sideways
-     stack : phones; the cards stack top to bottom (set in the page's CSS too) */
-  var work = document.getElementById('work');
-  var track = document.getElementById('workTrack');
-  var bar = document.getElementById('workBar');
-  if (!work || !track) return;
-
-  var mode = 'row', dist = 0, stickyH = 0, cur = null, target = 0, raf = null;
-
-  var modeNow = function () {
-    if (window.innerWidth <= 760) return 'stack';
-    if (reduce || window.innerHeight < 480) return 'row';
-    return 'pin';
-  };
-
-  var place = function (jump) {
-    if (mode === 'pin') track.parentElement.scrollLeft = 0;
-    if (mode !== 'pin' || !dist) {
-      track.style.transform = '';
-      if (bar) bar.style.transform = 'scaleX(0)';
-      return;
-    }
-    var total = Math.max(1, work.offsetHeight - stickyH);
-    var p = Math.min(1, Math.max(0, -work.getBoundingClientRect().top / total));
-    target = p * dist;
-    if (jump || cur === null) cur = target;
-    if (!raf) raf = requestAnimationFrame(step);
-  };
-  var step = function () {
-    cur += (target - cur) * 0.14;                 /* eases a little behind the scroll */
-    if (Math.abs(target - cur) < 0.4) cur = target;
-    track.style.transform = 'translate3d(' + (-cur).toFixed(1) + 'px, 0, 0)';
-    if (bar) bar.style.transform = 'scaleX(' + (cur / dist).toFixed(4) + ')';
-    raf = cur !== target ? requestAnimationFrame(step) : null;
-  };
-
-  var measure = function () {
-    mode = modeNow();
-    work.classList.remove('pin', 'row', 'stack');
-    work.classList.add(mode);
-    if (mode === 'pin') {
-      stickyH = track.parentElement.clientHeight;
-      dist = Math.max(0, track.scrollWidth - window.innerWidth);
-      work.style.height = Math.round(stickyH + dist) + 'px';
-    } else {
-      dist = 0;
-      work.style.height = '';
-    }
-    place(true);
-  };
-
-  /* tabbing to a card that is off screen scrolls the page until it slides into view */
-  track.addEventListener('focusin', function (e) {
-    /* the browser may scroll the locked area sideways on its own when a card gets focus; undo that */
-    track.parentElement.scrollLeft = 0;
-    track.scrollLeft = 0;
-    if (mode !== 'pin' || !dist) return;
-    var c = e.target.closest && e.target.closest('.wcard');
-    if (!c) return;
-    var pad = parseFloat(getComputedStyle(track).paddingLeft) || 0;
-    var p = Math.min(1, Math.max(0, (c.offsetLeft - pad) / dist));
-    var total = work.offsetHeight - stickyH;
-    window.scrollTo(0, Math.round(window.scrollY + work.getBoundingClientRect().top + p * total));
-  });
-
-  measure();
-  window.addEventListener('scroll', function () { place(false); }, { passive: true });
-  var wt = null;
-  window.addEventListener('resize', function () {
-    clearTimeout(wt);
-    wt = setTimeout(measure, 120);
-  });
-  window.addEventListener('load', measure);
 })();
