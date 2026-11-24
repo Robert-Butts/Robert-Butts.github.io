@@ -73,6 +73,28 @@ a.dv-card:hover .dv-go .arr{transform:translateX(3px)}
 @media (prefers-reduced-motion:reduce){
   .dv-card, .dv-media img, .dv-go .arr{transition:none}
 }
+
+/* THE HERO: polygon shapes built out of a 3D coordinate plane (polyhero.js).
+   Beside the title on wide screens, below it on narrower ones; about two thirds of the screen tall. */
+.dv-hero{position:relative; overflow:hidden; isolation:isolate}
+.dv-hero .wrap{position:relative; z-index:1}
+.poly-stage{position:absolute; inset:0; z-index:0; pointer-events:none; opacity:0; transition:opacity 1s ease;
+  -webkit-mask-image:linear-gradient(180deg, #000 74%, transparent); mask-image:linear-gradient(180deg, #000 74%, transparent)}
+.poly-stage.on{opacity:1}
+.poly-stage canvas{display:block}
+.poly-cap{position:absolute; z-index:1; margin:0; transform:translateX(-50%); font-family:var(--mono); font-size:.74rem; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--muted); white-space:nowrap; pointer-events:none; opacity:0; transition:opacity .5s ease}
+.poly-cap.on{opacity:1}
+@media (min-width:1000px){
+  .dv-hero.has-poly{min-height:max(540px, 66vh); min-height:max(540px, 66svh)}
+  .dv-hero.has-poly .ph-b, .dv-hero.has-poly .ph-lead{max-width:min(56%, 640px)}
+}
+@media (max-width:999px){
+  .dv-hero.has-poly{padding-bottom:min(84vw, 420px)}
+}
+@media (prefers-reduced-motion:reduce){
+  .poly-stage, .poly-cap{transition:none}
+}
 </style>
 </head>
 
@@ -116,7 +138,12 @@ a.dv-card:hover .dv-go .arr{transform:translateX(3px)}
 <main id="main">
 
 <!-- ===== PAGE HEADER ===== -->
-<div class="page-head dv-head">
+<div class="page-head dv-head dv-hero">
+  <!-- HERO ANIMATION: a 3D coordinate plane that builds one shape for each deep dive out of its
+       triangle grid (drawn by polyhero.js; captions and timing are at the top of that file).
+       To remove it, delete these two lines and the two script lines at the bottom of the page. -->
+  <div class="poly-stage" data-polyhero aria-hidden="true"></div>
+  <p class="poly-cap" id="polyCap" aria-hidden="true"></p>
   <div class="wrap">
     <p class="eyebrow ph-a">Deep dives</p>
     <h1 class="ph-b">Data projects that go past a single chart.</h1>
@@ -256,5 +283,7 @@ a.dv-card:hover .dv-go .arr{transform:translateX(3px)}
 </footer>
 
 <script src="site.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+<script src="polyhero.js" defer></script>
 </body>
 </html>
