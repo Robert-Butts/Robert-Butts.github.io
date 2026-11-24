@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NBA Game Explorer · Robert Butts</title>
+<meta name="description" content="Pick any team and any 2024-25 NBA game to see the score difference after every scoring play, with lead changes, scoring runs, and timeouts marked.">
+<meta property="og:title" content="NBA Game Explorer: every 2024-25 game, one scoring play at a time">
+<meta property="og:description" content="Pick a team and a game to see how the lead moved, where the runs came from, and when each team called timeout.">
+<meta property="og:image" content="https://robert-butts.github.io/nba-games/share.jpg">
+<meta property="og:type" content="website">
+
+<!--
+  ============================================================
+  NBA GAME EXPLORER (nba-games/index.html)
+  Lives at robert-butts.github.io/nba-games/
+  A link straight to one game: nba-games/#OKC/401766128
+  (team abbreviation, then ESPN's game id)
+
+  Files in this folder:
+    explorer.js             draws everything on this page
+    data/2024-25/games.json the 30 teams and one row per game
+    data/2024-25/g/<id>.json one file per game (every play)
+    share.jpg               the preview image for social media
+
+  The data files are built by build_games.py from ESPN's
+  play-by-play and schedule files, as collected by the
+  SportsDataverse project. To add a season, run the build
+  script for it and add the season to SEASONS in explorer.js.
+  ============================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<noscript><style>.ge-loading{display:none}</style></noscript>
+
+<style>
+/* ===== Page styles for this page only ===== */
+.ge{--accent:var(--amber); --accent-dim:var(--amber-dim)}
+.ge .eyebrow::before{background:var(--accent)}
+.ge-app{padding-top:34px}
+
+/* pickers */
+.ge-controls{display:flex; flex-wrap:wrap; align-items:flex-end; gap:14px 18px; margin-bottom:22px}
+.ge-field{display:flex; flex-direction:column; gap:7px; min-width:0}
+.ge-field span{font-family:var(--mono); font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; color:var(--faint)}
+.ge-field.team{flex:0 1 270px}
+.ge-field.game{flex:1 1 380px}
+.ge select{
+  width:100%; appearance:none; -webkit-appearance:none; font:inherit; font-size:.95rem; color:var(--text);
+  background:var(--panel-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%238B97A7' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 14px center;
+  border:1px solid var(--line-2); border-radius:11px; padding:12px 40px 12px 14px; cursor:pointer;
+  text-overflow:ellipsis; transition:border-color .18s ease, box-shadow .18s ease}
+.ge select:hover{border-color:var(--faint)}
+.ge select:focus-visible{outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-dim)}
+.ge select option, .ge select optgroup{background:var(--panel-2); color:var(--text)}
+.ge-steps{display:flex; gap:8px}
+.ge-sbtn{font-family:var(--mono); font-size:.76rem; letter-spacing:.02em; color:var(--text); background:var(--panel);
+  border:1px solid var(--line-2); border-radius:11px; padding:12px 14px; cursor:pointer; white-space:nowrap;
+  transition:border-color .18s ease, color .18s ease}
+.ge-sbtn:hover:not(:disabled){border-color:var(--accent); color:var(--accent)}
+.ge-sbtn:disabled{opacity:.4; cursor:default}
+.ge-sbtn:focus-visible, .ge-link:focus-visible, .ge-plot:focus-visible, .ge-list summary:focus-visible, .ge-check input:focus-visible + i{outline:2px solid var(--accent); outline-offset:2px}
+
+/* scoreboard */
+.ge-board{display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr); gap:18px; align-items:stretch;
+  background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:22px 24px}
+.ge-side{display:grid; grid-template-columns:auto minmax(0, 1fr); grid-template-rows:auto auto; column-gap:14px; row-gap:10px; align-content:center;
+  border-radius:12px; padding:10px 12px; position:relative}
+.ge-side.sel{background:rgba(255,255,255,.025); box-shadow:inset 0 0 0 1px var(--tc)}
+.ge-side.home{direction:rtl} .ge-side.home > *{direction:ltr}
+.ge-badge{width:54px; height:54px; border-radius:50%; display:grid; place-items:center; font-family:var(--mono); font-weight:600; font-size:.82rem;
+  letter-spacing:.04em; color:#0E1116; background:var(--tc); grid-row:1 / 3}
+.ge-tname{font-family:var(--display); font-weight:600; font-size:1.08rem; line-height:1.2; align-self:end}
+.ge-ha{font-family:var(--mono); font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; color:var(--faint); align-self:start}
+.ge-ha b{color:var(--tc); font-weight:500}
+.ge-score{grid-column:1 / -1; font-family:var(--display); font-weight:600; font-size:clamp(2.8rem, 6vw, 4.2rem); line-height:.95; letter-spacing:-.02em; color:var(--muted)}
+.ge-side.won .ge-score{color:var(--text)}
+.ge-side.home .ge-score{text-align:right}
+.ge-mid{text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:4px 0}
+.ge-stage{font-family:var(--mono); font-size:.7rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent)}
+.ge-detail{font-family:var(--display); font-weight:600; font-size:1.06rem; margin-top:-4px}
+.ge-facts{display:grid; gap:3px; font-size:.88rem; color:var(--muted)}
+.ge-facts b{color:var(--text); font-weight:500}
+.ge-lines{border-collapse:collapse; font-family:var(--mono); font-size:.74rem; color:var(--muted); margin-top:4px}
+.ge-lines th, .ge-lines td{padding:3px 8px; text-align:center; font-weight:400}
+.ge-lines thead th{color:var(--faint); font-size:.66rem; letter-spacing:.08em}
+.ge-lines tbody th{text-align:left; color:var(--text)}
+.ge-lines td.t{color:var(--text); font-weight:600}
+.ge-swap{font-family:var(--mono); font-size:.72rem; color:var(--muted); background:none; border:0; cursor:pointer; text-decoration:underline; text-underline-offset:3px; padding:2px}
+.ge-swap:hover{color:var(--accent)}
+
+/* summary numbers */
+.ge-stats{display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); gap:12px; margin:14px 0}
+.ge-stat{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px 16px; min-width:0}
+.ge-stat-k{font-family:var(--mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--faint)}
+.ge-stat-v{font-family:var(--display); font-weight:600; font-size:1.9rem; line-height:1.1; margin-top:6px}
+.ge-pair{display:grid; gap:4px; margin-top:8px}
+.ge-pair div{display:flex; justify-content:space-between; gap:10px; align-items:baseline; font-size:.86rem; color:var(--muted)}
+.ge-pair div span:first-child{display:inline-flex; align-items:center; gap:7px; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.ge-pair i{width:9px; height:9px; border-radius:50%; background:var(--tc); flex:none}
+.ge-pair b{font-family:var(--display); font-weight:600; font-size:1.12rem; color:var(--text)}
+
+/* chart */
+.ge-chart{margin:0; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px 16px}
+.ge-chart-top{display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-end; gap:10px 24px; margin-bottom:10px}
+.ge-chart-top h2{font-family:var(--display); font-weight:600; font-size:1.2rem}
+.ge-chart-top p{font-size:.86rem; color:var(--muted); margin-top:3px}
+.ge-toggles{display:flex; flex-wrap:wrap; gap:6px 16px}
+.ge-check{display:inline-flex; align-items:center; gap:8px; font-family:var(--mono); font-size:.72rem; color:var(--muted); cursor:pointer; user-select:none}
+.ge-check input{position:absolute; opacity:0; width:1px; height:1px}
+.ge-check i{width:16px; height:16px; border-radius:5px; border:1.5px solid var(--line-2); display:grid; place-items:center; transition:background .15s ease, border-color .15s ease}
+.ge-check input:checked + i{background:var(--accent); border-color:var(--accent)}
+.ge-check input:checked + i::after{content:""; width:8px; height:4px; border:2px solid #0E1116; border-top:0; border-right:0; transform:translateY(-1px) rotate(-45deg)}
+.ge-plotwrap{position:relative}
+.ge-plot{position:relative; touch-action:pan-y; border-radius:10px; outline:none}
+.ge-plot svg{display:block; width:100%; height:auto; overflow:visible}
+.ge-plot text{font-family:var(--mono); font-size:10.5px; fill:var(--faint)}
+.ge-plot .lead-lab{font-size:10px; letter-spacing:.12em; font-weight:600}
+.ge-plot .q-lab{font-size:10.5px; letter-spacing:.08em; fill:var(--muted)}
+.ge-plot .run-lab{font-size:10px; font-weight:600}
+.ge-legend{display:flex; flex-wrap:wrap; gap:6px 18px; margin-top:10px; font-family:var(--mono); font-size:.7rem; color:var(--faint)}
+.ge-legend span{display:inline-flex; align-items:center; gap:7px}
+.ge-legend svg{flex:none}
+.ge-tip{position:absolute; z-index:5; pointer-events:none; max-width:290px; background:#0A0D12; border:1px solid var(--line-2); border-radius:12px;
+  padding:11px 13px; box-shadow:0 14px 34px rgba(0,0,0,.45); font-size:.84rem; line-height:1.45; opacity:0; transition:opacity .12s ease}
+.ge-tip.on{opacity:1}
+.ge-tip .k{font-family:var(--mono); font-size:.68rem; letter-spacing:.08em; color:var(--faint); text-transform:uppercase}
+.ge-tip .s{font-family:var(--display); font-weight:600; font-size:1rem; color:var(--text); margin-top:2px}
+.ge-tip .m{font-family:var(--mono); font-size:.74rem; margin-top:1px}
+.ge-tip .d{color:var(--muted); margin-top:6px}
+.ge-note{margin-bottom:14px; padding:12px 16px; border-radius:12px; background:var(--amber-dim); border:1px solid rgba(240,185,90,.35); font-size:.88rem; color:var(--text)}
+.ge-msg{padding:60px 10px; text-align:center; color:var(--muted)}
+.ge-sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.ge-caption{font-size:.84rem; color:var(--muted); margin-top:10px}
+
+/* lists and actions */
+.ge-lists{display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:12px; margin-top:14px; align-items:start}
+.ge-list{background:var(--panel); border:1px solid var(--line); border-radius:14px}
+.ge-list summary{cursor:pointer; list-style:none; padding:14px 16px; font-family:var(--display); font-weight:600; font-size:1rem; display:flex; justify-content:space-between; align-items:center; border-radius:14px}
+.ge-list summary::-webkit-details-marker{display:none}
+.ge-list summary::after{content:"+"; font-family:var(--mono); font-weight:400; color:var(--faint); font-size:1.1rem}
+.ge-list[open] summary::after{content:"\2212"}
+.ge-list ol{list-style:none; padding:0 16px 14px; display:grid; gap:9px; max-height:420px; overflow:auto}
+.ge-list li{display:grid; grid-template-columns:72px minmax(0, 1fr); gap:10px; font-size:.86rem; color:var(--muted); line-height:1.5}
+.ge-list li .t{font-family:var(--mono); font-size:.72rem; color:var(--faint); padding-top:2px}
+.ge-list li b{color:var(--text); font-weight:600}
+.ge-list li i{display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--tc); margin-right:6px}
+.ge-list li i.hollow{background:none; box-shadow:inset 0 0 0 1.5px var(--tc)}
+.ge-list .none{padding:0 16px 14px; font-size:.86rem; color:var(--faint)}
+.ge-actions{display:flex; flex-wrap:wrap; gap:12px; margin-top:16px; align-items:center}
+.ge-link{font-family:var(--mono); font-size:.78rem; color:var(--text); background:var(--panel); border:1px solid var(--line-2); border-radius:11px;
+  padding:11px 15px; cursor:pointer; display:inline-flex; gap:8px; align-items:center; transition:border-color .18s ease, color .18s ease}
+.ge-link:hover{border-color:var(--accent); color:var(--accent)}
+.ge-copied{font-family:var(--mono); font-size:.74rem; color:var(--green)}
+
+/* reading guide, definitions, credits */
+.ge-h2{font-family:var(--display); font-weight:600; font-size:clamp(1.5rem, 2.4vw, 1.9rem); letter-spacing:-.01em; margin-bottom:18px}
+.ge-cols{display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:26px 32px}
+.ge-cols h3{font-family:var(--mono); font-size:.74rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; font-weight:500}
+.ge-cols p{color:var(--muted); line-height:1.65; font-size:.95rem}
+.ge-cols p + p{margin-top:10px}
+.ge-cols a{color:var(--text); text-decoration:underline; text-underline-offset:2px}
+.ge-cols b{color:var(--text); font-weight:600}
+.ge-fine{margin-top:30px; font-size:.82rem; color:var(--faint); max-width:90ch; line-height:1.6}
+.ge-back{margin-top:34px}
+
+@media (max-width:1060px){
+  .ge-stats{grid-template-columns:repeat(2, minmax(0, 1fr))}
+  .ge-stats .ge-stat:nth-child(5){grid-column:1 / -1}
+  .ge-lists{grid-template-columns:1fr}
+}
+@media (max-width:900px){
+  .ge-board{grid-template-columns:1fr 1fr; padding:18px}
+  .ge-mid{grid-column:1 / -1; grid-row:2}
+  .ge-cols{grid-template-columns:1fr}
+}
+@media (max-width:620px){
+  .ge-field.team, .ge-field.game{flex:1 1 100%}
+  .ge-board{gap:10px; padding:14px}
+  .ge-side{padding:8px; column-gap:10px}
+  .ge-badge{width:40px; height:40px; font-size:.7rem}
+  .ge-tname{font-size:.92rem}
+  .ge-chart{padding:16px 12px 12px}
+  .ge-steps{width:100%}
+  .ge-sbtn{flex:1}
+  .ge-tip{position:static; max-width:none; opacity:1; margin-top:10px; box-shadow:none; min-height:94px}
+  .ge-tip:not(.on) .k, .ge-tip:not(.on) .s, .ge-tip:not(.on) .m{display:none}
+  .ge-lines{font-size:.68rem}
+  .ge-lines th, .ge-lines td{padding:3px 5px}
+}
+@media (prefers-reduced-motion:reduce){
+  .ge-tip, .ge select, .ge-sbtn, .ge-link{transition:none}
+}
+</style>
+</head>
+
+<body class="ge">
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ===== NAV (same as every page, with ../ because this page sits in a folder; Deep dives is the current section) ===== -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../index.html" aria-label="Home">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      Robert Butts
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a class="section-link" href="../work.html">Work</a>
+      <a class="section-link active" href="../deep-dives.html" aria-current="page">Deep dives</a>
+      <a class="section-link" href="../gallery.html">Gallery</a>
+      <a class="section-link" href="../practice.html">Practice</a>
+      <a class="section-link" href="../about.html">About</a>
+      <a class="nav-cta" href="../contact.html">Get in touch</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu"><span></span></button>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu" aria-label="Menu">
+  <a href="../index.html">Home</a>
+  <a href="../work.html">Work</a>
+  <a href="../deep-dives.html">Deep dives</a>
+  <a href="../gallery.html">Gallery</a>
+  <a href="../practice.html">Practice</a>
+  <a href="../about.html">About</a>
+  <a href="../contact.html">Get in touch</a>
+</div>
+
+<main id="main">
+
+<!-- ===== PAGE HEADER ===== -->
+<div class="page-head">
+  <div class="wrap">
+    <p class="eyebrow ph-a">Interactive · 2024-25 NBA season</p>
+    <h1 class="ph-b">NBA Game Explorer</h1>
+    <p class="ph-lead ph-c">Pick a team and one of its 2024-25 games to see the score difference after every scoring play, from the opening tip to the final buzzer. The season here includes 1,321 games: the regular season, the NBA Cup Championship, the Play-In Tournament, and the playoffs.</p>
+  </div>
+</div>
+
+<!-- ===== THE EXPLORER ===== -->
+<section class="ge-app" aria-label="Game explorer">
+  <div class="wrap">
+
+    <div class="ge-controls">
+      <label class="ge-field team"><span>Team</span><select id="geTeam" aria-label="Team"></select></label>
+      <label class="ge-field game"><span>Game</span><select id="geGame" aria-label="Game"></select></label>
+      <div class="ge-steps">
+        <button class="ge-sbtn" id="gePrev" type="button">&larr; Earlier game</button>
+        <button class="ge-sbtn" id="geNext" type="button">Later game &rarr;</button>
+      </div>
+    </div>
+
+    <div class="ge-board" id="geBoard" aria-live="polite">
+      <p class="ge-msg ge-loading" style="grid-column:1 / -1">Loading the 2024-25 season&hellip;</p>
+      <noscript><p class="ge-msg" style="grid-column:1 / -1">This explorer needs JavaScript to draw the games. Please turn JavaScript on, or open the <a href="https://public.tableau.com/app/profile/robert.butts/viz/NBAGameScoreDifferentialVisualization/Dashboard1" style="text-decoration:underline">Tableau version</a> of one game.</p></noscript>
+    </div>
+
+    <div class="ge-stats" id="geStats"></div>
+
+    <figure class="ge-chart">
+      <div class="ge-chart-top">
+        <div>
+          <h2 id="geChartTitle">Score difference throughout the game</h2>
+          <p id="geChartSub">Above the middle line, the team you picked leads. Below it, the other team leads.</p>
+        </div>
+        <div class="ge-toggles" role="group" aria-label="Show on the chart">
+          <label class="ge-check"><input type="checkbox" id="geShowLc" checked><i></i>Lead changes</label>
+          <label class="ge-check"><input type="checkbox" id="geShowRuns" checked><i></i>Runs of 8+ points</label>
+          <label class="ge-check"><input type="checkbox" id="geShowTo" checked><i></i>Timeouts</label>
+        </div>
+      </div>
+      <div id="geNote"></div>
+      <div class="ge-plotwrap">
+        <div class="ge-plot" id="gePlot" tabindex="0" aria-describedby="geSummary geHowKeys"></div>
+        <div class="ge-tip" id="geTip" role="status" aria-live="polite"><div class="d">Move across the chart to see each scoring play.</div></div>
+      </div>
+      <div class="ge-legend" id="geLegend" aria-hidden="true"></div>
+      <figcaption class="ge-caption" id="geSummary"></figcaption>
+      <p class="ge-sr" id="geHowKeys">When the chart has focus, use the left and right arrow keys to step through scoring plays.</p>
+    </figure>
+
+    <div class="ge-lists" id="geLists"></div>
+
+    <div class="ge-actions">
+      <button class="ge-link" id="geCsv" type="button">Download this game's play-by-play (CSV) <span aria-hidden="true">&#8595;</span></button>
+      <button class="ge-link" id="geCopy" type="button">Copy a link to this game</button>
+      <span class="ge-copied" id="geCopied" role="status" aria-live="polite"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HOW TO READ IT, DEFINITIONS, CREDITS ===== -->
+<section id="about-data" style="padding-top:0">
+  <div class="wrap">
+    <h2 class="ge-h2 reveal">How to read it</h2>
+    <div class="ge-cols reveal">
+      <div>
+        <h3>The line</h3>
+        <p>The line starts at zero at the opening tip. Each step up or down is one made basket or free throw. When the line is above the middle, the team you picked leads, and the higher it goes, the bigger the lead. The line takes the color of whichever team is ahead.</p>
+      </div>
+      <div>
+        <h3>Lead changes and ties</h3>
+        <p>A <b>lead change</b> happens when the lead passes from one team to the other, even if the score was tied in between. Taking the first lead of the game does not count. <b>Times tied</b> counts each time the score becomes tied after the opening tip.</p>
+      </div>
+      <div>
+        <h3>Runs</h3>
+        <p>A <b>run</b> is the points one team scores in a row before the other team scores. The chart shades every run of 8 or more points, and the summary shows each team's biggest run of any size.</p>
+      </div>
+      <div>
+        <h3>Timeouts</h3>
+        <p>Every quarter has two <b>mandatory timeouts</b>. Under <a href="https://official.nba.com/rule-no-5-scoring-and-timing/" target="_blank" rel="noopener">NBA Rule 5</a>, if no team calls a timeout before 6:59, the scorer takes one at the next dead ball and charges it to the home team. If no other timeout comes before 2:59, the scorer takes another and charges it to the team not yet charged.</p>
+        <p>The data does not say which timeouts were mandatory, so this page applies that rule to mark them. Hollow dots are mandatory timeouts. Solid dots are timeouts a team chose to call.</p>
+      </div>
+      <div>
+        <h3>The data</h3>
+        <p>ESPN's play-by-play and schedule data for the 2024-25 season, as collected by the <a href="https://github.com/sportsdataverse/sportsdataverse-data" target="_blank" rel="noopener">SportsDataverse</a> project, which also makes the <a href="https://hoopr.sportsdataverse.org/" target="_blank" rel="noopener">hoopR</a> package for R. The largest lead for each team matches ESPN's box scores in every game but two. In one of those games, ESPN's plays do not add up to the official score, and the page says so.</p>
+      </div>
+      <div>
+        <h3>Credits</h3>
+        <p>This page grew out of my <a href="https://public.tableau.com/app/profile/robert.butts/viz/NBAGameScoreDifferentialVisualization/Dashboard1" target="_blank" rel="noopener">2023 Tableau dashboard</a> of one Celtics and Pacers game. It was inspired by Zakiya McPherson's <a href="https://medium.com/@zakiya.mcpherson/nba-game-visualizer-b09ba278e60f" target="_blank" rel="noopener">NBA Game Visualizer</a> and Gabin Rolland's <a href="https://observablehq.com/@grolland/nba-basketball-game-visualisation" target="_blank" rel="noopener">NBA Basketball Game Visualisation</a> on Observable. The code is my own.</p>
+      </div>
+    </div>
+    <p class="ge-fine reveal">Team colors come from ESPN and are lightened where needed so they show clearly on a dark background. This page is not affiliated with, endorsed by, or sponsored by the NBA, ESPN, or any team.</p>
+    <div class="ge-back reveal">
+      <a class="btn btn-ghost" href="../deep-dives.html"><span class="arr" style="display:inline-block;transform:scaleX(-1)">&rarr;</span> Back to all deep dives</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===== FOOTER (same as every page, with ../ links) ===== -->
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="fb-name">
+          <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+          Robert Butts
+        </div>
+        <p>Data visualization and clear thinking, from a technologist in Ohio higher education.</p>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>Site</h4>
+          <a href="../index.html">Home</a>
+          <a href="../work.html">Work</a>
+          <a href="../deep-dives.html">Deep dives</a>
+          <a href="../gallery.html">Gallery</a>
+          <a href="../practice.html">Practice</a>
+          <a href="../about.html">About</a>
+          <a href="../contact.html">Contact</a>
+        </div>
+        <div class="foot-col">
+          <h4>Elsewhere</h4>
+          <a href="https://www.linkedin.com/in/robertmbutts/" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+        <div class="foot-col">
+          <h4>Say hello</h4>
+          <a href="mailto:rbutts42@gmail.com">rbutts42@gmail.com</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 Robert Butts.</span>
+      <span>Charts, questions, and the occasional insight.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../site.js"></script>
+<script src="explorer.js"></script>
+</body>
+</html>

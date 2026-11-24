@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep dives · Robert Butts</title>
+<meta name="description" content="Longer data projects by Robert Butts: interactive tools to explore, and write-ups that start with a question and show how it was answered.">
+<meta property="og:title" content="Deep dives · Robert Butts">
+<meta property="og:description" content="Longer data projects: interactive tools to explore, and write-ups that start with a question and show how it was answered.">
+<meta property="og:image" content="https://robert-butts.github.io/nba-games/share.jpg">
+<meta property="og:type" content="website">
+
+<!--
+  ============================================================
+  DEEP DIVES PAGE (deep-dives.html)
+  One card per deep dive, in a grid. The first card is wide.
+  To add a deep dive:
+    1. Copy a card block below (an <a class="dv-card"> for a
+       finished piece, a <div class="dv-card dv-soon"> for one in
+       progress).
+    2. Set --cc to one of the site colors: var(--amber),
+       var(--blue), var(--green), var(--violet), var(--teal).
+    3. Change the image, type tag, title, text, and link.
+  When an in-progress piece is finished, change its <div> to
+  an <a> with an href, and change "In progress" to "Live".
+  ============================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
+<style>
+/* ===== Page styles for this page only ===== */
+.dv-head .ph-lead{max-width:62ch}
+.dv-grid{display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:22px}
+.dv-card{--cc:var(--blue); position:relative; display:flex; flex-direction:column; background:var(--panel); border:1px solid var(--line);
+  border-radius:var(--radius); overflow:hidden; color:inherit; transition:border-color .2s ease, transform .2s ease, box-shadow .2s ease}
+a.dv-card:hover{border-color:var(--cc); transform:translateY(-3px); box-shadow:var(--shadow)}
+a.dv-card:focus-visible{outline:3px solid var(--cc); outline-offset:3px}
+.dv-card.wide{grid-column:1 / -1; display:grid; grid-template-columns:minmax(0, 1.45fr) minmax(0, 1fr)}
+.dv-media{position:relative; aspect-ratio:1200 / 630; background:#0E1116; overflow:hidden; border-bottom:1px solid var(--line)}
+.dv-card.wide .dv-media{aspect-ratio:auto; min-height:100%; border-bottom:0; border-right:1px solid var(--line)}
+.dv-media img{display:block; width:100%; height:100%; object-fit:cover; transition:transform .9s cubic-bezier(.2,.8,.2,1)}
+a.dv-card:hover .dv-media img{transform:scale(1.02)}
+.dv-media svg{position:absolute; inset:0; width:100%; height:100%}
+.dv-body{display:flex; flex-direction:column; gap:12px; padding:24px 26px 26px; flex:1}
+.dv-card.wide .dv-body{padding:34px 34px 32px; justify-content:center}
+.dv-tags{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.dv-type{font-family:var(--mono); font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; color:var(--cc)}
+.dv-status{font-family:var(--mono); font-size:.64rem; letter-spacing:.1em; text-transform:uppercase; padding:4px 9px; border-radius:999px;
+  border:1px solid var(--line-2); color:var(--muted); display:inline-flex; align-items:center; gap:7px}
+.dv-status.live{color:var(--green); border-color:rgba(127,209,140,.35)}
+.dv-status.live::before{content:""; width:6px; height:6px; border-radius:50%; background:var(--green)}
+.dv-card h2{font-family:var(--display); font-weight:600; font-size:clamp(1.3rem, 2vw, 1.6rem); letter-spacing:-.01em; line-height:1.15}
+.dv-card.wide h2{font-size:clamp(1.6rem, 2.8vw, 2.2rem)}
+.dv-q{font-family:var(--display); font-weight:500; font-size:1.05rem; color:var(--text); line-height:1.4}
+.dv-card p{color:var(--muted); line-height:1.6; font-size:.96rem}
+.dv-meta{font-family:var(--mono); font-size:.72rem; color:var(--faint); letter-spacing:.02em; line-height:1.6}
+.dv-go{margin-top:auto; padding-top:6px; font-family:var(--mono); font-size:.78rem; color:var(--text); display:inline-flex; gap:8px; align-items:center}
+a.dv-card:hover .dv-go{color:var(--cc)}
+.dv-go .arr{transition:transform .18s ease}
+a.dv-card:hover .dv-go .arr{transform:translateX(3px)}
+.dv-card.dv-soon .dv-go{color:var(--faint)}
+
+@media (max-width:900px){
+  .dv-grid{grid-template-columns:1fr}
+  .dv-card.wide{display:flex}
+  .dv-card.wide .dv-media{aspect-ratio:1200 / 630; min-height:0; border-right:0; border-bottom:1px solid var(--line)}
+  .dv-card.wide .dv-body{padding:24px 26px 26px}
+}
+@media (prefers-reduced-motion:reduce){
+  .dv-card, .dv-media img, .dv-go .arr{transition:none}
+}
+</style>
+</head>
+
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ===== NAV (keep identical on every page) ===== -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html" aria-label="Home">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      Robert Butts
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a class="section-link" href="work.html">Work</a>
+      <a class="section-link active" href="deep-dives.html" aria-current="page">Deep dives</a>
+      <a class="section-link" href="gallery.html">Gallery</a>
+      <a class="section-link" href="practice.html">Practice</a>
+      <a class="section-link" href="about.html">About</a>
+      <a class="nav-cta" href="contact.html">Get in touch</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu"><span></span></button>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu" aria-label="Menu">
+  <a href="index.html">Home</a>
+  <a href="work.html">Work</a>
+  <a href="deep-dives.html">Deep dives</a>
+  <a href="gallery.html">Gallery</a>
+  <a href="practice.html">Practice</a>
+  <a href="about.html">About</a>
+  <a href="contact.html">Get in touch</a>
+</div>
+
+<main id="main">
+
+<!-- ===== PAGE HEADER ===== -->
+<div class="page-head dv-head">
+  <div class="wrap">
+    <p class="eyebrow ph-a">Deep dives</p>
+    <h1 class="ph-b">Data projects that go past a single chart.</h1>
+    <p class="ph-lead ph-c">Some deep dives are interactive tools you can explore. Others are write-ups that start with a question and walk through how I answered it, with the data and code included.</p>
+  </div>
+</div>
+
+<!-- ===== THE DEEP DIVES ===== -->
+<section style="padding-top:44px">
+  <div class="wrap">
+    <div class="dv-grid">
+
+      <!-- NBA Game Explorer (live) -->
+      <a class="dv-card wide reveal" href="nba-games/" style="--cc:var(--amber)">
+        <div class="dv-media">
+          <img src="nba-games/share.jpg" width="1200" height="630" loading="lazy"
+            alt="The explorer's chart for Game 7 of the 2025 NBA Finals. A stepped line tracks the score difference between the Thunder and the Pacers after every scoring play. It stays within a few points through the first half, then rises to a 22-point Thunder lead in the fourth quarter.">
+        </div>
+        <div class="dv-body">
+          <div class="dv-tags"><span class="dv-type">Interactive</span><span class="dv-status live">Live</span></div>
+          <h2>NBA Game Explorer</h2>
+          <p>Pick any team and any 2024-25 game to see the score difference after every scoring play. Lead changes, scoring runs, and timeouts are marked, and every game's play-by-play downloads as a CSV file.</p>
+          <div class="dv-meta">1,321 games &middot; ESPN play-by-play data &middot; JavaScript, Python</div>
+          <span class="dv-go">Open the explorer <span class="arr" aria-hidden="true">&rarr;</span></span>
+        </div>
+      </a>
+
+      <!-- NBA coaches study (in progress) -->
+      <div class="dv-card dv-soon reveal d1" style="--cc:var(--amber)">
+        <div class="dv-media" aria-hidden="true">
+          <svg viewBox="0 0 600 315" preserveAspectRatio="xMidYMid slice">
+            <rect width="600" height="315" fill="#12161D"/>
+            <line x1="40" y1="160" x2="560" y2="160" stroke="rgba(255,255,255,.18)"/>
+            <rect x="300" y="40" width="96" height="235" fill="#F0B95A" fill-opacity=".1"/>
+            <path d="M40 160H90V146H130V152H170V132H210V140H250V124H300V140H318V158H336V176H352V196H370V214H396V206H430V192H470V178H510V170H560" fill="none" stroke="#F0B95A" stroke-width="3" stroke-linejoin="round"/>
+            <line x1="396" y1="40" x2="396" y2="275" stroke="rgba(255,255,255,.35)" stroke-dasharray="4 5"/>
+            <circle cx="396" cy="290" r="7" fill="#F0B95A"/>
+            <text x="404" y="60" fill="#8B97A7" font-family="IBM Plex Mono, monospace" font-size="15">timeout</text>
+          </svg>
+        </div>
+        <div class="dv-body">
+          <div class="dv-tags"><span class="dv-type">Write-up</span><span class="dv-status">In progress</span></div>
+          <h2>Which NBA coaches stop runs?</h2>
+          <p>Which coaches' teams keep giving up scoring runs, when coaches call timeout, whether their teams score right after one, and whether a timeout actually stops a run.</p>
+          <div class="dv-meta">NBA play-by-play data &middot; Builds on the Game Explorer</div>
+        </div>
+      </div>
+
+      <!-- Ohio community schools (in progress) -->
+      <div class="dv-card dv-soon reveal d2" style="--cc:var(--green)">
+        <div class="dv-media" aria-hidden="true">
+          <svg viewBox="0 0 600 315" preserveAspectRatio="xMidYMid slice">
+            <rect width="600" height="315" fill="#12161D"/>
+            <g fill="#7FD18C">
+              <rect x="70" y="70" width="250" height="30" rx="5"/><rect x="324" y="70" width="120" height="30" rx="5" fill-opacity=".55"/><rect x="448" y="70" width="80" height="30" rx="5" fill-opacity=".25"/>
+              <rect x="70" y="142" width="200" height="30" rx="5"/><rect x="274" y="142" width="170" height="30" rx="5" fill-opacity=".55"/><rect x="448" y="142" width="80" height="30" rx="5" fill-opacity=".25"/>
+              <rect x="70" y="214" width="290" height="30" rx="5"/><rect x="364" y="214" width="100" height="30" rx="5" fill-opacity=".55"/><rect x="468" y="214" width="60" height="30" rx="5" fill-opacity=".25"/>
+            </g>
+          </svg>
+        </div>
+        <div class="dv-body">
+          <div class="dv-tags"><span class="dv-type">Report</span><span class="dv-status">In progress</span></div>
+          <h2>Where Ohio's school money goes</h2>
+          <p>How Ohio's K-12 education dollars are spent, compared by school type, including community schools.</p>
+          <div class="dv-meta">Ohio School Report Cards, 2024-25 expenditures &middot; R, Quarto</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== CLOSING CALL TO ACTION ===== -->
+<section class="cta-band">
+  <div class="wrap">
+    <div class="cta-inner reveal">
+      <p class="eyebrow" style="justify-content:center">Get in touch</p>
+      <h2>Have a question worth a deep dive?</h2>
+      <p>If you have a data question about teaching, sports, or your community, I would be glad to hear it.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="contact.html">Get in touch <span class="arr">&rarr;</span></a>
+        <a class="btn btn-ghost" href="work.html">See the work</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===== FOOTER (keep identical on every page) ===== -->
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="fb-name">
+          <span class="mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+              <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          Robert Butts
+        </div>
+        <p>Data visualization and clear thinking, from a technologist in Ohio higher education.</p>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>Site</h4>
+          <a href="index.html">Home</a>
+          <a href="work.html">Work</a>
+          <a href="deep-dives.html">Deep dives</a>
+          <a href="gallery.html">Gallery</a>
+          <a href="practice.html">Practice</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="foot-col">
+          <h4>Elsewhere</h4>
+          <a href="https://www.linkedin.com/in/robertmbutts/" target="_blank" rel="noopener">LinkedIn</a>
+          <!-- EDIT: add your GitHub and YouTube links, or delete these two lines 
+          <a href="#">GitHub</a>
+          <a href="#">YouTube</a>
+		  -->
+        </div>
+        <div class="foot-col">
+          <h4>Say hello</h4>
+          <a href="mailto:rbutts42@gmail.com">rbutts42@gmail.com</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 Robert Butts.</span>
+      <span>Charts, questions, and the occasional insight.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="site.js"></script>
+</body>
+</html>
