@@ -12,7 +12,9 @@
   Two parts:
     1. the sky: the real stars over Columbus, Ohio, right now,
        drawn by sky.js from the star list in sky-stars.js, above a
-       black bar with the name, place, and time
+       black bar with the name, place, and time. The sky turns in on
+       arrival and moves in depth with the mouse (settings at the top
+       of sky.js); it holds still for anyone who asks for reduced motion
     2. About and contact, then a one-line footer
   Search this file for the word EDIT to find easy things to change.
   This page styles the shared menu its own way (see "MENU" in the
@@ -47,12 +49,21 @@ body.home-sky{--serif:'Cormorant Garamond', Georgia, serif; --sky-accent:#F2D49B
 .sky-hero, .home-about{padding:0}
 .sky-hero{--bar:28%; position:relative; height:100vh; height:100svh; min-height:560px; overflow:hidden; background:#05070B}
 .sky-stage{position:absolute; inset:0}
-.sky-svg{display:block}
+.sky-canvas, .sky-svg{position:absolute; left:0; top:0; display:block}
+.sky-canvas{pointer-events:none}
+.sky-svg:not(.lit) .fig{pointer-events:none}
 .sky-svg .fig{cursor:pointer; outline:none}
 .sky-svg .hit{fill:none; stroke:transparent; stroke-width:26; stroke-linecap:round; stroke-linejoin:round}
-.sky-svg .line{fill:none; stroke:#C9D3E6; stroke-opacity:.3; stroke-width:1; stroke-linecap:round; stroke-linejoin:round; transition:stroke .25s ease, stroke-opacity .25s ease, stroke-width .25s ease}
+.sky-svg .line{fill:none; stroke:#C9D3E6; stroke-opacity:.3; stroke-width:1; stroke-linecap:round; stroke-linejoin:round;
+  stroke-dasharray:1.001 1.02; stroke-dashoffset:1.002; transition:stroke .25s ease, stroke-opacity .25s ease, stroke-width .25s ease, stroke-dashoffset 1.5s cubic-bezier(.45,0,.2,1)}
+.sky-svg.lit .line{stroke-dashoffset:0}
 .sky-svg .glow{fill:var(--sky-accent); opacity:0; transition:opacity .25s ease}
 .sky-svg text{font-family:var(--serif); font-style:italic; fill:rgba(233,227,213,.7); letter-spacing:.2px; transition:fill .25s ease}
+.sky-svg .fig text{opacity:0; transition:fill .25s ease, opacity .9s ease}
+.sky-svg.lit .fig text{opacity:1}
+/* on arrival, the lines draw in one after another, then the names appear (sky.js sets --d) */
+.sky-svg.revealing .line{transition-delay:var(--d)}
+.sky-svg.revealing .fig text{transition-delay:calc(var(--d) + 1s)}
 .sky-svg.dim .line{stroke-opacity:.16}
 .sky-svg.dim text{fill:rgba(233,227,213,.4)}
 .sky-svg .fig.on .line{stroke:var(--sky-accent); stroke-opacity:.95; stroke-width:1.7}
@@ -60,10 +71,6 @@ body.home-sky{--serif:'Cormorant Garamond', Georgia, serif; --sky-accent:#F2D49B
 .sky-svg .fig.on text{fill:var(--sky-accent)}
 .sky-svg .fig:focus-visible .hit{stroke:rgba(242,212,155,.18)}
 .sky-svg text.compass{font-family:var(--mono); font-style:normal; font-size:10px; letter-spacing:1.5px; fill:rgba(233,227,213,.5)}
-@keyframes twinkle{0%,100%{opacity:1}50%{opacity:.4}}
-.sky-svg .tw1{animation:twinkle 3.6s ease-in-out infinite}
-.sky-svg .tw2{animation:twinkle 5.2s ease-in-out 1.3s infinite}
-.sky-svg .tw3{animation:twinkle 4.4s ease-in-out 2.4s infinite}
 
 /* without JavaScript, the projects show as a plain list */
 .sky-list{position:absolute; top:110px; left:clamp(20px, 5vw, 72px); display:flex; flex-direction:column; gap:6px; font-family:var(--serif); font-style:italic; font-size:20px}
@@ -105,7 +112,7 @@ body.home-sky{--serif:'Cormorant Garamond', Georgia, serif; --sky-accent:#F2D49B
 .home-foot-inner .plain{padding:0}
 
 @media (prefers-reduced-motion:reduce){
-  .sky-svg .tw1, .sky-svg .tw2, .sky-svg .tw3{animation:none}
+  .sky-svg .line, .sky-svg .fig text{transition:none}
   .sky-card{transition:none}
 }
 </style>
