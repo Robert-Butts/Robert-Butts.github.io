@@ -38,7 +38,7 @@
   /* ---- EDIT: the motion ----------------------------------- */
   var SPIN_FROM = -40;   /* the arrival starts this many degrees back, about 2 hours 40 minutes earlier */
   var SPIN_MS = 3000;    /* how long the arrival takes, in milliseconds */
-  var DEPTH = 0.1;       /* how far the nearest stars shift, as a share of the sky circle's radius */
+  var DEPTH = 0.14;       /* how far the nearest stars shift, as a share of the sky circle's radius */
 
   var LAT = 39.9612, LON = -82.9988, RAD = Math.PI / 180;   /* Columbus, Ohio */
   var SINP = Math.sin(LAT * RAD), COSP = Math.cos(LAT * RAD);
