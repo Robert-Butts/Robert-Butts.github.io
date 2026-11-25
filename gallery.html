@@ -24,6 +24,38 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<style>
+/* THE HERO: a 3D map of the gallery (strands.js).
+   Beside the title on wide screens, below it on narrower ones; about two thirds of the screen tall. */
+.g-hero{position:relative; overflow:hidden; isolation:isolate}
+.g-hero .wrap{position:relative; z-index:1}
+.st-stage{position:absolute; inset:0; z-index:0; opacity:0; transition:opacity 1.2s ease;
+  -webkit-mask-image:linear-gradient(180deg, #000 82%, transparent); mask-image:linear-gradient(180deg, #000 82%, transparent)}
+.st-stage.on{opacity:1}
+.st-stage canvas{display:block}
+.st-key{position:absolute; z-index:1; margin:0; transform:translateX(-50%); font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--muted); white-space:nowrap; pointer-events:none; opacity:0; transition:opacity .8s ease}
+.st-key.on{opacity:1}
+.st-label{position:absolute; z-index:2; display:block; width:250px; padding:10px 13px; border:1px solid var(--line-2); border-left:3px solid var(--cc, var(--blue));
+  border-radius:10px; background:rgba(14,17,22,.94); color:var(--text); text-decoration:none; pointer-events:none; opacity:0; transform:translateY(4px);
+  transition:opacity .16s ease, transform .16s ease}
+.st-label.on{opacity:1; transform:none; pointer-events:auto}
+.st-label b{display:block; font-family:var(--display); font-size:1.02rem; font-weight:600; line-height:1.25}
+.st-label span{display:block; margin-top:5px; font-family:var(--mono); font-size:.66rem; letter-spacing:.04em; line-height:1.5; color:var(--muted)}
+@media (min-width:1000px){
+  .g-hero.has-strands{min-height:max(560px, 66vh); min-height:max(560px, 66svh)}
+  .g-hero.has-strands .ph-b, .g-hero.has-strands .ph-lead, .g-hero.has-strands .ph-d{max-width:min(54%, 620px)}
+}
+@media (max-width:999px){
+  .g-hero.has-strands{padding-bottom:min(96vw, 480px)}
+}
+@media (max-width:600px){
+  .st-key{white-space:normal; width:min(88vw, 320px); text-align:center; line-height:1.7}
+}
+@media (prefers-reduced-motion:reduce){
+  .st-stage, .st-key, .st-label{transition:none}
+}
+</style>
 </head>
 
 <body>
@@ -66,7 +98,13 @@
 <main id="main">
 
 <!-- ===== PAGE HEADER ===== -->
-<div class="page-head">
+<div class="page-head g-hero">
+  <!-- HERO ANIMATION: a 3D map of the gallery, one glowing strand per chart in nine family bundles
+       (drawn by strands.js from gallery-data.js; the key line and timing are at the top of that file).
+       To remove it, delete these three lines and the two script lines at the bottom of the page. -->
+  <div class="st-stage" data-strands aria-hidden="true"></div>
+  <p class="st-key" id="stKey" aria-hidden="true"></p>
+  <a class="st-label" id="stLabel" href="#" tabindex="-1" aria-hidden="true"></a>
   <div class="wrap">
     <p class="eyebrow ph-a">Gallery</p>
     <!-- EDIT: page heading and intro -->
@@ -178,5 +216,7 @@
 <script src="gallery-data.js"></script>
 <script src="gallery.js"></script>
 <script src="site.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+<script src="strands.js" defer></script>
 </body>
 </html>
