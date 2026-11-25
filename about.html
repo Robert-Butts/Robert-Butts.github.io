@@ -4,20 +4,151 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>About · Robert Butts</title>
+<meta name="description" content="Robert Butts helps people see what their data is saying, by taking something complicated and making it clear.">
+<meta property="og:title" content="About · Robert Butts">
+<meta property="og:description" content="I help people see what their data is saying. The thread through all of my work is the same: taking something complicated and making it clear.">
+<meta property="og:type" content="website">
+
 <!--
-  The About page now lives on the home page. This file only forwards old links
-  (from LinkedIn, a résumé, or search results) to the About section there.
+  ============================================================
+  ABOUT PAGE (about.html)
+  A short introduction, a photo, and two ways to get in touch.
+  EDIT: the paragraphs, the photo, and the links are marked below.
+  Contact goes through the form on contact.html, so no email
+  address appears on the site.
+  ============================================================
 -->
-<meta name="robots" content="noindex">
-<link rel="canonical" href="https://robert-butts.github.io/">
-<meta http-equiv="refresh" content="0; url=index.html#about">
-<script>location.replace('index.html#about');</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
 <style>
-  body{margin:0; min-height:100vh; display:grid; place-items:center; background:#030406; color:rgba(233,227,213,.84); font:16px/1.6 'IBM Plex Sans', system-ui, sans-serif}
-  a{color:#F2D49B}
+/* ===== Page styles for this page only ===== */
+.ab-text p{font-size:1.08rem; line-height:1.75}
+.ab-text p:first-child{margin-top:0}
+.ab-text p a{color:var(--text); text-decoration:underline; text-decoration-color:rgba(117,170,219,.5); text-underline-offset:4px}
+.ab-text p a:hover{color:var(--blue); text-decoration-color:var(--blue)}
+.ab-text .cta-row{margin-top:34px}
+.ab-photo img{width:100%; max-width:420px; height:auto; aspect-ratio:1 / 1; object-fit:cover; border-radius:var(--radius); border:1px solid var(--line)}
 </style>
 </head>
+
 <body>
-  <p>The About page has moved to the <a href="index.html#about">home page</a>.</p>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ===== NAV (keep identical on every page) ===== -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html" aria-label="Home">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      Robert Butts
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a class="section-link" href="work.html">Work</a>
+      <a class="section-link" href="deep-dives.html">Deep dives</a>
+      <a class="section-link" href="gallery.html">Gallery</a>
+      <a class="section-link" href="practice.html">Practice</a>
+      <a class="section-link active" href="about.html" aria-current="page">About</a>
+      <a class="nav-cta" href="contact.html">Get in touch</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu"><span></span></button>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu" aria-label="Menu">
+  <a href="index.html">Home</a>
+  <a href="work.html">Work</a>
+  <a href="deep-dives.html">Deep dives</a>
+  <a href="gallery.html">Gallery</a>
+  <a href="practice.html">Practice</a>
+  <a href="about.html">About</a>
+  <a href="contact.html">Get in touch</a>
+</div>
+
+<main id="main">
+
+<!-- ===== PAGE HEADER ===== -->
+<div class="page-head">
+  <div class="wrap">
+    <p class="eyebrow ph-a">About</p>
+    <h1 class="ph-b">Hi, I am Robert Butts.</h1>
+  </div>
+</div>
+
+<!-- ===== ABOUT ===== -->
+<section style="padding-top:44px">
+  <div class="wrap about-grid">
+    <div class="about-text ab-text reveal">
+      <!-- EDIT: the two paragraphs -->
+      <p>I help people see what their data is saying. The thread through all of my work is the same: <strong>taking something complicated and making it clear.</strong> In my day job, that means helping faculty choose and use the right tools. On my own time, it means turning data into pictures that answer a question at a glance, and building small interactive tools that make learning stick.</p>
+      <p>I am strongly influenced by the Financial Times Visual Vocabulary, a guide that sorts charts by the question each one answers. It inspired my <a href="gallery.html#credits">Chart Gallery</a>.</p>
+      <!-- EDIT: the two links -->
+      <div class="cta-row">
+        <a class="btn btn-primary" href="contact.html">Send me a message <span class="arr">&rarr;</span></a>
+        <a class="btn btn-ghost" href="https://www.linkedin.com/in/robertmbutts/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+    <!-- EDIT: the photo -->
+    <div class="ab-photo reveal d1">
+      <img src="images/profile/robert-headshot.jpg" alt="Robert Butts" width="800" height="768">
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===== FOOTER (keep identical on every page) ===== -->
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="fb-name">
+          <span class="mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+              <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          Robert Butts
+        </div>
+        <p>Data visualization and clear thinking, from a technologist in Ohio higher education.</p>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>Site</h4>
+          <a href="index.html">Home</a>
+          <a href="work.html">Work</a>
+          <a href="deep-dives.html">Deep dives</a>
+          <a href="gallery.html">Gallery</a>
+          <a href="practice.html">Practice</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="foot-col">
+          <h4>Elsewhere</h4>
+          <a href="https://www.linkedin.com/in/robertmbutts/" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+        <div class="foot-col">
+          <h4>Say hello</h4>
+          <a href="contact.html">Send a message</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 Robert Butts.</span>
+      <span>Charts, questions, and the occasional insight.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="site.js"></script>
 </body>
 </html>

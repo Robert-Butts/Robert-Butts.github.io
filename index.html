@@ -5,135 +5,145 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Robert Butts · Data Visualization Portfolio</title>
 <meta name="description" content="Robert Butts helps people see what their data is saying, with charts, data tools, and games that make learning stick.">
+<meta property="og:title" content="Robert Butts · Data Visualization Portfolio">
+<meta property="og:description" content="I help people see what their data is saying. The thread through all of my work is the same: taking something complicated and making it clear.">
+<meta property="og:type" content="website">
 
 <!--
   ============================================================
   HOME PAGE (index.html)
-  Two parts:
-    1. the sky: the real stars over Columbus, Ohio, right now,
-       drawn by sky.js from the star list in sky-stars.js, above a
-       black bar with the name, place, and time. The sky turns in on
-       arrival and moves in depth with the mouse (settings at the top
-       of sky.js); it holds still for anyone who asks for reduced motion
-    2. About and contact, then a one-line footer
-  Search this file for the word EDIT to find easy things to change.
-  This page styles the shared menu its own way (see "MENU" in the
-  styles below); the other pages keep the menu from style.css.
+  One hero and nothing else. The words sit along the bottom, with
+  the name across the full width in an italic serif. A cloud of data points falls flat
+  onto a 3D coordinate plane, then a shape for each of six
+  favorite projects rises out of the plane's triangle grid, one at
+  a time. At the end all six stand together, and each one is a link.
+  The animation is drawn by home-hero.js; the six shapes are in
+  home-shapes.js.
+
+  EDIT the six projects in the list near the bottom of the hero
+  (search for "THE SIX PROJECTS"): each link's name, description,
+  address (href), color (--pc), and shape (data-shape, one of:
+  ball, sankey, bars, ohio, brick, goose).
+  Without three.js or WebGL, the list shows as plain cards.
   ============================================================
 -->
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<!-- old links to the About section on this page go to the About page -->
+<script>if (location.hash === '#about') location.replace('about.html');</script>
 
 <style>
 /* ===== Page styles for the home page only ===== */
-body.home-sky{--serif:'Cormorant Garamond', Georgia, serif; --sky-accent:#F2D49B; --ink:#EDE6D6; --ink-2:rgba(233,227,213,.84); --ink-3:rgba(233,227,213,.66);
-  background:#030406; background-image:none}
-.home-sky a:focus-visible{outline:2px solid var(--sky-accent); outline-offset:4px}
 
-/* MENU: the shared menu, made plain and see-through over the sky */
-.home-sky .nav{background:transparent; backdrop-filter:none; -webkit-backdrop-filter:none; border-bottom-color:transparent}
-.home-sky .nav.scrolled{background:rgba(3,4,6,.82); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom-color:rgba(233,227,213,.08)}
-.home-sky .nav-inner{max-width:none; padding:0 clamp(20px, 5vw, 72px)}
-.home-sky .brand{width:44px; height:44px}
-.home-sky .nav-links{gap:clamp(14px, 2.2vw, 30px)}
-.home-sky .nav-links a{font-family:var(--body); font-size:14px; letter-spacing:.01em; text-transform:none; color:rgba(233,227,213,.74); padding:12px 0}
-.home-sky .nav-links a:hover, .home-sky .nav-links a:focus-visible{color:var(--sky-accent)}
-.home-sky .menu-btn{background:transparent; border-color:rgba(233,227,213,.22)}
-.home-sky .mobile-menu{background:rgba(3,4,6,.97)}
-.home-sky .mobile-menu a{font-family:var(--serif); font-weight:500; font-size:2rem; color:var(--ink)}
+/* THE HERO: the whole screen. The 3D scene (home-hero.js) fills it; the words sit along the bottom:
+   a short introduction on the left, the button on the right, and the name across the full width. */
+.home-hero{position:relative; overflow:hidden; isolation:isolate; padding:0; min-height:100vh; min-height:100svh;
+  display:flex; flex-direction:column; justify-content:flex-end}
+.home-hero.has-h3d{padding-top:min(56vh, 480px)}   /* the least room the scene gets above the words */
+.hh-stage{position:absolute; inset:0; z-index:0; opacity:0; transition:opacity 1s ease}
+.hh-stage.on{opacity:1}
+.hh-stage canvas{display:block}
+.hh-bottom{position:relative; z-index:2; padding:120px 0 clamp(8px, 1.6vw, 22px)}
+.has-h3d .hh-bottom{padding-top:0}
+.hh-row{position:relative; z-index:1; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-end; gap:20px 40px}   /* above the name, whose tall letters reach up into this row */
+.hh-intro{font-size:1.05rem; line-height:1.55; color:rgba(232,237,244,.72); max-width:31rem}
+.hh-intro b{font-weight:500; color:var(--text)}
+.hh-ctrl{display:flex; align-items:center; justify-content:flex-end; gap:12px 20px}
+.home-hero:not(.has-h3d) .hh-ctrl{display:none}
+.hh-note{font-size:.84rem; line-height:1.5; color:var(--muted); text-align:right; max-width:22rem; min-height:3em;
+  display:flex; flex-direction:column; justify-content:center}
+.hh-note b{font-weight:600}
+/* the button: a pill with a round icon, like "Explore the work" on vadimcarazan.com */
+.hh-btn{flex:0 0 auto; display:inline-flex; align-items:center; gap:14px; padding:6px 6px 6px 18px; font-family:var(--body); font-size:.86rem; color:var(--text);
+  border:1px solid rgba(232,237,244,.3); border-radius:999px; background:rgba(14,17,22,.4); transition:border-color .2s ease}
+.hh-btn:hover{border-color:var(--blue)}
+.hh-btn-i{width:32px; height:32px; border-radius:50%; border:1px solid rgba(232,237,244,.3); display:grid; place-items:center; transition:background .2s ease, color .2s ease}
+.hh-btn:hover .hh-btn-i{background:var(--blue); border-color:var(--blue); color:#0E1116}
+.hh-btn-i svg{width:14px; height:14px; grid-area:1 / 1}
+.hh-btn .ic-replay, .hh-btn.is-replay .ic-skip{display:none}
+.hh-btn.is-replay .ic-replay{display:block}
+/* the name, in an italic serif (Instrument Serif), sized to fill the width of the page
+   (4.12 is how wide "Robert Butts" is, in font sizes), but never taller than about a third of
+   the screen, so the scene keeps its room on short screens. The clip hides the name below its
+   line while it rises in, without cutting off the italic letters at the sides. */
+.hh-name{margin:clamp(6px, 1vw, 12px) 0 0; font-family:'Instrument Serif', Georgia, serif; font-style:italic; font-weight:400; letter-spacing:-.015em;
+  line-height:.92; font-size:min(calc((min(100vw, var(--maxw)) - 56px) / 4.12), 30vh); white-space:nowrap; color:var(--text);
+  -webkit-clip-path:inset(-40% -10% 0 -10%); clip-path:inset(-40% -10% 0 -10%)}
+.hh-name span{display:inline-block}
 
-/* THE SKY */
-.sky-hero, .home-about{padding:0}
-.sky-hero{--bar:28%; position:relative; height:100vh; height:100svh; min-height:560px; overflow:hidden; background:#05070B}
-.sky-stage{position:absolute; inset:0}
-.sky-canvas, .sky-svg{position:absolute; left:0; top:0; display:block}
-.sky-canvas{pointer-events:none}
-.sky-svg:not(.lit) .fig{pointer-events:none}
-.sky-svg .fig{cursor:pointer; outline:none}
-.sky-svg .hit{fill:none; stroke:transparent; stroke-width:26; stroke-linecap:round; stroke-linejoin:round}
-.sky-svg .line{fill:none; stroke:#C9D3E6; stroke-opacity:.3; stroke-width:1; stroke-linecap:round; stroke-linejoin:round;
-  stroke-dasharray:1.001 1.02; stroke-dashoffset:1.002; transition:stroke .25s ease, stroke-opacity .25s ease, stroke-width .25s ease, stroke-dashoffset 1.5s cubic-bezier(.45,0,.2,1)}
-.sky-svg.lit .line{stroke-dashoffset:0}
-.sky-svg .glow{fill:var(--sky-accent); opacity:0; transition:opacity .25s ease}
-.sky-svg text{font-family:var(--serif); font-style:italic; fill:rgba(233,227,213,.7); letter-spacing:.2px; transition:fill .25s ease}
-.sky-svg .fig text{opacity:0; transition:fill .25s ease, opacity .9s ease}
-.sky-svg.lit .fig text{opacity:1}
-/* on arrival, the lines draw in one after another, then the names appear (sky.js sets --d) */
-.sky-svg.revealing .line{transition-delay:var(--d)}
-.sky-svg.revealing .fig text{transition-delay:calc(var(--d) + 1s)}
-.sky-svg.dim .line{stroke-opacity:.16}
-.sky-svg.dim text{fill:rgba(233,227,213,.4)}
-.sky-svg .fig.on .line{stroke:var(--sky-accent); stroke-opacity:.95; stroke-width:1.7}
-.sky-svg .fig.on .glow{opacity:.22}
-.sky-svg .fig.on text{fill:var(--sky-accent)}
-.sky-svg .fig:focus-visible .hit{stroke:rgba(242,212,155,.18)}
-.sky-svg text.compass{font-family:var(--mono); font-style:normal; font-size:10px; letter-spacing:1.5px; fill:rgba(233,227,213,.5)}
+/* the words come in when the page opens: the name rises, then the rest fades up */
+.js-anim .hh-name span{transform:translateY(105%)}
+.js-anim.loaded .hh-name span{transform:none; transition:transform 1.1s cubic-bezier(.2,.8,.2,1) .1s}
+.js-anim .hh-row > *{opacity:0; transform:translateY(14px)}
+.js-anim.loaded .hh-row > *{opacity:1; transform:none; transition:opacity .7s ease .45s, transform .7s cubic-bezier(.2,.8,.2,1) .45s}
 
-/* without JavaScript, the projects show as a plain list */
-.sky-list{position:absolute; top:110px; left:clamp(20px, 5vw, 72px); display:flex; flex-direction:column; gap:6px; font-family:var(--serif); font-style:italic; font-size:20px}
-.sky-list a{color:var(--ink-2)}
-.has-sky .sky-list{display:none}
+/* THE SIX PROJECTS, as plain cards (what shows without the 3D scene) */
+.home-hero:not(.has-h3d){min-height:0}
+.hh-projects{position:relative; z-index:2; width:100%; max-width:var(--maxw); margin:0 auto; padding:0 28px 72px;
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:14px}
+.hp{--pc:var(--blue); display:flex; flex-direction:column; gap:6px; padding:18px 20px; background:var(--panel); border:1px solid var(--line);
+  border-left:3px solid var(--pc); border-radius:12px; color:inherit; transition:border-color .2s ease}
+.hp:hover{border-color:var(--pc)}
+.hp:focus-visible{outline:2.5px solid var(--pc); outline-offset:4px; border-radius:12px}
+.hp-cap{display:flex; flex-direction:column; gap:6px}
+.hp-name{font-family:var(--display); font-weight:600; font-size:1.15rem; line-height:1.2}
+.hp-num{display:block; font-family:var(--mono); font-size:.7rem; letter-spacing:.12em; color:var(--pc); margin-bottom:4px}
+.hp-desc{font-size:.92rem; line-height:1.55; color:var(--muted)}
 
-.sky-card{position:absolute; z-index:2; box-sizing:border-box; padding:16px 18px 15px; border-radius:4px; background:rgba(5,7,11,.88); border:1px solid rgba(233,227,213,.16);
-  pointer-events:none; opacity:0; transform:translateY(4px); transition:opacity .2s ease, transform .2s ease}
-.sky-card.on{opacity:1; transform:none}
-.sky-card span{display:block}
-.sc-kind{font-family:var(--mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3)}
-.sc-name{font-family:var(--serif); font-weight:600; font-size:26px; line-height:1.1; margin-top:6px; color:#F3EDE0}
-.sc-desc{font-size:14px; line-height:1.55; margin-top:8px; color:rgba(233,227,213,.78)}
-.sc-where{font-family:var(--serif); font-style:italic; font-size:15px; margin-top:12px; color:var(--sky-accent)}
+/* THE SIX PROJECTS, laid over their shapes (home-hero.js moves and sizes each link) */
+.has-h3d .hh-projects{position:absolute; inset:0; z-index:3; max-width:none; margin:0; padding:0; display:block; pointer-events:none}
+.has-h3d .hp{position:absolute; left:0; top:0; display:block; padding:0; background:none; border:0; border-radius:10px;
+  opacity:0; pointer-events:none; transition:opacity .35s ease}
+.has-h3d .hp.show{opacity:1; pointer-events:auto}
+.has-h3d .hp-cap{position:absolute; left:50%; bottom:0; transform:translateX(-50%); width:100%; gap:4px; text-align:center; align-items:center}
+.has-h3d .hp-name{font-family:var(--mono); font-weight:500; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; line-height:1.45;
+  color:var(--muted); transition:color .2s ease}
+.has-h3d .hp-num{display:inline; margin:0 .7em 0 0; font-size:inherit; letter-spacing:inherit}
+.has-h3d .hp:hover .hp-name, .has-h3d .hp:focus-visible .hp-name{color:var(--pc)}
+.has-h3d .hp:not(.single) .hp-desc{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}   /* still read aloud */
+.has-h3d .hp.single .hp-cap{width:max(100%, 300px)}
+.has-h3d .hp.single .hp-name{color:var(--text)}
+.has-h3d .hp.single .hp-desc{font-size:.9rem; line-height:1.5; max-width:34ch}
 
-/* the black bar: the ground below the horizon (its height is --bar above; sky.js reads it too) */
-.sky-foot{position:absolute; left:0; right:0; bottom:0; height:var(--bar); box-sizing:border-box; display:flex; flex-wrap:wrap; align-items:center; align-content:center; justify-content:space-between; gap:14px 32px;
-  padding:clamp(18px, 3vh, 32px) clamp(20px, 5vw, 72px); pointer-events:none}
-.sky-foot h1{margin:0; font-family:var(--serif); font-weight:500; font-size:clamp(46px, 6.4vw, 96px); line-height:.92; letter-spacing:-.01em; color:var(--ink)}
-.sky-readout{margin:0; font-family:var(--mono); font-size:11px; line-height:1.9; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); text-align:right}
-
-/* ABOUT AND FOOTER */
-.home-h2{margin:0; font-family:var(--serif); font-weight:500; font-size:clamp(34px, 3.4vw, 46px); line-height:1; letter-spacing:0; color:var(--ink)}
-.home-sky .home-about{padding:clamp(48px, 8vh, 96px) clamp(20px, 5vw, 72px) clamp(64px, 10vh, 112px)}
-.home-about-inner{max-width:1296px; margin:0 auto; border-top:1px solid rgba(233,227,213,.1); padding-top:clamp(48px, 8vh, 88px); display:flex; flex-wrap:wrap; gap:32px 56px; align-items:flex-start}
-.home-about-inner img{flex:0 0 auto; width:clamp(140px, 16vw, 220px); height:auto; aspect-ratio:1 / 1; object-fit:cover; border-radius:2px; filter:grayscale(.2)}
-.home-about-text{flex:1 1 420px; max-width:640px; min-width:0}
-.home-about-text .home-h2{margin-bottom:18px}
-.home-about-text p{margin:0; font-size:18px; line-height:1.7; color:var(--ink-2)}
-.home-about-text p + p{margin-top:16px}
-.home-about-text p a{color:var(--ink); text-decoration:underline; text-decoration-color:rgba(242,212,155,.45); text-underline-offset:4px}
-.home-about-text p a:hover, .home-about-text p a:focus-visible{color:var(--sky-accent); text-decoration-color:var(--sky-accent)}
-.home-links{display:flex; flex-wrap:wrap; gap:6px 28px; margin-top:22px; font-size:15px}
-.plain{color:var(--ink-2); text-decoration:underline; text-decoration-color:rgba(233,227,213,.3); text-underline-offset:4px; padding:10px 0}
-.plain:hover, .plain:focus-visible{color:var(--sky-accent); text-decoration-color:var(--sky-accent)}
-.home-foot{padding:22px clamp(20px, 5vw, 72px) 30px}
-.home-foot-inner{max-width:1296px; margin:0 auto; border-top:1px solid rgba(233,227,213,.1); padding-top:20px; display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 24px;
-  font-family:var(--mono); font-size:11px; color:var(--ink-3)}
-.home-foot-inner .plain{padding:0}
-
+@media (max-width:999px){
+  .home-hero.has-h3d{padding-top:calc(66px + min(110vw, 430px))}
+  .home-hero.has-h3d.is-final{padding-top:calc(66px + min(150vw, 600px))}   /* more room when all six stand together */
+  .hh-ctrl{width:100%; justify-content:space-between; flex-direction:row-reverse}
+  .has-h3d .hp-name{font-size:.66rem; letter-spacing:.06em}
+  .hh-note{text-align:left; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden}
+}
 @media (prefers-reduced-motion:reduce){
-  .sky-svg .line, .sky-svg .fig text{transition:none}
-  .sky-card{transition:none}
+  .hh-stage, .has-h3d .hp, .hh-btn, .hh-btn-i{transition:none}
 }
 </style>
 </head>
 
-<body class="home-sky">
+<body>
 <a class="skip" href="#main">Skip to content</a>
 
-<!-- ===== MENU (same links as every page; this page styles it plainly) ===== -->
+<!-- ===== NAV (keep identical on every page) ===== -->
 <header class="nav" id="nav">
   <div class="nav-inner">
-    <a class="brand" href="index.html" aria-label="Home">
-      <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1 L11.6 8.4 L19 10 L11.6 11.6 L10 19 L8.4 11.6 L1 10 L8.4 8.4 Z" fill="none" stroke="#EDE6D6" stroke-width="1.2" stroke-linejoin="round"/></svg>
+    <a class="brand" href="index.html" aria-label="Home" aria-current="page">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+          <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      Robert Butts
     </a>
     <nav class="nav-links" aria-label="Primary">
       <a class="section-link" href="work.html">Work</a>
       <a class="section-link" href="deep-dives.html">Deep dives</a>
       <a class="section-link" href="gallery.html">Gallery</a>
       <a class="section-link" href="practice.html">Practice</a>
-      <a class="section-link" href="#about">About</a>
-      <a class="section-link" href="contact.html">Contact</a>
+      <a class="section-link" href="about.html">About</a>
+      <a class="nav-cta" href="contact.html">Get in touch</a>
     </nav>
     <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu"><span></span></button>
   </div>
@@ -144,67 +154,111 @@ body.home-sky{--serif:'Cormorant Garamond', Georgia, serif; --sky-accent:#F2D49B
   <a href="deep-dives.html">Deep dives</a>
   <a href="gallery.html">Gallery</a>
   <a href="practice.html">Practice</a>
-  <a href="#about">About</a>
-  <a href="contact.html">Contact</a>
+  <a href="about.html">About</a>
+  <a href="contact.html">Get in touch</a>
 </div>
 
 <main id="main">
 
-<!-- ===== 1. THE SKY =====
-     sky.js draws the real stars over Columbus, Ohio, at the moment someone visits, facing
-     north. Each link in the list below is one project, drawn as one of the six constellations
-     that never set over Columbus (data-key names the constellation in sky-stars.js:
-     gallery = Big Dipper, practice = Little Dipper, nba = Draco, lego = Cepheus,
-     brant = Cassiopeia, dublin = Camelopardalis).
-     EDIT: change a link's href, its name, or what its card says (data-kind, data-desc,
-     data-where) right here. Without JavaScript, this list shows as plain links. -->
-<section class="sky-hero" id="skyHero" aria-label="The stars over Columbus, Ohio, facing north. Six of the constellations that never set over Columbus hold my projects.">
-  <div class="sky-stage" id="skyStage"></div>
-  <nav class="sky-list" id="skyList" aria-label="Projects in the sky">
-    <a data-key="gallery" href="gallery.html" data-kind="58 chart types" data-where="In the Big Dipper" data-desc="58 chart types in nine families, each with a sample CSV file and R code.">The Chart Gallery</a>
-    <a data-key="practice" href="practice.html" data-kind="5 interactive tools" data-where="In the Little Dipper, with the North Star" data-desc="R flashcards, a chart field guide, a method finder, and more ways to practice data skills.">Practice tools</a>
-    <a data-key="nba" href="nba-games/" data-kind="Deep dive" data-where="In Draco, the dragon" data-desc="Every 2024-25 NBA game, one scoring play at a time.">NBA Game Explorer</a>
-    <a data-key="lego" href="work.html#lego" data-kind="Tableau Public" data-where="In Cepheus, the king" data-desc="How the complexity of LEGO sets has climbed across the decades.">LEGO complexity analysis</a>
-    <a data-key="brant" href="pacific-brant/index.html" data-kind="Graduate project" data-where="In Cassiopeia, the queen" data-desc="How close a helicopter can fly before flocks of Pacific brant take flight.">Helicopters and Pacific brant</a>
-    <a data-key="dublin" href="dublin/index.html" data-kind="Graduate capstone" data-where="In Camelopardalis, the giraffe" data-desc="A Census data pipeline and k-means clustering that found the 51 U.S. places most like Dublin, Ohio.">Data-Driven Dublin</a>
-  </nav>
-  <div class="sky-card" id="skyCard" aria-hidden="true"></div>
-  <div class="sky-foot">
-    <h1>Robert Butts</h1>
-    <p class="sky-readout">Columbus, Ohio &middot; 39.96&deg; N, 83.00&deg; W<br><span id="skyTime">Facing north</span></p>
-  </div>
-</section>
+<section class="home-hero" id="homeHero" aria-labelledby="homeTitle">
+  <!-- HERO ANIMATION: drawn by home-hero.js (timing and wording are at the top of that file).
+       To remove it, delete this line and the three script lines at the bottom of the page;
+       the six projects then show as plain cards. -->
+  <div class="hh-stage" data-homehero aria-hidden="true"></div>
 
-<!-- ===== 2. ABOUT AND CONTACT ===== EDIT: the two paragraphs and the links.
-     This is the only About on the site: about.html now forwards here, and every menu's
-     About link opens this section (id="about").
-     Contact goes through the form on contact.html, so no email address appears on the site. -->
-<section class="home-about" id="about" aria-labelledby="aboutTitle">
-  <div class="home-about-inner">
-    <img src="images/profile/robert-headshot.jpg" alt="Robert Butts" width="800" height="768" loading="lazy">
-    <div class="home-about-text">
-      <h2 class="home-h2" id="aboutTitle">About</h2>
-      <p>I help people see what their data is saying. The thread through all of my work is the same: taking something complicated and making it clear. In my day job, that means helping faculty choose and use the right tools. On my own time, it means turning data into pictures that answer a question at a glance, and building small interactive tools that make learning stick.</p>
-      <p>I am strongly influenced by the Financial Times Visual Vocabulary, a guide that sorts charts by the question each one answers. It inspired my <a href="gallery.html#credits">Chart Gallery</a>.</p>
-      <div class="home-links">
-        <a class="plain" href="contact.html">Send me a message</a>
-        <a class="plain" href="https://www.linkedin.com/in/robertmbutts/" target="_blank" rel="noopener">LinkedIn</a>
+  <!-- THE WORDS along the bottom. EDIT: the introduction and the name. -->
+  <div class="hh-bottom">
+    <div class="wrap hh-row">
+      <p class="hh-intro"><b>I help people see what their data is saying.</b> The thread through all of my work is the same: taking something complicated and making it clear.</p>
+      <div class="hh-ctrl">
+        <p class="hh-note" id="hhNote"></p>
+        <button class="hh-btn" id="hhBtn" type="button" hidden><span class="hh-btn-t">See all six projects</span><span class="hh-btn-i" aria-hidden="true"><svg class="ic-skip" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg><svg class="ic-replay" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 6.2A5 5 0 1 1 3 9.4"/><path d="M3 2.8v3.6h3.6"/></svg></span></button>
       </div>
     </div>
+    <div class="wrap"><h1 class="hh-name" id="homeTitle"><span>Robert Butts</span></h1></div>
   </div>
+
+  <!-- ===== THE SIX PROJECTS =====
+       EDIT: each link's address (href), color (--pc), shape (data-shape), name, and description.
+       The order here is the order the shapes appear. -->
+  <nav class="hh-projects" aria-label="Six favorite projects">
+    <a class="hp" href="nba-games/" data-shape="ball" style="--pc:var(--amber)">
+      <span class="hp-cap"><span class="hp-name"><span class="hp-num">01</span>NBA Game Explorer</span>
+      <span class="hp-desc">Every 2024-25 NBA game, one scoring play at a time.</span></span>
+    </a>
+    <a class="hp" href="deep-dives.html" data-shape="sankey" style="--pc:var(--green)">
+      <span class="hp-cap"><span class="hp-name"><span class="hp-num">02</span>Where Ohio's school money goes</span>
+      <span class="hp-desc">How Ohio's K-12 education dollars are spent, compared by school type. In progress.</span></span>
+    </a>
+    <a class="hp" href="gallery.html" data-shape="bars" style="--pc:var(--violet)">
+      <span class="hp-cap"><span class="hp-name"><span class="hp-num">03</span>The Chart Gallery</span>
+      <span class="hp-desc">58 chart types in nine families, each with a sample CSV file and R code.</span></span>
+    </a>
+    <a class="hp" href="dublin/index.html" data-shape="ohio" style="--pc:var(--blue)">
+      <span class="hp-cap"><span class="hp-name"><span class="hp-num">04</span>Data-Driven Dublin</span>
+      <span class="hp-desc">A Census data pipeline and k-means clustering that found the 51 U.S. places most like Dublin, Ohio.</span></span>
+    </a>
+    <a class="hp" href="work.html#lego" data-shape="brick" style="--pc:var(--red)">
+      <span class="hp-cap"><span class="hp-name"><span class="hp-num">05</span>LEGO complexity analysis</span>
+      <span class="hp-desc">How the complexity of LEGO sets has climbed across the decades.</span></span>
+    </a>
+    <a class="hp" href="pacific-brant/index.html" data-shape="goose" style="--pc:var(--teal)">
+      <span class="hp-cap"><span class="hp-name"><span class="hp-num">06</span>Helicopters and Pacific brant</span>
+      <span class="hp-desc">How close a helicopter can fly before flocks of Pacific brant take flight.</span></span>
+    </a>
+  </nav>
 </section>
 
 </main>
 
-<footer class="home-foot">
-  <div class="home-foot-inner">
-    <span>&copy; 2026 Robert Butts</span>
-    <span>Star positions from the Hipparcos catalog, via <a class="plain" href="https://github.com/ofrohn/d3-celestial" target="_blank" rel="noopener">d3-celestial</a></span>
+<!-- ===== FOOTER (keep identical on every page) ===== -->
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="fb-name">
+          <span class="mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M3 21V3" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 21H21" stroke="#E8EDF4" stroke-width="2" stroke-linecap="round"/>
+              <path d="M6 15l4-5 4 3 5-8" stroke="#75AADB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          Robert Butts
+        </div>
+        <p>Data visualization and clear thinking, from a technologist in Ohio higher education.</p>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>Site</h4>
+          <a href="index.html">Home</a>
+          <a href="work.html">Work</a>
+          <a href="deep-dives.html">Deep dives</a>
+          <a href="gallery.html">Gallery</a>
+          <a href="practice.html">Practice</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="foot-col">
+          <h4>Elsewhere</h4>
+          <a href="https://www.linkedin.com/in/robertmbutts/" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+        <div class="foot-col">
+          <h4>Say hello</h4>
+          <a href="contact.html">Send a message</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 Robert Butts.</span>
+      <span>Charts, questions, and the occasional insight.</span>
+    </div>
   </div>
 </footer>
 
 <script src="site.js"></script>
-<script src="sky-stars.js"></script>
-<script src="sky.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+<script src="home-shapes.js" defer></script>
+<script src="home-hero.js" defer></script>
 </body>
 </html>
