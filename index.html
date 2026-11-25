@@ -12,8 +12,9 @@
 <!--
   ============================================================
   HOME PAGE (index.html)
-  One hero and nothing else. The words sit along the bottom, with
-  the name across the full width in an italic serif. A cloud of data points falls flat
+  One hero and nothing else, in the look of the old night-sky home
+  page: a black bar along the bottom holds the name in a serif
+  (Cormorant Garamond) and a small readout. A cloud of data points falls flat
   onto a 3D coordinate plane, then a shape for each of six
   favorite projects rises out of the plane's triangle grid, one at
   a time. At the end all six stand together, and each one is a link.
@@ -30,7 +31,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <!-- old links to the About section on this page go to the About page -->
 <script>if (location.hash === '#about') location.replace('about.html');</script>
@@ -38,50 +39,44 @@
 <style>
 /* ===== Page styles for the home page only ===== */
 
-/* THE HERO: the whole screen. The 3D scene (home-hero.js) fills it; the words sit along the bottom:
-   a short introduction on the left, the button on the right, and the name across the full width. */
+/* THE HERO: the whole screen, in the look of the old night-sky home page. The 3D scene (home-hero.js)
+   fills a near-black space; a black bar runs along the bottom like the ground below a horizon, with
+   the name in a serif on the left and a small readout in capitals on the right. */
+:root{--bg:#05070B; --ink:#EDE6D6; --ink-2:rgba(233,227,213,.72); --ink-3:rgba(233,227,213,.6); --gold:#F2D49B}
 .home-hero{position:relative; overflow:hidden; isolation:isolate; padding:0; min-height:100vh; min-height:100svh;
   display:flex; flex-direction:column; justify-content:flex-end}
-.home-hero.has-h3d{padding-top:min(56vh, 480px)}   /* the least room the scene gets above the words */
+.home-hero.has-h3d{padding-top:min(56vh, 480px)}   /* the least room the scene gets above the bar */
 .hh-stage{position:absolute; inset:0; z-index:0; opacity:0; transition:opacity 1s ease}
 .hh-stage.on{opacity:1}
 .hh-stage canvas{display:block}
-.hh-bottom{position:relative; z-index:2; padding:120px 0 clamp(8px, 1.6vw, 22px)}
-.has-h3d .hh-bottom{padding-top:0}
-.hh-row{position:relative; z-index:1; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-end; gap:20px 40px}   /* above the name, whose tall letters reach up into this row */
-.hh-intro{font-size:1.05rem; line-height:1.55; color:rgba(232,237,244,.72); max-width:31rem}
-.hh-intro b{font-weight:500; color:var(--text)}
-.hh-ctrl{display:flex; align-items:center; justify-content:flex-end; gap:12px 20px}
-.home-hero:not(.has-h3d) .hh-ctrl{display:none}
-.hh-note{font-size:.84rem; line-height:1.5; color:var(--muted); text-align:right; max-width:22rem; min-height:3em;
-  display:flex; flex-direction:column; justify-content:center}
-.hh-note b{font-weight:600}
-/* the button: a pill with a round icon, like "Explore the work" on vadimcarazan.com */
-.hh-btn{flex:0 0 auto; display:inline-flex; align-items:center; gap:14px; padding:6px 6px 6px 18px; font-family:var(--body); font-size:.86rem; color:var(--text);
-  border:1px solid rgba(232,237,244,.3); border-radius:999px; background:rgba(14,17,22,.4); transition:border-color .2s ease}
-.hh-btn:hover{border-color:var(--blue)}
-.hh-btn-i{width:32px; height:32px; border-radius:50%; border:1px solid rgba(232,237,244,.3); display:grid; place-items:center; transition:background .2s ease, color .2s ease}
-.hh-btn:hover .hh-btn-i{background:var(--blue); border-color:var(--blue); color:#0E1116}
-.hh-btn-i svg{width:14px; height:14px; grid-area:1 / 1}
-.hh-btn .ic-replay, .hh-btn.is-replay .ic-skip{display:none}
-.hh-btn.is-replay .ic-replay{display:block}
-/* the name, in an italic serif (Instrument Serif), sized to fill the width of the page
-   (4.12 is how wide "Robert Butts" is, in font sizes), but never taller than about a third of
-   the screen, so the scene keeps its room on short screens. The clip hides the name below its
-   line while it rises in, without cutting off the italic letters at the sides. */
-.hh-name{margin:clamp(6px, 1vw, 12px) 0 0; font-family:'Instrument Serif', Georgia, serif; font-style:italic; font-weight:400; letter-spacing:-.015em;
-  line-height:.92; font-size:min(calc((min(100vw, var(--maxw)) - 56px) / 4.12), 30vh); white-space:nowrap; color:var(--text);
-  -webkit-clip-path:inset(-40% -10% 0 -10%); clip-path:inset(-40% -10% 0 -10%)}
+
+/* the black bar */
+.hh-bottom{position:relative; z-index:2; min-height:24vh; display:flex; align-items:center; padding:clamp(22px, 3.4vh, 36px) 0;
+  background:#030406; border-top:1px solid rgba(233,227,213,.07)}
+.hh-row{display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:20px 48px}
+.hh-who{min-width:0}
+.hh-name{margin:0; font-family:'Cormorant Garamond', Georgia, serif; font-weight:500; font-size:clamp(46px, 6.4vw, 96px); line-height:.92;
+  letter-spacing:-.01em; color:var(--ink); -webkit-clip-path:inset(-30% -6% 0 -6%); clip-path:inset(-30% -6% 0 -6%)}   /* the clip hides the name while it rises in */
 .hh-name span{display:inline-block}
+.hh-intro{margin-top:14px; font-size:.95rem; line-height:1.6; color:var(--ink-2); max-width:36rem}
+/* the readout: what the scene is showing, and the time in Ohio */
+.hh-readout{font-family:var(--mono); font-size:11px; line-height:1.9; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); text-align:right}
+.hh-state{color:var(--ink-2)}
+.hh-btn{display:inline-block; margin-top:6px; padding:6px 0 3px; font:inherit; letter-spacing:inherit; text-transform:inherit; color:var(--ink);
+  border-bottom:1px solid rgba(242,212,155,.4); transition:color .2s ease, border-color .2s ease}
+.hh-btn:hover, .hh-btn:focus-visible{color:var(--gold); border-color:var(--gold)}
+.hh-btn:focus-visible{outline:2px solid var(--gold); outline-offset:4px}
+.hh-btn[hidden]{display:none}
 
 /* the words come in when the page opens: the name rises, then the rest fades up */
 .js-anim .hh-name span{transform:translateY(105%)}
 .js-anim.loaded .hh-name span{transform:none; transition:transform 1.1s cubic-bezier(.2,.8,.2,1) .1s}
-.js-anim .hh-row > *{opacity:0; transform:translateY(14px)}
-.js-anim.loaded .hh-row > *{opacity:1; transform:none; transition:opacity .7s ease .45s, transform .7s cubic-bezier(.2,.8,.2,1) .45s}
+.js-anim .hh-intro, .js-anim .hh-readout{opacity:0; transform:translateY(12px)}
+.js-anim.loaded .hh-intro, .js-anim.loaded .hh-readout{opacity:1; transform:none; transition:opacity .7s ease .45s, transform .7s cubic-bezier(.2,.8,.2,1) .45s}
 
 /* THE SIX PROJECTS, as plain cards (what shows without the 3D scene) */
-.home-hero:not(.has-h3d){min-height:0}
+.home-hero:not(.has-h3d){min-height:0; padding-top:66px}
+.home-hero:not(.has-h3d) .hh-projects{padding-top:36px}
 .hh-projects{position:relative; z-index:2; width:100%; max-width:var(--maxw); margin:0 auto; padding:0 28px 72px;
   display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:14px}
 .hp{--pc:var(--blue); display:flex; flex-direction:column; gap:6px; padding:18px 20px; background:var(--panel); border:1px solid var(--line);
@@ -111,12 +106,12 @@
 @media (max-width:999px){
   .home-hero.has-h3d{padding-top:calc(66px + min(110vw, 430px))}
   .home-hero.has-h3d.is-final{padding-top:calc(66px + min(150vw, 600px))}   /* more room when all six stand together */
-  .hh-ctrl{width:100%; justify-content:space-between; flex-direction:row-reverse}
+  .hh-row{flex-direction:column; align-items:flex-start}
+  .hh-readout{text-align:left}
   .has-h3d .hp-name{font-size:.66rem; letter-spacing:.06em}
-  .hh-note{text-align:left; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden}
 }
 @media (prefers-reduced-motion:reduce){
-  .hh-stage, .has-h3d .hp, .hh-btn, .hh-btn-i{transition:none}
+  .hh-stage, .has-h3d .hp, .hh-btn{transition:none}
 }
 </style>
 </head>
@@ -166,16 +161,20 @@
        the six projects then show as plain cards. -->
   <div class="hh-stage" data-homehero aria-hidden="true"></div>
 
-  <!-- THE WORDS along the bottom. EDIT: the introduction and the name. -->
+  <!-- THE BAR along the bottom. EDIT: the name and the introduction. The readout's first line is
+       written by home-hero.js as the scene plays; the second line is the time in Ohio. -->
   <div class="hh-bottom">
     <div class="wrap hh-row">
-      <p class="hh-intro"><b>I help people see what their data is saying.</b> The thread through all of my work is the same: taking something complicated and making it clear.</p>
-      <div class="hh-ctrl">
-        <p class="hh-note" id="hhNote"></p>
-        <button class="hh-btn" id="hhBtn" type="button" hidden><span class="hh-btn-t">See all six projects</span><span class="hh-btn-i" aria-hidden="true"><svg class="ic-skip" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg><svg class="ic-replay" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 6.2A5 5 0 1 1 3 9.4"/><path d="M3 2.8v3.6h3.6"/></svg></span></button>
+      <div class="hh-who">
+        <h1 class="hh-name" id="homeTitle"><span>Robert Butts</span></h1>
+        <p class="hh-intro">I help people see what their data is saying. The thread through all of my work is the same: taking something complicated and making it clear.</p>
+      </div>
+      <div class="hh-readout">
+        <p class="hh-state" id="hhState">Six favorite projects</p>
+        <p id="hhTime">Ohio</p>
+        <button class="hh-btn" id="hhBtn" type="button" hidden>See all six projects &rarr;</button>
       </div>
     </div>
-    <div class="wrap"><h1 class="hh-name" id="homeTitle"><span>Robert Butts</span></h1></div>
   </div>
 
   <!-- ===== THE SIX PROJECTS =====
@@ -257,6 +256,18 @@
 </footer>
 
 <script src="site.js"></script>
+<script>
+/* the time in Ohio, for the readout in the bar */
+(function () {
+  var el = document.getElementById('hhTime'), f;
+  if (!el || !window.Intl) return;
+  try { f = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); }
+  catch (e) { return; }
+  var tick = function () { el.textContent = f.format(new Date()) + ' ET \u00b7 Ohio'; };
+  tick();
+  setInterval(tick, 15000);
+})();
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
 <script src="home-shapes.js" defer></script>
 <script src="home-hero.js" defer></script>

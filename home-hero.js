@@ -9,7 +9,7 @@
         the triangle grid, holds for a moment, and falls apart,
      4. then all six rise together, side by side. Each one is a link.
    Anyone can skip ahead: click the empty part of the hero, scroll,
-   or press "See all six projects". Later visits in the same
+   or press "See all six projects" in the bar. Later visits in the same
    browser session start at step 4.
 
    The six projects are the links inside <nav class="hh-projects">
@@ -32,7 +32,7 @@
   var hero = document.getElementById('homeHero');
   var foot = hero.querySelector('.hh-bottom'), row = hero.querySelector('.hh-row');
   var links = Array.prototype.slice.call(hero.querySelectorAll('.hp'));
-  var btn = document.getElementById('hhBtn'), note = document.getElementById('hhNote');
+  var btn = document.getElementById('hhBtn'), stateEl = document.getElementById('hhState');
   if (!links.length) return;
   var renderer;
   try { renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true }); }
@@ -44,7 +44,7 @@
   var FALL = 2.6;                                   /* the points fall onto the grid */
   var BUILD = 2.1, HOLD = 2.3, BREAK = 1.3, STEP = 4.6;   /* each project's shape; a new one starts every STEP seconds */
   var RISE = 2.4;                                   /* all six rise together at the end */
-  var NOTE = 'Choose a project to open it, or use the menu above.';
+  var DONE = 'Six projects \u00b7 choose one';   /* the readout once all six stand together */
 
   var HS = window.HOME_SHAPES, S = HS.S, H = HS.H;
   var BASE = 0.35;      /* shapes float this far above the floor */
@@ -404,13 +404,25 @@
   var snap = null;                            /* the moment a change of mode began */
   var tx = 0, ty = 0, mx = 0, my = 0, mouse = false;
 
-  var setNote = function (html) { if (note && note._h !== html) { note.innerHTML = html; note._h = html; } };
-  var restNote = function () { setNote(mode === 'final' ? NOTE : ''); };
+  /* the readout in the bar says what the scene is showing */
+  var two = function (n) { return (n < 10 ? '0' : '') + n; };
+  var NAMES = links.map(function (a) {
+    var nm = a.querySelector('.hp-name'), num = nm.querySelector('.hp-num');
+    return nm.textContent.replace(num ? num.textContent : '', '').trim();
+  });
+  var project = function (i) { return 'Project ' + two(i + 1) + ' of ' + two(N6) + ' \u00b7 ' + NAMES[i]; };
+  var setState = function (t) { if (stateEl && stateEl._t !== t) { stateEl.textContent = t; stateEl._t = t; } };
+  var restState = function () { setState(mode === 'final' ? DONE : mode === 'replay' ? 'Starting again' : stateEl._t); };
+  var introState = function (t, shown) {
+    if (shown >= 0) return project(shown);
+    if (t < CLOUD) return POINTS.toLocaleString('en-US') + ' data points';
+    if (t < TSEQ + BUILD) return POINTS.toLocaleString('en-US') + ' data points, falling flat';
+    return stateEl ? stateEl._t : '';
+  };
   var setButton = function () {
     if (!btn) return;
     btn.hidden = reduce;
-    btn.classList.toggle('is-replay', mode === 'final');
-    btn.querySelector('.hh-btn-t').textContent = mode === 'final' ? 'Play again' : 'See all six projects';
+    btn.textContent = mode === 'final' ? 'Play again' : 'See all six projects \u2192';
   };
   var remember = function () { try { sessionStorage.setItem('rb-home-seen', '1'); } catch (e) { /* storage blocked */ } };
 
@@ -422,7 +434,7 @@
       grid: mode === 'intro' ? gridAt(mt) : gridMat.opacity / 0.55 };
     if (fromFloor) { snap.grid = 0; snap.cloudK = 0; }
     mode = 'final'; mt = 0;
-    showLinks('all'); restNote(); setButton(); remember();
+    showLinks('all'); setState(DONE); setButton(); remember();
     hero.classList.add('is-final'); layout();
   };
   /* from all six back to the start */
@@ -432,7 +444,7 @@
     snap = { from: from, a: fa, cam: CAM };
     mode = 'replay'; mt = 0; hover = -1;
     hero.classList.remove('is-final'); layout();
-    showLinks(-1); setNote(''); setButton();
+    showLinks(-1); setState('Starting again'); setButton();
   };
 
   var drawFinal = function (t, still) {
@@ -506,6 +518,7 @@
         drawSequence(mt);
         var i = shownAt(mt);
         showLinks(i, true);
+        setState(introState(mt, i));
         aimCamera(CAM);
         root.updateMatrixWorld();
         if (i >= 0) placeLink(i, single, capS);
@@ -536,7 +549,7 @@
   /* reduced motion: all six, still */
   var still = function () {
     if (!layout()) return;
-    if (mode !== 'final') { mode = 'final'; snap = null; showLinks('all'); hero.classList.add('is-final'); layout(); }
+    if (mode !== 'final') { mode = 'final'; snap = null; showLinks('all'); setState(DONE); hero.classList.add('is-final'); layout(); }
     for (var i = 0; i < N6; i++) { hl[i] = hover === i ? 1 : 0; dim[i] = hover >= 0 && hover !== i ? 1 : 0; }
     pts.visible = false; plane.visible = false;
     setGrid(1);
@@ -565,16 +578,14 @@
     else if (mode === 'intro') skip();
   });
   links.forEach(function (a, i) {
-    var nm = a.querySelector('.hp-name'), num = nm.querySelector('.hp-num'), desc = a.querySelector('.hp-desc');
-    var name = nm.textContent.replace(num ? num.textContent : '', '').trim();
     var on = function () {
       if (mode === 'intro' && !a.classList.contains('show')) skip();
       if (mode !== 'final') return;
       hover = i;
-      setNote('<b style="color:' + getComputedStyle(a).getPropertyValue('--pc') + '">' + name + '.</b> ' + (desc ? desc.textContent : ''));
+      setState(project(i));
       if (reduce) still();
     };
-    var off = function () { if (hover === i) { hover = -1; restNote(); if (reduce) still(); } };
+    var off = function () { if (hover === i) { hover = -1; restState(); if (reduce) still(); } };
     a.addEventListener('pointerenter', on);
     a.addEventListener('pointerleave', off);
     a.addEventListener('focus', on);
