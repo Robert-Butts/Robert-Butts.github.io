@@ -1201,3 +1201,45 @@ a.c-famous:hover .go{color:var(--fc)}
 .field3d{position:absolute; left:0; right:0; top:0; height:100vh; height:100svh; min-height:560px; max-height:1000px; z-index:-1; pointer-events:none; overflow:hidden;
   -webkit-mask-image:linear-gradient(180deg, #000 0%, #000 52%, transparent 100%); mask-image:linear-gradient(180deg, #000 0%, #000 52%, transparent 100%)}
 .field3d canvas{display:block; width:100%; height:100%}
+
+/* ---------- 28. WORK PAGE: THE JOURNEY (journey.js) ----------
+   When journey.js runs, it adds the class "jr" to the page and the
+   projects become stops on a 3D path: scrolling moves you forward, each
+   project's picture floats beside the path, and its title, text, and
+   links appear on the other side of the screen while you are there.
+   These rules only apply then. With no WebGL, or with reduced motion,
+   sections 25 to 27 above show the page as a regular scroll. */
+.jr main{position:relative}
+.jr-stage{position:sticky; top:0; z-index:0; height:100vh; height:100svh; margin-bottom:-100vh; margin-bottom:-100svh; overflow:hidden; pointer-events:none}
+.jr-stage canvas{display:block; width:100%; height:100%}
+.jr main > :not(.jr-stage){position:relative; z-index:1}
+.jr .work-head{min-height:100vh; min-height:100svh}
+.jr .work-head::before{content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(to right, rgba(14,17,22,.7), rgba(14,17,22,0) 60%)}
+.jr .work-head .wrap{position:relative}
+.jr .stage{margin-top:0; overflow:visible}
+.jr .stage .scene{position:sticky; top:0; height:100vh; height:100svh; min-height:0; margin-bottom:-100vh; margin-bottom:-100svh; padding:0; opacity:0; visibility:hidden}
+.jr .scene-glow, .jr .frame{display:none}
+/* a soft shade behind the text, on the card's side and along the bottom */
+.jr .scene::before{content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(to top, rgba(14,17,22,.82), rgba(14,17,22,0) 46%), linear-gradient(var(--jr-dir, to left), rgba(14,17,22,.72), rgba(14,17,22,0) 58%)}
+.jr .scene[data-card="left"]{--jr-dir:to right}
+.jr .scene-inner{display:flex; flex-direction:column; justify-content:flex-end; align-items:flex-end; height:100%; padding:0 0 max(9svh, 56px); transform:translateY(var(--jr-y, 0px))}
+.jr .scene[data-card="left"] .scene-inner{align-items:flex-start}
+.jr .scene-title, .jr .scene-meta{width:min(480px, 100%); transform:none}
+.jr .scene-title{margin:0 0 16px; padding-left:0; font-size:clamp(2.4rem, 4.4vw, 4.2rem)}
+.jr .scene-meta{display:flex; flex-direction:column; gap:14px; margin:0}
+.jr .sm-links{justify-content:flex-start}
+.jr .jr-credit{margin:0; font-family:var(--mono); font-size:.64rem; letter-spacing:.02em; color:var(--faint)}
+@media (min-width:1000px){ .jr .rail{display:flex} }
+@media (max-width:999px){ .jr .rail{display:none} }
+@media (max-width:759px){
+  .jr .scene-inner, .jr .scene[data-card] .scene-inner{align-items:stretch; width:auto; margin:0 20px; padding:0 0 max(5svh, 26px)}
+  .jr .scene::before{background:linear-gradient(to top, rgba(14,17,22,.94) 0%, rgba(14,17,22,.66) 36%, rgba(14,17,22,0) 60%)}
+  .jr .scene-title, .jr .scene-meta{width:auto}
+  .jr .scene-title{font-size:clamp(1.9rem, 8vw, 2.5rem); margin-bottom:8px}
+  .jr .scene-meta{gap:10px}
+  .jr .scene-meta .card-tools{display:none}
+  .jr .sm-desc{font-size:.9rem; line-height:1.5}
+  .jr .sm-btn{padding:10px 14px; font-size:.72rem}
+}
+

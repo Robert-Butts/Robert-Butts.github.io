@@ -1,6 +1,7 @@
 /* ============================================================
    ROBERT BUTTS · PORTFOLIO  ·  work.js
-   Loaded only by work.html, after site.js. It handles:
+   Loaded only by work.html, after site.js and journey.js. When journey.js
+   shows the 3D path, this file does nothing. Otherwise it handles:
      1. the parallax: each featured project gets a number (--p) for
         where it sits on screen, eased so layers glide into place
      2. the masked title reveal and the side list of projects
@@ -15,6 +16,8 @@
 ============================================================ */
 (function(){
   "use strict";
+  /* journey.js (the 3D path) runs the page instead when the device can show it */
+  if(window.WORK_JOURNEY){ return; }
   var SNAP = true;
   var EASE = 0.1;
 
