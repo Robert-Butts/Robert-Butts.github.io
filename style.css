@@ -1243,3 +1243,58 @@ a.c-famous:hover .go{color:var(--fc)}
   .jr .sm-btn{padding:10px 14px; font-size:.72rem}
 }
 
+/* ---------- 29. WORK PAGE: THE PICTURE COLUMN (workstack.js) ----------
+   When workstack.js runs, it adds the class "ws" to the page. The
+   projects' pictures become a column drawn in 3D on the right, which
+   scrolling moves up one project at a time, and each project's title,
+   text, and links show on the left while its picture is in the middle.
+   These rules only apply then. With no WebGL, or with reduced motion,
+   sections 25 to 27 above show the page as a regular scroll. */
+.ws main{position:relative}
+.ws-stage{position:sticky; top:0; z-index:0; height:100vh; height:100svh; margin-bottom:-100vh; margin-bottom:-100svh; overflow:hidden; pointer-events:none}
+.ws-stage canvas{display:block; width:100%; height:100%}
+.ws main > :not(.ws-stage){position:relative; z-index:1}
+/* the first screen: the page's title on the left while the pictures arrive on the right */
+.ws .work-head{min-height:100vh; min-height:100svh; display:flex; align-items:center; padding-top:66px; padding-bottom:0}
+.ws .work-head .wrap{width:100%}
+.ws .work-head .wrap > *{max-width:min(500px, 40vw)}
+/* each project's text: on the left, while its picture is in the middle */
+.ws .stage{margin-top:-100vh; margin-top:-100svh; overflow:visible; pointer-events:none}   /* starts under the title, so the text is in place before it shows */
+.ws .stage > *{pointer-events:auto}
+.ws .stage .scene{position:sticky; top:0; height:100vh; height:100svh; min-height:0; margin-bottom:-100vh; margin-bottom:-100svh; padding:0; opacity:0; visibility:hidden}
+.ws .scene-glow, .ws .frame{display:none}
+.ws .scene-inner{display:flex; flex-direction:column; justify-content:center; align-items:flex-start; width:auto; height:100%; max-width:var(--maxw); margin:0 auto; padding:66px 28px 0;
+  transform:translateY(var(--ws-y, 0px))}
+.ws .scene-title, .ws .scene-meta{width:min(440px, 38vw)}
+.ws .scene-title{margin:0 0 20px; padding-left:0; font-size:clamp(2.4rem, 4.4vw, 4.3rem); transform:none}
+.ws .scene-meta{display:flex; flex-direction:column; gap:14px; margin:0; transform:none}
+.ws .sm-links{justify-content:flex-start}
+.ws .ws-count{margin:0 0 14px; font-family:var(--mono); font-size:.72rem; letter-spacing:.14em; color:var(--cc)}
+.ws .ws-credit{margin:0; font-family:var(--mono); font-size:.64rem; letter-spacing:.02em; color:var(--faint)}
+/* the dots on the right edge: one per project; point at one for its name */
+.ws .rail{left:auto; right:22px; top:50%; align-items:flex-end; gap:0; transform:translate(12px, -50%)}
+.ws.rail-on .rail{transform:translate(0, -50%)}
+.ws .rail a{flex-direction:row-reverse; padding:5px 4px}
+.ws .rail-bar{width:3px; height:14px; transition:height .3s ease, background .3s ease}
+.ws .rail a.is-active .rail-bar{width:3px; height:30px}
+.ws .rail-name{transform:translateX(6px)}
+@media (min-width:1000px){ .ws .rail{display:flex} }
+@media (max-width:999px){ .ws .rail{display:none} }
+/* phones and tall screens: the column sits high, and the text below it */
+@media (max-width:759px), (max-aspect-ratio:17/20){
+  .ws .work-head{align-items:flex-end; padding-bottom:max(5svh, 26px)}
+  .ws .work-head .wrap > *{max-width:none}
+  .ws .work-head .ph-lead{font-size:.98rem}
+  .ws .work-head .scroll-cue{margin-top:20px}
+  .ws .work-head::before, .ws .scene::before{content:""; position:absolute; inset:0; pointer-events:none;
+    background:linear-gradient(to top, rgba(14,17,22,.92) 0%, rgba(14,17,22,.6) 34%, rgba(14,17,22,0) 56%)}
+  .ws .work-head .wrap{position:relative}
+  .ws .scene-inner{justify-content:flex-end; padding:0 20px max(5svh, 26px)}
+  .ws .scene-title, .ws .scene-meta{width:auto}
+  .ws .scene-title{font-size:clamp(1.9rem, 8vw, 2.6rem); margin-bottom:10px}
+  .ws .ws-count{margin-bottom:8px}
+  .ws .scene-meta{gap:10px}
+  .ws .scene-meta .card-tools{display:none}
+  .ws .sm-desc{font-size:.9rem; line-height:1.5}
+  .ws .sm-btn{padding:10px 14px; font-size:.72rem}
+}

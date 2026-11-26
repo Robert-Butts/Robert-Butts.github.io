@@ -9,8 +9,9 @@
 <!--
   ============================================================
   WORK PAGE (work.html)
-  Featured projects get one full screen each, with layered
-  parallax as you scroll (the motion is in work.js).
+  Featured projects appear as a column of pictures drawn in 3D
+  (workstack.js), inspired by robin-noguier.com. Without 3D, each
+  project gets one full screen with layered parallax (work.js).
   Search for EDIT to find the parts to change, and read the note
   above <div class="stage"> to add a featured project.
   ============================================================
@@ -82,17 +83,19 @@
        frame-photo : a photo that fills the whole frame (see Pacific brant).
        frame-shot  : a screenshot that floats inside a colored frame (see NBA).
      Long titles: split them into two <span class="ln"> lines so they stay large.
-     THE 3D PATH: on devices that can show it, journey.js turns these projects into stops on a
-     3D path that you move forward along as you scroll. Each scene's data-jr-img is the picture
-     shown in 3D. It must be a file on this site (pictures from Tableau Public cannot be used in
-     3D), so LEGO and NBA point to images/work/lego.png and images/work/nba.png: save a
-     screenshot of each dashboard under those names and it appears. Until then, a title card in
-     the project's color stands in.
+     THE 3D PICTURE COLUMN: on devices that can show it, workstack.js turns these projects into a
+     column of pictures drawn in 3D on the right, which scrolling moves up one project at a time,
+     with each project's text on the left. Each scene's data-ws-img is the picture shown in 3D.
+     It must be a file on this site (pictures from Tableau Public cannot be used in 3D), so LEGO
+     and NBA point to images/work/lego.png and images/work/nba.png: save a screenshot of each
+     dashboard under those names and it appears. Until then, a title card in the project's color
+     stands in.
      Otherwise (no WebGL, or reduced motion) work.js shows the regular scroll, one project per
      screen, and anyone who prefers reduced motion sees a still page. -->
 <div class="stage" id="stage">
 
-  <!-- Side list of the featured projects (shows on wide screens only) -->
+  <!-- Side list of the featured projects (wide screens only). Beside the 3D picture column it
+       shows as a row of dots on the right edge. -->
   <nav class="rail" aria-label="Featured projects">
     <a href="#dublin" data-cc="blue"><span class="rail-bar" aria-hidden="true"></span><span class="rail-name">Data-Driven Dublin</span></a>
     <a href="#lego" data-cc="red"><span class="rail-bar" aria-hidden="true"></span><span class="rail-name">LEGO complexity analysis</span></a>
@@ -104,7 +107,7 @@
        folder (with the k-means notebook at dublin/notebook.html). The image is
        a screenshot of the team's ArcGIS dashboard. data-expand makes it grow
        to fill the screen before the project page opens. -->
-  <section class="scene" id="dublin" data-cc="blue" data-jr-img="images/work/dublin-dashboard.webp" aria-labelledby="dublin-title">
+  <section class="scene" id="dublin" data-cc="blue" data-ws-img="images/work/dublin-dashboard.webp" aria-labelledby="dublin-title">
     <div class="scene-glow" aria-hidden="true"></div>
     <div class="scene-inner">
       <a class="frame frame-shot" href="dublin/index.html" tabindex="-1" aria-hidden="true" data-cursor="See the project" data-expand>
@@ -137,7 +140,7 @@
        updates itself when you republish. To use your own screenshot instead, save it
        as images/work/lego.png and change the img src below to that path. If the image
        cannot load, the bar drawing shows instead. -->
-  <section class="scene" id="lego" data-cc="red" data-jr-img="images/work/lego.png" aria-labelledby="lego-title">
+  <section class="scene" id="lego" data-cc="red" data-ws-img="images/work/lego.png" aria-labelledby="lego-title">
     <div class="scene-glow" aria-hidden="true"></div>
     <div class="scene-inner">
       <a class="frame frame-shot" href="https://public.tableau.com/app/profile/robert.butts/viz/LegoVisualizationforCompetition/LEGOComplexityAnalysis" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" data-cursor="Open the dashboard">
@@ -176,7 +179,7 @@
        the pacific-brant folder. data-expand makes the photo grow to fill the screen
        before that page opens. Photo: Gregory Smith, U.S. Fish and Wildlife Service,
        CC BY 4.0. Keep the credit line if you keep the photo. -->
-  <section class="scene" id="brant" data-cc="teal" data-jr-img="images/work/pacific-brant-feature.webp" aria-labelledby="brant-title">
+  <section class="scene" id="brant" data-cc="teal" data-ws-img="images/work/pacific-brant-feature.webp" aria-labelledby="brant-title">
     <div class="scene-glow" aria-hidden="true"></div>
     <div class="scene-inner">
       <a class="frame frame-photo" href="pacific-brant/index.html" tabindex="-1" aria-hidden="true" data-cursor="See the project" data-expand>
@@ -202,7 +205,7 @@
        updates itself when you republish. To use your own screenshot instead, save it
        as images/work/nba.png and change the img src below to that path. If the image
        cannot load, the bar drawing shows instead. -->
-  <section class="scene" id="nba" data-cc="amber" data-jr-img="images/work/nba.png" aria-labelledby="nba-title">
+  <section class="scene" id="nba" data-cc="amber" data-ws-img="images/work/nba.png" aria-labelledby="nba-title">
     <div class="scene-glow" aria-hidden="true"></div>
     <div class="scene-inner">
       <a class="frame frame-shot" href="https://public.tableau.com/app/profile/robert.butts/viz/NBAGameScoreDifferentialVisualization/Dashboard1" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" data-cursor="Open the dashboard">
@@ -300,7 +303,7 @@
 
 <script src="site.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="journey.js"></script>
+<script src="workstack.js"></script>
 <script src="work.js"></script>
 </body>
 </html>
