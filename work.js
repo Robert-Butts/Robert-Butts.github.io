@@ -17,7 +17,7 @@
 (function(){
   "use strict";
   /* journey.js (the 3D path) runs the page instead when the device can show it */
-  if(window.WORK_3D || window.WORK_JOURNEY){ return; }   /* the 3D picture column (workstack.js) is running */
+  if(window.WORK_3D || window.WORK_JOURNEY){ return; }   /* a 3D version of the page (journey.js) is running */
   var SNAP = true;
   var EASE = 0.1;
 

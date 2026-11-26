@@ -19,8 +19,9 @@
 
    Each project's picture comes from data-jr-img on its scene. Pictures
    from other sites (like Tableau Public) cannot be used in 3D, so LEGO and
-   NBA point to images/work/lego.png and images/work/nba.png. Until those
-   files exist, a simple title card in the project's color stands in.
+   NBA use screenshots saved as images/work/lego.webp and images/work/nba.webp.
+   If a picture cannot load, a simple title card in the project's color
+   stands in.
 
    If three.js cannot load, the device has no WebGL, or the device asks for
    reduced motion, this file does nothing and work.js shows the page as a
@@ -332,7 +333,7 @@
   /* jumping straight to a project: the side list, the scroll cue, and links like work.html#lego */
   var jump = function (i, instant) {
     if (i < 0 || i >= N) return;
-    window.scrollTo({ top: spots[i], behavior: instant ? 'auto' : 'smooth' });
+    window.scrollTo({ top: spots[i], behavior: instant ? 'instant' : 'smooth' });   /* 'instant', since the page's smooth scrolling would otherwise apply */
   };
   var indexOfId = function (id) { for (var i = 0; i < N; i++) if (scenes[i].id === id) return i; return -1; };
   document.addEventListener('click', function (e) {
@@ -468,6 +469,11 @@
     /* the browser makes its own jump to the anchor once the page loads, so go again after it */
     window.addEventListener('load', function () { setTimeout(arrive, 30); });
   }
+  /* a change to the address's #name on this page (typed, or from the back button) */
+  window.addEventListener('hashchange', function () {
+    var i = indexOfId((window.location.hash || '').slice(1));
+    if (i >= 0) { measure(); jump(i, true); }
+  });
   cards(window.scrollY);
   requestAnimationFrame(frame);
 })();
