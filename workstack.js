@@ -5,9 +5,11 @@
 
    The featured projects become a column of pictures drawn in 3D on the
    right side of the screen:
-     - when the page opens, the pictures slide up into the column, one
-       after another
-     - scrolling moves the column up, one project per screen. The picture
+     - when the page opens, all of the pictures slide up together into a
+       small column beside the page's title, so every project shows at once
+       (pointing at one shows its name; clicking it scrolls to it)
+     - scrolling spreads them into the full column, which then moves up
+       one project per screen. The picture
        in the middle of the screen is almost flat and in full color; the
        ones above and below tip away, bend, shrink, and fade toward gray,
        as if the column were wrapped around a large drum. Scrolling fast
@@ -24,8 +26,8 @@
    work.html, so a project added there gets its own picture in the column.
    Each picture comes from data-ws-img on its scene. Pictures from other
    sites (like Tableau Public) cannot be drawn in 3D, so LEGO and NBA point
-   to images/work/lego.png and images/work/nba.png. Until those files
-   exist, a title card in the project's color stands in.
+   to screenshots saved as images/work/lego.webp and images/work/nba.webp.
+   If a picture cannot load, a title card in the project's color stands in.
 
    If three.js cannot load, the device has no WebGL, or the device asks for
    reduced motion, this file does nothing and work.js shows the page as a
@@ -52,7 +54,8 @@
   var DRUM = 2.4;         /* the size of the drum the column wraps around: smaller tips the pictures away faster */
   var TWIST = 0.16;       /* how far pictures above and below turn sideways */
   var TINT = 0.13;        /* how strongly the background takes on each project's color (0 to 1) */
-  var START = -0.4;       /* where the column rests before you scroll: the first picture a little below the middle */
+  var START = -0.4;       /* how far before the first project the page's top is, in projects (the scroll from there spreads the small column out) */
+  var SMALL = 0.5;        /* the largest the pictures get in the small column at the top, compared with full size */
 
   var N = scenes.length;
   var css = getComputedStyle(root);
@@ -238,7 +241,16 @@
     camera.updateProjectionMatrix();
     camera.updateMatrixWorld();
     glow.position.set(0, 0, -0.9);
+    /* the small column at the top of the page: all of the pictures, sized to fit between the menu
+       and the bottom of the screen (on a phone, between the menu and the page's title) */
+    var pxu = px / W, top = 84, bottom = VH - 48;
+    if (NARROW) { var hw = head.querySelector('.wrap'); bottom = hw ? hw.getBoundingClientRect().top + window.scrollY - 18 : VH * 0.55; top = 78; }
+    var sz = Math.min(SMALL, (bottom - top) / (((N - 1) * 1.18 + 1) * H * pxu));
+    OV.s = sz;
+    OV.step = sz * H * 1.18 / GAP;
+    OV.shift = (cy - (top + bottom) / 2) / pxu;
   };
+  var OV = { s: SMALL, step: 0.5, shift: 0 };   /* the small column: picture size, spacing (in projects), and how far it moves up */
 
   /* ---- the cursor ---------------------------------------------------- */
   var mx = 0, my = 0, tx = 0, ty = 0, pointer = false, px0 = -1, py0 = -1, hoverI = -1;
@@ -265,17 +277,46 @@
     }
     return true;
   };
-  var pick = function (c) {
+  var quadOf = function (i) { var u = cards[i].mat.uniforms; return [cornerOnScreen(-W / 2, H / 2, u), cornerOnScreen(W / 2, H / 2, u), cornerOnScreen(W / 2, -H / 2, u), cornerOnScreen(-W / 2, -H / 2, u)]; };
+  /* which picture the pointer is on: any of them in the small column, otherwise only the middle one */
+  var pick = function (c, ov) {
     if (!pointer || px0 < 0) return -1;
-    var i = Math.round(c);
-    if (i < 0 || i >= N || Math.abs(c - i) > 0.3) return -1;
-    var u = cards[i].mat.uniforms;
-    if (u.uOpacity.value < 0.6) return -1;
-    var q = [cornerOnScreen(-W / 2, H / 2, u), cornerOnScreen(W / 2, H / 2, u), cornerOnScreen(W / 2, -H / 2, u), cornerOnScreen(-W / 2, -H / 2, u)];
-    return inQuad([px0, py0], q) ? i : -1;
+    var list = [];
+    if (ov > 0.5) { for (var j = 0; j < N; j++) list.push(j); }
+    else { var m = Math.round(c); if (m >= 0 && m < N && Math.abs(c - m) <= 0.3) list.push(m); }
+    for (var k = 0; k < list.length; k++) {
+      if (cards[list[k]].mat.uniforms.uOpacity.value < 0.6) continue;
+      if (inQuad([px0, py0], quadOf(list[k]))) return list[k];
+    }
+    return -1;
   };
+  /* the name of the picture you point at, in the small column */
+  var tip = document.createElement('p');
+  tip.className = 'ws-tip';
+  tip.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(tip);
+  var tipFor = -1;
+  var showTip = function (i, on) {
+    tip.classList.toggle('on', on);
+    if (!on) return;
+    if (tipFor !== i) {
+      tipFor = i;
+      var name = [].map.call(scenes[i].querySelectorAll('.scene-title .ln'), function (l) { return l.textContent.trim(); }).join(' ');
+      tip.textContent = (i < 9 ? '0' : '') + (i + 1) + '  ' + name;
+      tip.style.setProperty('--cc', '#' + cards[i].col.getHexString());
+    }
+    var q = quadOf(i), x1 = Math.max(q[1][0], q[2][0]), x0 = Math.min(q[0][0], q[3][0]), yc = (q[0][1] + q[1][1] + q[2][1] + q[3][1]) / 4;
+    var w = tip.offsetWidth, x = x1 + 16 + w > VW - 40 ? x0 - 16 - w : x1 + 16;
+    tip.style.transform = 'translate(' + Math.round(x) + 'px,' + Math.round(yc - tip.offsetHeight / 2) + 'px)';
+  };
+  var ovNow = 1;
   document.addEventListener('click', function (e) {
     if (hoverI < 0 || e.defaultPrevented || e.target.closest('a, button, input, label')) return;
+    if (ovNow > 0.5) {   /* in the small column, a click scrolls to that project */
+      jump(hoverI);
+      history.replaceState(null, '', '#' + scenes[hoverI].id);
+      return;
+    }
     var cd = cards[hoverI];
     if (!cd.href) return;
     if (cd.target === '_blank') window.open(cd.href, '_blank', 'noopener');
@@ -332,28 +373,33 @@
     c += (goal - c) * (1 - Math.exp(-dt / 0.14));   /* the column glides after the scroll */
     vel += ((c - prev) / Math.max(dt, 0.001) - vel) * 0.2;
     mx += (tx - mx) * 0.05; my += (ty - my) * 0.05;
+    var ov = 1 - smooth(START, 0, c);   /* 1 at the top of the page (the small column), 0 from the first project on */
+    ovNow = ov;
     column.rotation.y = mx * 0.16;
     column.rotation.x = my * 0.08;
+    column.position.y = OV.shift * ov;
     column.updateMatrixWorld();
 
     /* each picture: where it is in the column, and how it looks there */
     cards.forEach(function (cd, i) {
       var u = cd.mat.uniforms;
       var arrive = clamp((t - 0.15 - i * 0.12) / 1.3, 0, 1), rise = 1 - Math.pow(1 - arrive, 3);
-      var d = i - c + (1 - rise) * (4.2 + i * 0.5);   /* on arrival, the pictures slide up from below */
-      var ad = Math.abs(d);
+      var dc = i - c, adc = Math.abs(dc);              /* in the full column: how far from the middle */
+      var ds = (i - (N - 1) / 2) * OV.step;           /* in the small column at the top */
+      var d = dc + (ds - dc) * ov + (1 - rise) * (4.2 + i * 0.5);   /* on arrival, the pictures slide up from below */
+      var full = (1 - smooth(1.5, 2.3, adc)) * (NARROW && dc > 0 ? 1 - smooth(0.45, 0.95, dc) : 1);   /* on a phone the next picture stays out of the text's way */
       u.uY.value = -d * GAP;
-      u.uTwist.value = clamp(d, -2, 2) * TWIST;
-      u.uScale.value = 1 - 0.1 * Math.min(ad, 1.5);
-      u.uGray.value = smooth(0.12, 0.9, ad);
-      u.uVel.value = clamp(vel * 0.5, -1.2, 1.2);
-      u.uOpacity.value = (1 - smooth(1.5, 2.3, ad)) * smooth(0, 0.35, arrive)
-        * (NARROW && d > 0 ? 1 - smooth(0.45, 0.95, d) : 1);   /* on a phone the text sits below, so the next picture stays out of its way */
+      u.uTwist.value = clamp(dc, -2, 2) * TWIST * (1 - ov) + ds * 0.3 * ov;
+      u.uScale.value = (1 - 0.1 * Math.min(adc, 1.5)) * (1 - ov) + OV.s * ov;
+      u.uGray.value = smooth(0.12, 0.9, adc) * (1 - ov);
+      u.uVel.value = clamp(vel * 0.5, -1.2, 1.2) * (1 - ov);
+      u.uOpacity.value = (full + (1 - full) * ov) * smooth(0, 0.35, arrive);
       cd.hover += ((i === hoverI ? 1 : 0) - cd.hover) * 0.15;
       u.uHover.value = cd.hover;
     });
-    hoverI = pick(c);
+    hoverI = pick(c, ov);
     document.body.style.cursor = hoverI >= 0 ? 'pointer' : '';
+    showTip(hoverI, hoverI >= 0 && ov > 0.5);
 
     /* the background and the glow take on the color of the project in the middle */
     var k = clamp(c, 0, N - 1), i0 = Math.floor(k), i1 = Math.min(N - 1, i0 + 1);
@@ -361,7 +407,7 @@
     clear.copy(BG).lerp(tint, TINT);
     renderer.setClearColor(clear, 1);
     glowMat.uniforms.uColor.value.copy(tint);
-    glowMat.uniforms.uOpacity.value = 0.22 * (1 - smooth(0.3, 0.5, Math.abs(c - Math.round(c))) * 0.5) * smooth(0, 1, t);
+    glowMat.uniforms.uOpacity.value = 0.22 * (1 - smooth(0.3, 0.5, Math.abs(c - Math.round(c))) * 0.5) * smooth(0, 1, t) * (1 - 0.5 * ov);
 
     /* past the last project the scene fades so the page can continue */
     stage3d.style.opacity = (1 - smooth(spots[N - 1] + seg * 0.3, spots[N - 1] + seg * 0.75, y)).toFixed(3);
@@ -399,6 +445,6 @@
   window.WORK_STACK = {
     at: function () { return c; }, spots: function () { return spots.slice(); }, hover: function () { return hoverI; },
     tint: function () { return '#' + clear.getHexString(); },
-    quad: function (i) { var u = cards[i].mat.uniforms; return [cornerOnScreen(-W / 2, H / 2, u), cornerOnScreen(W / 2, H / 2, u), cornerOnScreen(W / 2, -H / 2, u), cornerOnScreen(-W / 2, -H / 2, u)]; }
+    quad: quadOf
   };
 })();

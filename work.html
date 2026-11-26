@@ -87,9 +87,9 @@
      column of pictures drawn in 3D on the right, which scrolling moves up one project at a time,
      with each project's text on the left. Each scene's data-ws-img is the picture shown in 3D.
      It must be a file on this site (pictures from Tableau Public cannot be used in 3D), so LEGO
-     and NBA point to images/work/lego.png and images/work/nba.png: save a screenshot of each
-     dashboard under those names and it appears. Until then, a title card in the project's color
-     stands in.
+     and NBA use screenshots saved as images/work/lego.webp and images/work/nba.webp. Pictures
+     are trimmed from the center to a 16:10 shape. If a picture cannot load, a title card in the
+     project's color stands in.
      Otherwise (no WebGL, or reduced motion) work.js shows the regular scroll, one project per
      screen, and anyone who prefers reduced motion sees a still page. -->
 <div class="stage" id="stage">
@@ -137,10 +137,10 @@
 
   <!-- LEGO complexity analysis (Tableau Public)
        EDIT: the screenshot loads from Tableau's preview image for this viz, so it
-       updates itself when you republish. To use your own screenshot instead, save it
-       as images/work/lego.png and change the img src below to that path. If the image
+       updates itself when you republish. (The 3D column uses images/work/lego.webp; to
+       use it here too, change the img src below to that path.) If the image
        cannot load, the bar drawing shows instead. -->
-  <section class="scene" id="lego" data-cc="red" data-ws-img="images/work/lego.png" aria-labelledby="lego-title">
+  <section class="scene" id="lego" data-cc="red" data-ws-img="images/work/lego.webp" aria-labelledby="lego-title">
     <div class="scene-glow" aria-hidden="true"></div>
     <div class="scene-inner">
       <a class="frame frame-shot" href="https://public.tableau.com/app/profile/robert.butts/viz/LegoVisualizationforCompetition/LEGOComplexityAnalysis" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" data-cursor="Open the dashboard">
@@ -202,10 +202,10 @@
 
   <!-- NBA score differentials (Tableau Public)
        EDIT: the screenshot loads from Tableau's preview image for this viz, so it
-       updates itself when you republish. To use your own screenshot instead, save it
-       as images/work/nba.png and change the img src below to that path. If the image
+       updates itself when you republish. (The 3D column uses images/work/nba.webp; to
+       use it here too, change the img src below to that path.) If the image
        cannot load, the bar drawing shows instead. -->
-  <section class="scene" id="nba" data-cc="amber" data-ws-img="images/work/nba.png" aria-labelledby="nba-title">
+  <section class="scene" id="nba" data-cc="amber" data-ws-img="images/work/nba.webp" aria-labelledby="nba-title">
     <div class="scene-glow" aria-hidden="true"></div>
     <div class="scene-inner">
       <a class="frame frame-shot" href="https://public.tableau.com/app/profile/robert.butts/viz/NBAGameScoreDifferentialVisualization/Dashboard1" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" data-cursor="Open the dashboard">
