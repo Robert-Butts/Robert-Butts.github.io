@@ -13,14 +13,21 @@
 <!--
   ============================================================
   DEEP DIVES PAGE (deep-dives.html)
-  One card per deep dive, in a grid. The first card is wide.
+  On devices that can show it, the page is a dive under water
+  (dive.js): each deep dive is a stop on the way down, where its
+  shape gathers out of drifting triangles and its question leads
+  the text. Otherwise (no WebGL, or reduced motion), one card per
+  deep dive, in a grid; the first card is wide.
   To add a deep dive:
     1. Copy a card block below (an <a class="dv-card"> for a
        finished piece, a <div class="dv-card dv-soon"> for one in
-       progress).
+       progress) and give it a new id (used by links like
+       deep-dives.html#coaches).
     2. Set --cc to one of the site colors: var(--amber),
        var(--blue), var(--green), var(--violet), var(--teal).
-    3. Change the image, type tag, title, text, and link.
+    3. Change the image, question (.dv-q), type tag, title, text,
+       and link. data-shape picks the shape in the dive, from
+       home-shapes.js (ball, steps, sankey, bars, ohio, brick, goose).
   When an in-progress piece is finished, change its <div> to
   an <a> with an href, and change "In progress" to "Live".
   ============================================================
@@ -74,26 +81,83 @@ a.dv-card:hover .dv-go .arr{transform:translateX(3px)}
   .dv-card, .dv-media img, .dv-go .arr{transition:none}
 }
 
-/* THE HERO: polygon shapes built out of a 3D coordinate plane (polyhero.js).
-   Beside the title on wide screens, below it on narrower ones; about two thirds of the screen tall. */
-.dv-hero{position:relative; overflow:hidden; isolation:isolate}
-.dv-hero .wrap{position:relative; z-index:1}
-.poly-stage{position:absolute; inset:0; z-index:0; pointer-events:none; opacity:0; transition:opacity 1s ease;
-  -webkit-mask-image:linear-gradient(180deg, #000 74%, transparent); mask-image:linear-gradient(180deg, #000 74%, transparent)}
-.poly-stage.on{opacity:1}
-.poly-stage canvas{display:block}
-.poly-cap{position:absolute; z-index:1; margin:0; transform:translateX(-50%); font-family:var(--mono); font-size:.74rem; letter-spacing:.12em; text-transform:uppercase;
-  color:var(--muted); white-space:nowrap; pointer-events:none; opacity:0; transition:opacity .5s ease}
-.poly-cap.on{opacity:1}
-@media (min-width:1000px){
-  .dv-hero.has-poly{min-height:max(540px, 66vh); min-height:max(540px, 66svh)}
-  .dv-hero.has-poly .ph-b, .dv-hero.has-poly .ph-lead{max-width:min(56%, 640px)}
-}
-@media (max-width:999px){
-  .dv-hero.has-poly{padding-bottom:min(84vw, 420px)}
+/* THE QUESTION each deep dive starts from. In the cards it shows above the tags, unless the title
+   is the question already (dive.js marks those cards dv-same). */
+.dv-card.dv-same .dv-q{display:none}
+.dv-cue{display:none}
+
+/* ===== THE DIVE (dive.js) =====
+   When dive.js runs, it adds the class "dive" to the page. The page title sits at the surface;
+   the cards become the stops on the way down, one at a time, with the question large, and the
+   closing call to action sits on the sea floor. With no WebGL, or with reduced motion, the cards
+   above show as a grid. */
+.dive main{position:relative}
+.dive-stage{position:sticky; top:0; z-index:0; height:100vh; height:100svh; margin-bottom:-100vh; margin-bottom:-100svh; overflow:hidden; pointer-events:none}
+.dive-stage canvas{display:block; width:100%; height:100%}
+.dive main > :not(.dive-stage){position:relative; z-index:1}
+/* the surface: the page title over the water */
+.dive .dv-head{min-height:100vh; min-height:100svh; display:flex; align-items:center; padding-top:66px; padding-bottom:0}
+.dive .dv-head::before{content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(to right, rgba(14,17,22,.72), rgba(14,17,22,0) 62%);
+  -webkit-mask-image:linear-gradient(to bottom, #000 70%, transparent); mask-image:linear-gradient(to bottom, #000 70%, transparent)}   /* no hard edge as it scrolls away */
+.dive .dv-head .wrap{position:relative; width:100%}
+.dive .dv-head .wrap > *{max-width:min(560px, 46vw)}
+.dive .dv-cue{display:inline-flex}
+/* the stops: each card fills the screen while you are at it, its text on one side */
+.dive #dives{padding:0 !important; margin-top:-100vh; margin-top:-100svh; pointer-events:none}
+.dive #dives > .wrap{max-width:none; height:100%; padding:0}
+.dive .dv-grid{display:block; height:100%}   /* the cards stay put (sticky) for as long as this box lasts */
+.dive .dv-card, .dive .dv-card.wide{position:sticky; top:0; display:flex; flex-direction:row; align-items:center; height:100vh; height:100svh; margin:0 0 -100vh; margin-bottom:-100svh;
+  background:none; border:0; border-radius:0; box-shadow:none; overflow:visible; opacity:0; visibility:hidden; pointer-events:none; transform:none; transition:none}
+.dive .dv-media{display:none}
+.dive .dv-body, .dive .dv-card.wide .dv-body{pointer-events:auto; flex:0 0 auto; width:min(460px, 38vw); padding:66px 0 0; gap:12px; justify-content:center;
+  margin-left:max(28px, calc((100vw - var(--maxw)) / 2 + 28px)); transform:translateY(var(--dv-y, 0px))}
+.dive .dv-card[data-side="right"] .dv-body{margin-left:auto; margin-right:max(28px, calc((100vw - var(--maxw)) / 2 + 28px))}
+.dive .dv-q, .dive .dv-card.dv-same .dv-q{display:block; margin:0 0 10px; font-family:var(--display); font-weight:600; font-size:clamp(2.2rem, 4vw, 3.9rem);
+  line-height:1.03; letter-spacing:-.03em; color:var(--text)}
+.dive .dv-card.dv-same h2{display:none}
+.dive .dv-card h2, .dive .dv-card.wide h2{font-size:1.2rem; color:var(--cc)}
+.dive .dv-card p:not(.dv-q){color:#B4C2D2}
+.dive .dv-meta{color:#8494A6}
+.dive a.dv-card:hover{transform:none; box-shadow:none}
+.dive a.dv-card .dv-go{padding:10px 16px; margin-top:6px; align-self:flex-start; border-radius:999px; background:var(--cc); color:#0E1116; font-weight:600}
+.dive a.dv-card:hover .dv-go{color:#0E1116}
+.dive a.dv-card:focus-visible{outline:none}
+.dive a.dv-card:focus-visible .dv-body{outline:3px solid var(--cc); outline-offset:10px; border-radius:6px}
+.dive .dv-card.dv-soon .dv-go{display:none}
+/* the sea floor: the closing call to action */
+.dive .cta-band{border-top:0}
+.dive .cta-inner{background:rgba(6,11,18,.72); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px)}
+/* the depth line on the right edge (1000 px and wider) */
+.dive-rail{position:fixed; right:22px; top:50%; z-index:90; display:none; flex-direction:column; align-items:flex-end; gap:2px;
+  transform:translate(10px, -50%); opacity:0; visibility:hidden; transition:opacity .35s ease, transform .35s ease, visibility 0s .35s}
+.dive-rail.on{opacity:1; visibility:visible; transform:translate(0, -50%); transition:opacity .35s ease, transform .35s ease}
+.dive-rail::before{content:""; position:absolute; right:7px; top:10px; bottom:10px; width:1px; background:var(--line-2)}
+/* the depth readout in the bottom right corner */
+.dive-depth{position:fixed; right:24px; bottom:20px; z-index:90; margin:0; font-family:var(--mono); font-size:.68rem; letter-spacing:.14em; text-transform:uppercase;
+  color:#8FB8D4; white-space:nowrap; pointer-events:none; opacity:0; transition:opacity .35s ease}
+.dive-depth.on{opacity:1}
+.dive-rail a{position:relative; display:flex; align-items:center; gap:10px; padding:10px 0; color:var(--muted)}
+.dr-dot{width:15px; height:15px; border-radius:50%; border:1.5px solid var(--line-2); background:#0E1116; transition:background .3s ease, border-color .3s ease}
+.dive-rail a.is-active .dr-dot{background:var(--cc); border-color:var(--cc)}
+.dr-name{order:-1; font-family:var(--mono); font-size:.7rem; white-space:nowrap; padding:4px 9px; border-radius:7px; background:rgba(14,17,22,.82);
+  opacity:0; transform:translateX(6px); transition:opacity .25s ease, transform .25s ease}
+.dive-rail a:hover .dr-name, .dive-rail a:focus-visible .dr-name{opacity:1; transform:none}
+@media (min-width:1000px){ .dive-rail{display:flex} }
+/* phones and tall screens: the shape sits high, and the text below it */
+@media (max-width:759px), (max-aspect-ratio:17/20){
+  .dive .dv-head{align-items:flex-end; padding-bottom:max(5svh, 26px)}
+  .dive .dv-head .wrap > *{max-width:none}
+  .dive .dv-card::before{content:""; position:absolute; inset:0; pointer-events:none;
+    background:linear-gradient(to top, rgba(8,14,22,.92) 0%, rgba(8,14,22,.6) 36%, rgba(8,14,22,0) 58%)}
+  .dive .dv-head::before{background:linear-gradient(to top, rgba(8,14,22,0) 0%, rgba(8,14,22,.82) 16%, rgba(8,14,22,.55) 42%, rgba(8,14,22,0) 66%); -webkit-mask-image:none; mask-image:none}
+  .dive .dv-card, .dive .dv-card.wide{align-items:flex-end}
+  .dive .dv-body, .dive .dv-card.wide .dv-body, .dive .dv-card[data-side="right"] .dv-body{position:relative; flex:1 1 auto; min-width:0; width:auto; margin:0 20px; padding:0 0 max(5svh, 26px)}
+  .dive .dv-q, .dive .dv-card.dv-same .dv-q{font-size:clamp(1.8rem, 7.4vw, 2.4rem)}
+  .dive .dv-card p:not(.dv-q){font-size:.9rem; line-height:1.5}
+  .dive .dv-meta{display:none}
 }
 @media (prefers-reduced-motion:reduce){
-  .poly-stage, .poly-cap{transition:none}
+  .dive-rail, .dr-name, .dr-dot, .dive-depth{transition:none}
 }
 </style>
 </head>
@@ -138,31 +202,28 @@ a.dv-card:hover .dv-go .arr{transform:translateX(3px)}
 <main id="main">
 
 <!-- ===== PAGE HEADER ===== -->
-<div class="page-head dv-head dv-hero">
-  <!-- HERO ANIMATION: a 3D coordinate plane that builds one shape for each deep dive out of its
-       triangle grid (drawn by polyhero.js; captions and timing are at the top of that file).
-       To remove it, delete these two lines and the two script lines at the bottom of the page. -->
-  <div class="poly-stage" data-polyhero aria-hidden="true"></div>
-  <p class="poly-cap" id="polyCap" aria-hidden="true"></p>
+<div class="page-head dv-head">
   <div class="wrap">
     <p class="eyebrow ph-a">Deep dives</p>
     <h1 class="ph-b">Data projects that go past a single chart.</h1>
     <p class="ph-lead ph-c">Some deep dives are interactive tools you can explore. Others are write-ups that start with a question and walk through how I answered it, with the data and code included.</p>
+    <a class="scroll-cue dv-cue" href="#explorer"><span class="sc-line" aria-hidden="true"></span>Scroll to dive in</a>
   </div>
 </div>
 
 <!-- ===== THE DEEP DIVES ===== -->
-<section style="padding-top:44px">
+<section id="dives" style="padding-top:44px">
   <div class="wrap">
     <div class="dv-grid">
 
       <!-- NBA Game Explorer (live) -->
-      <a class="dv-card wide reveal" href="nba-games/" style="--cc:var(--amber)">
+      <a class="dv-card wide reveal" id="explorer" data-shape="ball" href="nba-games/" style="--cc:var(--amber)">
         <div class="dv-media">
           <img src="nba-games/share.jpg" width="1200" height="630" loading="lazy"
             alt="The explorer's chart for Game 7 of the 2025 NBA Finals. A stepped line tracks the score difference between the Thunder and the Pacers after every scoring play. It stays within a few points through the first half, then rises to a 22-point Thunder lead in the fourth quarter.">
         </div>
         <div class="dv-body">
+          <p class="dv-q">How does a lead rise and fall over one game?</p>
           <div class="dv-tags"><span class="dv-type">Interactive</span><span class="dv-status live">Live</span></div>
           <h2>NBA Game Explorer</h2>
           <p>Pick any team and any 2024-25 game to see the score difference after every scoring play. Lead changes, scoring runs, and timeouts are marked, and every game's play-by-play downloads as a CSV file.</p>
@@ -172,7 +233,7 @@ a.dv-card:hover .dv-go .arr{transform:translateX(3px)}
       </a>
 
       <!-- NBA coaches study (in progress) -->
-      <div class="dv-card dv-soon reveal d1" style="--cc:var(--amber)">
+      <div class="dv-card dv-soon dv-same reveal d1" id="coaches" data-shape="steps" style="--cc:var(--amber)">
         <div class="dv-media" aria-hidden="true">
           <svg viewBox="0 0 600 315" preserveAspectRatio="xMidYMid slice">
             <rect width="600" height="315" fill="#12161D"/>
@@ -185,6 +246,7 @@ a.dv-card:hover .dv-go .arr{transform:translateX(3px)}
           </svg>
         </div>
         <div class="dv-body">
+          <p class="dv-q">Which NBA coaches stop runs?</p>
           <div class="dv-tags"><span class="dv-type">Write-up</span><span class="dv-status">In progress</span></div>
           <h2>Which NBA coaches stop runs?</h2>
           <p>Which coaches' teams keep giving up scoring runs, when coaches call timeout, whether their teams score right after one, and whether a timeout actually stops a run.</p>
@@ -193,7 +255,7 @@ a.dv-card:hover .dv-go .arr{transform:translateX(3px)}
       </div>
 
       <!-- Ohio community schools (in progress) -->
-      <div class="dv-card dv-soon reveal d2" style="--cc:var(--green)">
+      <div class="dv-card dv-soon reveal d2" id="school-money" data-shape="sankey" style="--cc:var(--green)">
         <div class="dv-media" aria-hidden="true">
           <svg viewBox="0 0 600 315" preserveAspectRatio="xMidYMid slice">
             <rect width="600" height="315" fill="#12161D"/>
@@ -205,6 +267,7 @@ a.dv-card:hover .dv-go .arr{transform:translateX(3px)}
           </svg>
         </div>
         <div class="dv-body">
+          <p class="dv-q">Where does Ohio's school money go?</p>
           <div class="dv-tags"><span class="dv-type">Report</span><span class="dv-status">In progress</span></div>
           <h2>Where Ohio's school money goes</h2>
           <p>How Ohio's K-12 education dollars are spent, compared by school type, including community schools.</p>
@@ -264,10 +327,6 @@ a.dv-card:hover .dv-go .arr{transform:translateX(3px)}
         <div class="foot-col">
           <h4>Elsewhere</h4>
           <a href="https://www.linkedin.com/in/robertmbutts/" target="_blank" rel="noopener">LinkedIn</a>
-          <!-- EDIT: add your GitHub and YouTube links, or delete these two lines 
-          <a href="#">GitHub</a>
-          <a href="#">YouTube</a>
-		  -->
         </div>
         <div class="foot-col">
           <h4>Say hello</h4>
@@ -284,6 +343,7 @@ a.dv-card:hover .dv-go .arr{transform:translateX(3px)}
 
 <script src="site.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
-<script src="polyhero.js" defer></script>
+<script src="home-shapes.js" defer></script>
+<script src="dive.js" defer></script>
 </body>
 </html>

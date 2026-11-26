@@ -1,18 +1,20 @@
 /* ============================================================
-   HOME PAGE SHAPES (home-shapes.js)
-   The six projects the home page builds out of its triangle grid.
+   PROJECT SHAPES (home-shapes.js)
+   The shapes the home page and the Deep dives page build out of
+   their triangle grids, one per project.
    Each shape is drawn on the same grid it is built from: every
    square (S units on a side) is cut by its diagonal into two right
    triangles, and a triangle belongs to a shape when its center does.
    Each paint function says which triangles belong and their color.
-   Used by home-hero.js, which matches each shape to a project link
-   in index.html by its data-shape name.
+   Used by home-hero.js (index.html) and dive.js (deep-dives.html),
+   which match each shape to a project by its data-shape name.
 
    The shapes:
      ball    a basketball ........................ NBA Game Explorer
-     sankey  money flowing from three sources into three kinds of
-             spending (an icon only: no labels or real numbers yet;
-             the band widths can be set from the finished report) .. Where Ohio's school money goes
+     sankey  one pot of money fanning out into four kinds of spending
+             (an icon only: no labels or real numbers yet; the band
+             widths can be set from the finished report) ............ Where Ohio's school money goes
+     steps   a score line: a run given up, a timeout, a climb back .. Which NBA coaches stop runs?
      bars    a bar chart in the gallery's family colors ............ The Chart Gallery
      ohio    the outline of Ohio with Dublin marked ................. Data-Driven Dublin
      brick   a LEGO-style brick with studs .......................... LEGO complexity analysis
@@ -86,6 +88,34 @@ window.HOME_SHAPES = (function () {
           if (y <= tp && y >= tp - b.h) return shade(b.c, jitter(0.7, 0.08));
         }
       }
+      return null;
+    });
+  };
+
+  /* ---- steps: the score difference through part of a game, drawn the way the NBA Game Explorer
+     draws it. The team gives up a run (red, below the middle line), a timeout stops it (the dashed
+     column), and they climb back (amber) ---- */
+  var steps = function () {
+    var ST = [[40, 90, 160], [90, 130, 146], [130, 170, 152], [170, 210, 132], [210, 250, 140], [250, 300, 124], [300, 318, 140],
+      [318, 336, 158], [336, 352, 176], [352, 370, 196], [370, 396, 214], [396, 430, 206], [430, 470, 192], [470, 510, 178], [510, 560, 170]];
+    var LW = 6.75, V0 = 0.3 + 54 * (10.4 / 90), VK = 10.4 / 90;     /* the middle line sits at V0 */
+    var ux = function (px) { return (px - 300) / 520 * LW * 2; };
+    var colVal = function (c) {
+      var x = c * S + S / 2;
+      for (var i = 0; i < ST.length; i++) if (x >= ux(ST[i][0]) && x < ux(ST[i][1])) return V0 + (160 - ST[i][2]) * VK;
+      return null;
+    };
+    var rowOf = function (v) { return Math.floor(v / S); };
+    var R0 = rowOf(V0), TOC = Math.floor(ux(396) / S);
+    return cut(LW, function (x, y) {
+      var c = Math.floor(x / S), v = colVal(c);
+      if (v === null) return null;
+      var r = rowOf(y), rv = rowOf(v), prev = colVal(c - 1), rp = prev === null ? rv : rowOf(prev);
+      var hue = v >= V0 ? COL.amber : COL.red;
+      if (c === TOC && r % 2 === 0) return shade(COL.pale, 0.75);                                  /* the timeout */
+      if (r >= Math.min(rp, rv) && r <= Math.max(rp, rv)) return shade(hue, jitter(1.1, 0.1));     /* the stepped line */
+      if (r === R0) return shade(COL.axis, 1);                                                      /* the middle line */
+      if ((r > R0 && r < rv) || (r < R0 && r > rv)) return shade(hue, jitter(0.42, 0.08));          /* the area */
       return null;
     });
   };
@@ -174,5 +204,5 @@ window.HOME_SHAPES = (function () {
     });
   };
 
-  return { S: S, H: H, make: { ball: ball, sankey: sankey, bars: bars, ohio: ohio, brick: brick, goose: goose } };
+  return { S: S, H: H, make: { ball: ball, sankey: sankey, steps: steps, bars: bars, ohio: ohio, brick: brick, goose: goose } };
 })();
