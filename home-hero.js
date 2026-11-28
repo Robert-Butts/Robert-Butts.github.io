@@ -4,12 +4,14 @@
      1. a large cloud of about 1,100 data points, nearly as wide as
         the screen, turns slowly with a faint plane through it (the
         same cloud as recall()). It leans toward the mouse, and the
-        far points fade into the dark, so its depth is easy to see,
+        far points fade into the dark, so its depth is easy to see.
+        Meanwhile the message in the bar appears in two parts,
      2. the camera pulls back as the plane swings flat and becomes the
         floor, and the points fall onto it, each one lighting the grid
         triangle it lands in,
-     3. one at a time, a shape for each favorite project rises out of
-        the triangle grid, holds for a moment, and falls apart,
+     3. after a short pause, one at a time, a shape for each favorite
+        project rises out of the triangle grid, holds for a moment,
+        and falls apart,
      4. then all six rise together, side by side. Each one is a link.
    Anyone can skip ahead: click the empty part of the hero, scroll,
    or press "See all six projects" in the bar. Later visits in the same
@@ -33,21 +35,25 @@
 (function () {
   'use strict';
   var stage = document.querySelector('[data-homehero]');
-  if (!stage || typeof THREE === 'undefined' || !window.HOME_SHAPES) return;
+  var docEl = document.documentElement;
+  var untell = function () { docEl.classList.remove('hh-tell'); };   /* without the scene, the message shows at once */
+  if (!stage || typeof THREE === 'undefined' || !window.HOME_SHAPES) { untell(); return; }
   var hero = document.getElementById('homeHero');
   var foot = hero.querySelector('.hh-bottom'), row = hero.querySelector('.hh-row');
   var links = Array.prototype.slice.call(hero.querySelectorAll('.hp'));
   var btn = document.getElementById('hhBtn');
   var srcs = Array.prototype.slice.call(hero.querySelectorAll('.hh-src')), srcBox = hero.querySelector('.hh-sources');
-  if (!links.length) return;
+  if (!links.length) { untell(); return; }
   var renderer;
   try { renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true }); }
-  catch (e) { return; }
+  catch (e) { untell(); return; }
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---- EDIT: timing, in seconds ---- */
   var CLOUD = 5.5;                                  /* the cloud turns on its own */
+  var SAY_A = 2, SAY_B = 4;                         /* when the two parts of the message in the bar appear */
   var FALL = 2.6;                                   /* the points fall onto the grid */
+  var PAUSE = 1.5;                                  /* the calm after the points land, before the first shape rises */
   var BUILD = 2.1, HOLD = 2.3, BREAK = 1.3, STEP = 4.6;   /* each project's shape; a new one starts every STEP seconds */
   var RISE = 2.4;                                   /* all six rise together at the end */
 
@@ -278,7 +284,7 @@
   var setGrid = function (g) { gridMat.opacity = 0.55 * g; axisMat.opacity = 0.8 * g; };
 
   /* ---- 3. one shape at a time --------------------------------------- */
-  var TSEQ = CLOUD + FALL - 0.5;                   /* the first shape starts as the last points land */
+  var TSEQ = CLOUD + FALL + PAUSE;                 /* the first shape rises PAUSE seconds after the last points land */
   var TFIN = TSEQ + (N6 - 1) * STEP + BUILD + HOLD; /* then all six rise */
   var FLY = 1.1, GLOW = 0.35, FALLT = 0.85, FADE = 0.45;
   var single = { ox: 0, oy: BASE, oz: 0, yaw: 0, sc: 1 };
@@ -489,6 +495,8 @@
     btn.textContent = mode === 'final' ? 'Play again' : 'See all six projects \u2192';
   };
   var remember = function () { try { sessionStorage.setItem('rb-home-seen', '1'); } catch (e) { /* storage blocked */ } };
+  /* the message in the bar: which of its two parts are showing (index.html styles .say-a and .say-b) */
+  var tell = function (a, b) { docEl.classList.toggle('say-a', a); docEl.classList.toggle('say-b', b); };
 
   /* from wherever things are now to all six together */
   var toFinal = function (fromFloor) {
@@ -498,7 +506,7 @@
       grid: mode === 'intro' ? gridAt(mt) : gridMat.opacity / 0.55 };
     if (fromFloor) { snap.grid = 0; snap.cloudK = 0; }
     mode = 'final'; mt = 0;
-    showLinks('all'); setButton(); remember();
+    showLinks('all'); setButton(); remember(); tell(true, true);
     hero.classList.add('is-final'); layout();
   };
   /* from all six back to the start */
@@ -508,7 +516,7 @@
     snap = { from: from, a: fa, cam: CAM };
     mode = 'replay'; mt = 0; hover = -1;
     hero.classList.remove('is-final'); layout();
-    showLinks(-1); setButton();
+    showLinks(-1); setButton(); tell(false, false);
   };
 
   var drawFinal = function (t, still) {
@@ -582,6 +590,7 @@
         drawSequence(mt);
         var i = shownAt(mt);
         showLinks(i, true);
+        tell(mt >= SAY_A, mt >= SAY_B);
         aimCamera(CAM);
         root.updateMatrixWorld();
         if (i >= 0) placeLink(i, single, capS);
@@ -657,7 +666,7 @@
 
   /* ---- start ----------------------------------------------------- */
   hero.classList.add('has-h3d');   /* the page's styles make room for the scene and lift the links over it */
-  if (!layout()) { hero.classList.remove('has-h3d'); return; }
+  if (!layout()) { hero.classList.remove('has-h3d'); untell(); return; }
   stage.classList.add('on');
   srcs.forEach(function (sp) { sp.classList.add('on'); });
   if ('IntersectionObserver' in window) {
@@ -672,11 +681,13 @@
   var seen = false;
   try { seen = !!sessionStorage.getItem('rb-home-seen'); } catch (e) { /* storage blocked */ }
   setButton();
-  if (reduce) { still(); return; }
+  if (reduce) { untell(); still(); return; }
   showLinks(-1);
   if (seen) { CAM = L.fin; toFinal(true); snap.cam = L.fin; }
   else CAM = L.cloud;
   requestAnimationFrame(step);
   window.HOME_HERO = { skip: skip, replay: function () { if (mode === 'final') replay(); }, mode: function () { return mode; }, time: function () { return mt; },
-    view: function () { return CAM ? { s: CAM.s, fov: CAM.fov } : null; }, cloud: function () { return L.cloud.s; } };
+    view: function () { return CAM ? { s: CAM.s, fov: CAM.fov } : null; }, cloud: function () { return L.cloud.s; },
+    lit: function () { var n = 0; for (var k = 0; k < NT; k++) if (A[k] > 0) n++; return n; },
+    times: { SAY_A: SAY_A, SAY_B: SAY_B, CLOUD: CLOUD, FALL: FALL, TSEQ: TSEQ } };
 })();

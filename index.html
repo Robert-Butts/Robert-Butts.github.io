@@ -12,15 +12,17 @@
 <!--
   ============================================================
   HOME PAGE (index.html)
-  One hero and nothing else (no footer on this page). A black bar
-  along the bottom holds the name in a serif (Cormorant Garamond) on
-  the left, and on the right one sentence, the time in Ohio, and a
-  text button. Above it, a large 3D cloud of data points turns slowly
-  and leans toward the mouse, then falls flat onto a coordinate plane,
-  and a shape for each of six favorite projects rises out of the
-  plane's triangle grid, one at a time. At the end all six stand
-  together, and each one is a link. Faint names of data sources drift
-  behind the scene.
+  One hero and nothing else (no footer on this page). The story:
+  a large 3D cloud of data points turns slowly and leans toward the
+  mouse; the message in the black bar along the bottom appears in two
+  parts ("I help people see..." then "The thread through..."); the
+  cloud falls flat onto a coordinate plane; after a short pause a
+  shape for each of six favorite projects rises out of the plane's
+  triangle grid, one at a time; at the end all six stand together,
+  and each one is a link. Faint names of data sources drift behind
+  the scene. The name is in the menu at the top (and in a heading
+  that screen readers announce), so the bar holds only the message,
+  in a serif (Cormorant Garamond), and a small text button.
   The animation is drawn by home-hero.js; the six shapes are in
   home-shapes.js.
 
@@ -39,13 +41,25 @@
 <link rel="stylesheet" href="style.css">
 <!-- old links to the About section on this page go to the About page -->
 <script>if (location.hash === '#about') location.replace('about.html');</script>
+<!-- On a first visit with the 3D scene, the message in the bar starts hidden, and home-hero.js shows it in
+     two parts as the story plays. Return visits, reduced motion, and devices without the scene see it at once.
+     If the scene has not started after 5 seconds, the message shows anyway. -->
+<script>
+(function () {
+  var d = document.documentElement, seen = false;
+  try { seen = !!sessionStorage.getItem('rb-home-seen'); } catch (e) { /* storage blocked */ }
+  if (seen || !window.WebGLRenderingContext || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+  d.classList.add('hh-tell');
+  setTimeout(function () { if (!window.HOME_HERO) d.classList.remove('hh-tell'); }, 5000);
+})();
+</script>
 
 <style>
 /* ===== Page styles for the home page only ===== */
 
 /* THE HERO: the whole screen. The 3D scene (home-hero.js) fills a near-black space; a black bar runs
-   along the bottom like the ground below a horizon, with the name in a serif on the left and one
-   sentence, the time, and a text button on the right. The words use the site's own white, gray, and blue. */
+   along the bottom like the ground below a horizon, with the message across it in a serif and a small
+   text button at the end. The words use the site's own white and blue. */
 :root{--bg:#05070B}
 .home-hero{position:relative; overflow:hidden; isolation:isolate; padding:0; min-height:100vh; min-height:100svh;
   display:flex; flex-direction:column; justify-content:flex-end}
@@ -54,20 +68,16 @@
 .hh-stage.on{opacity:1}
 .hh-stage canvas{display:block}
 
-/* the black bar */
-.hh-bottom{position:relative; z-index:2; min-height:21vh; display:flex; align-items:center; padding:clamp(22px, 3.4vh, 36px) 0;
+/* the black bar: the message across it, and the button at the end */
+.hh-bottom{position:relative; z-index:2; min-height:21vh; display:flex; align-items:center; padding:clamp(24px, 3.6vh, 40px) 0;
   background:#030406; border-top:1px solid rgba(255,255,255,.06)}
-.hh-row{display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:20px 56px}
-.hh-who{min-width:0}
-.hh-name{margin:0; font-family:'Cormorant Garamond', Georgia, serif; font-weight:500; font-size:clamp(46px, 6.4vw, 96px); line-height:.92;
-  letter-spacing:-.01em; color:var(--text); -webkit-clip-path:inset(-30% -6% 0 -6%); clip-path:inset(-30% -6% 0 -6%)}   /* the clip hides the name while it rises in */
-.hh-name span{display:inline-block}
-/* the right side: the sentence, the time in Ohio, and the button */
-.hh-readout{max-width:27rem}
-.hh-intro{margin:0; font-size:1rem; line-height:1.65; color:var(--muted)}
-.hh-time{margin-top:12px; font-family:var(--mono); font-size:11px; line-height:1.9; letter-spacing:.14em; text-transform:uppercase; color:var(--faint)}
-.hh-btn{display:inline-block; margin-top:6px; padding:6px 0 3px; font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
-  color:var(--text); border-bottom:1px solid rgba(117,170,219,.45); transition:color .2s ease, border-color .2s ease}
+.hh-row{display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-end; gap:16px 56px}
+.hh-say{flex:1 1 620px; min-width:0; margin:0; font-family:'Cormorant Garamond', Georgia, serif; font-weight:500;
+  font-size:clamp(23px, 2.75vw, 42px); line-height:1.14; letter-spacing:-.005em; color:var(--text)}
+.hh-say span{display:block}
+.hh-say-b{margin-top:.14em; color:rgba(232,237,244,.62)}   /* the second part a step softer, so the first leads */
+.hh-btn{flex:none; display:inline-block; margin-bottom:.35em; padding:6px 0 3px; font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--text); border-bottom:1px solid rgba(117,170,219,.45); transition:color .2s ease, border-color .2s ease, opacity .9s ease}
 .hh-btn:hover, .hh-btn:focus-visible{color:var(--blue); border-color:var(--blue)}
 .hh-btn:focus-visible{outline:2px solid var(--blue); outline-offset:4px}
 .hh-btn[hidden]{display:none}
@@ -83,11 +93,16 @@
 .hh-src i{display:block; font-style:normal; animation:hhDrift var(--d, 4s) ease-in-out var(--dl, 0s) infinite alternate}
 @keyframes hhDrift{ from{transform:translateY(0)} to{transform:translateY(var(--dy, 20px))} }
 
-/* the words come in when the page opens: the name rises, then the rest fades up */
-.js-anim .hh-name span{transform:translateY(105%)}
-.js-anim.loaded .hh-name span{transform:none; transition:transform 1.1s cubic-bezier(.2,.8,.2,1) .1s}
-.js-anim .hh-readout{opacity:0; transform:translateY(12px)}
-.js-anim.loaded .hh-readout{opacity:1; transform:none; transition:opacity .7s ease .45s, transform .7s cubic-bezier(.2,.8,.2,1) .45s}
+/* the message tells the story with the scene: on a first visit (.hh-tell) each part rises in when
+   home-hero.js says so (.say-a, then .say-b), and the button comes with the first part */
+.hh-say span{transition:opacity .9s ease, transform 1s cubic-bezier(.2,.8,.2,1)}
+.hh-tell .hh-say span{opacity:0; transform:translateY(16px)}
+.hh-tell .hh-btn{opacity:0; pointer-events:none}
+.hh-tell.say-a .hh-say-a, .hh-tell.say-b .hh-say-b{opacity:1; transform:none}
+.hh-tell.say-a .hh-btn{opacity:1; pointer-events:auto}
+/* otherwise the bar fades up once as the page opens */
+.js-anim:not(.hh-tell) .hh-row{opacity:0; transform:translateY(12px)}
+.js-anim.loaded:not(.hh-tell) .hh-row{opacity:1; transform:none; transition:opacity .7s ease .2s, transform .7s cubic-bezier(.2,.8,.2,1) .2s}
 
 /* THE SIX PROJECTS, as plain cards (what shows without the 3D scene) */
 .home-hero:not(.has-h3d){min-height:0; padding-top:66px}
@@ -122,10 +137,11 @@
   .home-hero.has-h3d{padding-top:calc(66px + min(110vw, 430px))}
   .home-hero.has-h3d.is-final{padding-top:calc(66px + min(150vw, 600px))}   /* more room when all six stand together */
   .hh-row{flex-direction:column; align-items:flex-start}
+  .hh-say{flex:none; width:100%}
   .has-h3d .hp-name{font-size:.66rem; letter-spacing:.06em}
 }
 @media (prefers-reduced-motion:reduce){
-  .hh-stage, .has-h3d .hp, .hh-btn, .hh-src{transition:none}
+  .hh-stage, .has-h3d .hp, .hh-btn, .hh-src, .hh-say span{transition:none}
   .hh-src i{animation:none}
 }
 </style>
@@ -189,18 +205,16 @@
   </div>
   <div class="hh-stage" data-homehero aria-hidden="true"></div>
 
-  <!-- THE BAR along the bottom. EDIT: the name and the sentence. The line under the sentence is
-       the time in Ohio. -->
+  <!-- THE BAR along the bottom. EDIT: the message, in its two parts (they appear one after the other).
+       The heading is hidden on screen (the name is in the menu) but screen readers announce it. -->
   <div class="hh-bottom">
     <div class="wrap hh-row">
-      <div class="hh-who">
-        <h1 class="hh-name" id="homeTitle"><span>Robert Butts</span></h1>
-      </div>
-      <div class="hh-readout">
-        <p class="hh-intro">I help people see what their data is saying. The thread through all of my work is the same: taking something complicated and making it clear.</p>
-        <p class="hh-time" id="hhTime">Ohio</p>
-        <button class="hh-btn" id="hhBtn" type="button" hidden>See all six projects &rarr;</button>
-      </div>
+      <h1 class="sr-only" id="homeTitle">Robert Butts</h1>
+      <p class="hh-say">
+        <span class="hh-say-a">I help people see what their data is saying.</span>
+        <span class="hh-say-b">The thread through all of my work is the same: taking something complicated and making it clear.</span>
+      </p>
+      <button class="hh-btn" id="hhBtn" type="button" hidden>See all six projects &rarr;</button>
     </div>
   </div>
 
@@ -240,18 +254,6 @@
 <!-- No footer on the home page: the page is the hero alone. -->
 
 <script src="site.js"></script>
-<script>
-/* the time in Ohio, for the line under the sentence in the bar */
-(function () {
-  var el = document.getElementById('hhTime'), f;
-  if (!el || !window.Intl) return;
-  try { f = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); }
-  catch (e) { return; }
-  var tick = function () { el.textContent = f.format(new Date()) + ' ET \u00b7 Ohio'; };
-  tick();
-  setInterval(tick, 15000);
-})();
-</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
 <script src="home-shapes.js" defer></script>
 <script src="home-hero.js" defer></script>
